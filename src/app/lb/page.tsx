@@ -9,6 +9,10 @@ import axios from "axios";
 
 import { useState } from "react";
 
+import { ranks, get_rank_from_score } from "../ranks";
+
+import { useRouter } from "next/navigation";
+
 export default function Leaderboard() {
   const columns = {
     uid: 0,
@@ -24,6 +28,8 @@ export default function Leaderboard() {
   const [db_size, setDbSize] = useState(0);
   const pageSize = 50;
 
+  const router = useRouter();
+
   const charList: { [key: string]: number } = {
     Seele: 1102,
     "Dan Heng • Imbibitor Lunae": 1213,
@@ -31,6 +37,61 @@ export default function Leaderboard() {
     Feixiao: 1220,
     Firefly: 1310,
     Aglaea: 1402,
+  };
+
+  const defaultDbType = "Relic Score";
+  const charDbTypes: {
+    [key: string]: { name: string; id: number; lb_types: string[] };
+  } = {
+    Seele: {
+      name: "Seele",
+      id: 1102,
+      lb_types: ["", "", ""],
+    },
+    "Dan Heng • Imbibitor Lunae": {
+      name: "Dan Heng • Imbibitor Lunae",
+      id: 1213,
+      lb_types: [""],
+    },
+    "The Herta": {
+      name: "The Herta",
+      id: 1401,
+      lb_types: [""],
+    },
+    Feixiao: {
+      name: "Feixiao",
+      id: 1220,
+      lb_types: [""],
+    },
+    Firefly: {
+      name: "Firefly",
+      id: 1310,
+      lb_types: [""],
+    },
+    Aglaea: {
+      name: "Aglaea",
+      id: 1402,
+      lb_types: [""],
+    },
+  };
+
+  const charElement: { [key: string]: string } = {
+    Seele: "Quantum",
+    "Dan Heng • Imbibitor Lunae": "Imaginary",
+    "The Herta": "Ice",
+    Feixiao: "Wind",
+    Firefly: "Fire",
+    Aglaea: "Lightning",
+  };
+
+  const elementColor: { [key: string]: string } = {
+    Quantum: "#1C29BA",
+    Imaginary: "#F4D258",
+    Ice: "#47C7FD",
+    Wind: "#00FF9C",
+    Fire: "#F84F36",
+    Lightning: "#8872F1",
+    Physical: "#F84F36",
   };
 
   const get_lb = async (pageForce: number = -1, lb_override: string = "") => {
@@ -85,13 +146,7 @@ export default function Leaderboard() {
     <div>
       <Header current="lb" />
 
-      <div className="w-full flex justify-center flex-wrap font-extrabold text-4xl bg-[#1A1A1Ac9] relative z-20 mt-32 h-[100px]">
-        <div className="pt-6 pb-1">
-          <strong className="">SEELE</strong> LEADERBOARDS
-        </div>
-      </div>
-
-      <div className="absolute -translate-y-16 z-30 mb-16">
+      <div className="z-30 my-10 relaitve block mx-auto">
         <CharSel
           onCharSelect={(char) => {
             console.log("Selected character", char);
@@ -100,6 +155,37 @@ export default function Leaderboard() {
           }}
           charList={charList}
         />
+      </div>
+
+      <div className="w-full flex justify-center flex-wrap font-extrabold text-4xl bg-[#1A1A1Ac9] relative z-20 mt-12 h-[114px]">
+        <div className="pt-6 pb-2">
+          <strong
+            style={{
+              color:
+                lb_name in charElement
+                  ? elementColor[charElement[lb_name]]
+                  : "",
+            }}
+          >
+            {lb_name.toUpperCase()}
+          </strong>{" "}
+          LEADERBOARDS
+        </div>
+        <div className="flex justify-center w-full text-w1 font-extrabold text-base">
+          {lb_name in charDbTypes &&
+            charDbTypes[lb_name].lb_types.map((lb_type) => (
+              <div
+                className="cursor-pointer bg-[#323232c2] py-2 px-14 hover:bg-[#525252c2] transition-all"
+                onClick={() => {
+                  get_lb(1, `${lb_name}${lb_type}`);
+                }}
+              >
+                {lb_type === ""
+                  ? defaultDbType.toUpperCase()
+                  : lb_type.toUpperCase()}
+              </div>
+            ))}
+        </div>
       </div>
 
       <div className="absolute w-full z-0">
@@ -117,7 +203,7 @@ export default function Leaderboard() {
         }
       </div>
 
-      <div className=" bg-[#353385c2] w-fit m-auto relative z-10 rounded-xl pb-4 mt-8">
+      <div className=" bg-[#353385b2] w-fit m-auto relative z-10 rounded-xl pb-4 mt-8">
         <div className="grid grid-cols-[224px,465px,228px,276px] mb-3">
           {["Rank", "Name", "Character", "Score"].map((col, i) => (
             <div
@@ -132,7 +218,12 @@ export default function Leaderboard() {
         </div>
         {data &&
           data.map((row, idx) => (
-            <div className="grid grid-cols-[224px,465px,228px,276px] ">
+            <div
+              className="grid grid-cols-[224px,465px,228px,276px] hover:bg-[#1A1A1Ac9] transition-all active:bg-[#020071c2]"
+              onMouseDown={(e) => {
+                router.push(`/profile?uid=${row[columns.uid]}`);
+              }}
+            >
               <div className="text-center text-base font-extrabold pt-1 pb-1">
                 #{idx + 1 + (page - 1) * pageSize}
               </div>
@@ -140,29 +231,42 @@ export default function Leaderboard() {
                 {row[columns.name]}
               </div>
               <div className="text-center text-base font-extrabold pt-1 pb-1">
-                {row[columns.score]}
+                {(parseInt(row[columns.score]) / 1000).toFixed(3)}
               </div>
               <div className="text-center text-base font-bold pt-1 pb-1">
-                {row[columns.character_name]}
+                {[
+                  get_rank_from_score(parseInt(row[columns.score]) / 1000, 70),
+                ].map((rank) => (
+                  <div
+                    style={{
+                      color: rank.color,
+                    }}
+                  >
+                    {rank.name}
+                  </div>
+                ))}
               </div>
             </div>
           ))}
-      </div>
-
-      <div>
-        <button onClick={() => on_page_change(page > 1 ? page - 1 : 1)}>
-          Previous
-        </button>
-        <div>
-          Page: {page} of {Math.ceil(db_size / pageSize)} | Total: {db_size}
+        <div className="flex justify-center text-lg font-extrabold gap-8  rounded-b-xl text-w1 items-center pt-2">
+          <div
+            onClick={() => on_page_change(page > 1 ? page - 1 : 1)}
+            className="cursor-pointer bg-[#720002c2] py-3 px-7 rounded-xl hover:bg-[#a20002c2] transition-all"
+          >
+            Previous
+          </div>
+          <div className="">
+            Page: {page} of {Math.ceil(db_size / pageSize)} | Total: {db_size}
+          </div>
+          <div
+            onClick={() =>
+              on_page_change((page + 1) * pageSize < db_size ? page + 1 : page)
+            }
+            className="cursor-pointer bg-[#720002c2] py-3 px-7 rounded-xl hover:bg-[#a20002c2] transition-all"
+          >
+            Next
+          </div>
         </div>
-        <button
-          onClick={() =>
-            on_page_change((page + 1) * pageSize < db_size ? page + 1 : page)
-          }
-        >
-          Next
-        </button>
       </div>
     </div>
   );

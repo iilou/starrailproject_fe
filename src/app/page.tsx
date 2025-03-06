@@ -65,6 +65,7 @@ export default function Home() {
       .then((res) => res.json())
       .then((data) => {
         setData(data);
+        console.log("fetch", data);
         localStorage.setItem("data_" + uid, JSON.stringify(data));
 
         const username: string = data["player"]["nickname"];
@@ -77,6 +78,10 @@ export default function Home() {
         }
 
         add_db(parseInt(uid), username, score);
+
+        fetch(`http://127.0.0.1:8000/srd_alt/${uid}`).then((res) =>
+          console.log("fetch alt", res)
+        );
       });
   }
 

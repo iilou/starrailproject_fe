@@ -34,23 +34,36 @@ export default function Character({ characterJSON }: { characterJSON: any }) {
           <div className="w-[730px] flex flex-col flex-wrap gap-[6px] h-[280px] justify-end">
             <div className="flex flex-col flex-wrap items-start h-[159px] w-fit pt-1 pb-2">
               <Image
-                src={`https://raw.githubusercontent.com/Mar-7th/StarRailRes/refs/heads/master/${characterJSON["light_cone"]["preview"]}`}
+                src={`https://raw.githubusercontent.com/Mar-7th/StarRailRes/refs/heads/master/${
+                  characterJSON["light_cone"] &&
+                  characterJSON["light_cone"]["preview"]
+                }`}
                 width={125}
                 height={147}
                 alt="Light Cone Portrait"
               />
               <Image
-                src={`https://raw.githubusercontent.com/Mar-7th/StarRailRes/refs/heads/master/icon/deco/Star${characterJSON["light_cone"]["rarity"]}.png`}
+                src={`https://raw.githubusercontent.com/Mar-7th/StarRailRes/refs/heads/master/icon/deco/Star${
+                  characterJSON["light_cone"]
+                    ? characterJSON["light_cone"]["rarity"]
+                    : 3
+                }.png`}
                 width={162}
                 height={33}
                 alt="Light Cone Rarity"
                 className="mt-3"
               />
               <div className="font-extrabold text-lg text-w1">
-                {`LEVEL ${characterJSON["light_cone"]["level"]}`}
+                {`LEVEL ${
+                  characterJSON["light_cone"]
+                    ? characterJSON["light_cone"]["level"]
+                    : 0
+                }`}
               </div>
               <div className="font-bold text-lg text-w1 w-[185px]">
-                {characterJSON["light_cone"]["name"]}
+                {characterJSON["light_cone"]
+                  ? characterJSON["light_cone"]["name"]
+                  : "No Light Cone"}
               </div>
             </div>
 
@@ -106,7 +119,7 @@ export default function Character({ characterJSON }: { characterJSON: any }) {
           rankIcons={characterJSON["rank_icons"]}
         />
       </div>
-      <div className="flex flex-col justify-center items-center gap-1 mt-4">
+      <div className="flex flex-wrap justify-center items-center gap-x-20 gap-y-7 mt-4 w-[1100px] mx-auto">
         {characterJSON["relics"].map((relic: any) => {
           return (
             <RelicL
@@ -117,7 +130,7 @@ export default function Character({ characterJSON }: { characterJSON: any }) {
           );
         })}
       </div>
-      <div className="flex flex-col justify-center items-center gap-1 mt-4">
+      <div className="flex flex-col justify-center items-center gap-1 mt-4 ">
         {characterJSON["relic_sets"].map((relic_set: any) => {
           return <RelicSetL relicsetJSON={relic_set} />;
         })}
