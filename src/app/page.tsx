@@ -9,12 +9,17 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 
 import Header from "./header";
+import BG from "./bg";
+
+import { filterElementColor } from "./lib/color";
 
 export default function Home() {
   const [data, setData] = useState(null);
   const [score, setScore] = useState(Math.random() * 10000);
 
   const router = useRouter();
+
+  const asofjsdaiofj = 111008606;
 
   const routes = [
     { href: "/", text: "Home", color: "text-w4" },
@@ -64,6 +69,8 @@ export default function Home() {
     fetch(`http://127.0.0.1:8000/srd/${uid}`)
       .then((res) => res.json())
       .then((data) => {
+        filterElementColor(data);
+
         setData(data);
         console.log("fetch", data);
         localStorage.setItem("data_" + uid, JSON.stringify(data));
@@ -77,11 +84,15 @@ export default function Home() {
           return;
         }
 
-        add_db(parseInt(uid), username, score);
+        // window.location = `/#/profile?uid=${uid}`;
+        router.push(`/profile?uid=${uid}`);
+        window.location.reload();
 
-        fetch(`http://127.0.0.1:8000/srd_alt/${uid}`).then((res) =>
-          console.log("fetch alt", res)
-        );
+        // add_db(parseInt(uid), username, score);
+
+        // fetch(`http://127.0.0.1:8000/srd_alt/${uid}`).then((res) =>
+        //   console.log("fetch alt", res)
+        // );
       });
   }
 
@@ -93,47 +104,38 @@ export default function Home() {
 
   function handleUidSearchClick(e: React.MouseEvent<HTMLDivElement>) {
     if (document.getElementById("uid_input_field") == null) return;
-    fetchData(
-      (document.getElementById("uid_input_field") as HTMLInputElement).value
-    );
+    fetchData((document.getElementById("uid_input_field") as HTMLInputElement).value);
   }
 
   return (
-    <div className="w-full h-[100vh] text-c2">
-      <Header current="/" />
+    <div className='w-full h-[100vh] text-c2 overflow-y-hidden overflow-x-hidden'>
+      <div className='absolute w-full h-[100vh] z-0'>
+        <BG />
+      </div>
+      <Header current='/' />
 
-      <Image
-        src="/h/hsr_logo.png"
-        width={900}
-        height={350}
-        alt="HSR Logo"
-        className="block relative mx-auto"
-      />
+      <div className='w-full h-[110px]'></div>
 
-      <div className="rounded-lg mx-auto relative w-auto flex justify-center gap-2">
-        <div
-          className="text-c2 border-c2 border-[1px] rounded-lg px-4 py-2 relative block hover:bg-bk2 cursor-pointer"
-          onMouseDown={handleUidSearchClick}
-        >
+      <Image src='/h/hsr_logo.png' width={900} height={350} alt='HSR Logo' className='block relative mx-auto' />
+
+      <div className='rounded-lg mx-auto relative w-auto flex justify-center gap-2'>
+        <div className='text-c2 border-c2 border-[1px] rounded-lg px-4 py-2 relative block hover:bg-bk2 cursor-pointer' onMouseDown={handleUidSearchClick}>
           {">"}
         </div>
         <input
-          type="text"
-          placeholder="Enter UID"
-          className=" rounded-lg bg-transparent border-c2 border-[1px] text-w5 w-fit relative block px-10 py-2 text-center text-base font-extrabold"
+          type='text'
+          placeholder='Enter UID'
+          className=' rounded-lg bg-transparent border-c2 border-[1px] text-w5 w-fit relative block px-10 py-2 text-center text-base font-extrabold'
           onKeyDown={handleUidSearchDown}
         />
-        <div className="text-c2 border-c2 border-[1px] rounded-lg px-4 py-2 relative block hover:bg-bk2 cursor-pointer">
-          {">"}
-        </div>
+        <div className='text-c2 border-c2 border-[1px] rounded-lg px-4 py-2 relative block hover:bg-bk2 cursor-pointer'>{">"}</div>
       </div>
-      <div className="flex w-70vw mx-auto mt-20 justify-center">
+      <div className='flex w-70vw mx-auto mt-20 justify-center'>
         {routes.map((route) => (
           <button
             key={route.href}
             onClick={() => router.push(route.href)}
-            className={`px-20 py-8 mx-4 my-2 bg-b1 rounded-lg font-medium text-2xl opacity-80 hover:opacity-70 transition-all ${route.color}`}
-          >
+            className={`px-20 py-8 mx-4 my-2 bg-b1 rounded-lg font-medium text-2xl opacity-80 hover:opacity-70 transition-all ${route.color}`}>
             {route.text}
           </button>
         ))}

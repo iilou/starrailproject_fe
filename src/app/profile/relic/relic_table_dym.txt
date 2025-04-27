@@ -1,0 +1,65 @@
+export default function RelicTableDym({}) {
+  return (
+    <td
+      key={cellIndex}
+      className={`rounded-lg px-2 py-2 text-center text-[12px] active:shadow-[0px_0px_0px_1px_rgb(240,240,240)] hover:bg-[#8D92C5] active:bg-[#292E5D] `}
+      style={{ width: columnWidth[cellIndex] + "px", fontWeight: cellIndex == 1 ? "bold" : "400" }}>
+      {cellIndex == 0 || cellIndex == 1 || cellIndex == multiplierRow.length - 1 ? (
+        <span
+          className='hover:cursor-pointer hover:underline'
+          onClick={(e: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
+            if (
+              cellIndex == multiplierRow.length - 1 &&
+              !multiplierRow.every((value, index) => {
+                return "" + value == "" + multiplierRowOriginal[index];
+              })
+            ) {
+              const newMultiplierRow = [...multiplierRowOriginal];
+              setMultiplierRow(() => newMultiplierRow);
+            }
+          }}>
+          {
+            // cell
+            cellIndex == multiplierRow.length - 1
+              ? multiplierRowOriginal.every((value, index) => {
+                  return "" + value == "" + multiplierRow[index];
+                })
+                ? cell
+                : "Reset"
+              : cell
+          }
+        </span>
+      ) : (
+        <input
+          type='number'
+          defaultValue={cell}
+          // value={cell}
+          ref={(el: HTMLInputElement | null) => {
+            multiplierRowRefs.current[cellIndex] = el;
+          }}
+          onBlur={(e) => {
+            const newMultiplierRow = [...multiplierRow];
+            newMultiplierRow[cellIndex] = e.target.value;
+            setMultiplierRow(() => newMultiplierRow);
+          }}
+          onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+            if (e.key === "Enter" || e.key === "Tab") {
+              if (isNaN(parseFloat(e.currentTarget.value)) || parseFloat(e.currentTarget.value) < 0) {
+                e.currentTarget.value = "0";
+                return;
+              }
+              const newMultiplierRow = [...multiplierRow];
+              newMultiplierRow[cellIndex] = parseFloat(e.currentTarget.value);
+              setMultiplierRow(() => newMultiplierRow);
+            }
+          }}
+          onFocus={(e) => {
+            e.target.select();
+          }}
+          className='bg-transparent text-center w-full text-[12px] font-bold text-[#e8e8e8] focus:outline-none focus:ring-0 focus:border-b-[1px] focus:border-[#8D92C5] 
+                [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
+        />
+      )}
+    </td>
+  );
+}

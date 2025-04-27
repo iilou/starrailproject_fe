@@ -4,43 +4,43 @@ const ranks: {
   [key: string]: { name: string; color: string; percentile: number };
 } = {
   "0": {
-    name: "GOD",
+    name: "Z",
     color: "#e9e9e9",
-    percentile: 98,
+    percentile: 99,
   },
   "1": {
-    name: "S",
-    color: "#ff0000",
-    percentile: 95,
+    name: "SS",
+    color: "#D43636",
+    percentile: 97,
   },
   "2": {
-    name: "A",
-    color: "#ff8000",
-    percentile: 90,
+    name: "S",
+    color: "#FF5151",
+    percentile: 92,
   },
   "3": {
-    name: "B",
-    color: "#ffff00",
-    percentile: 80,
+    name: "A",
+    color: "#6BD36F",
+    percentile: 85,
   },
   "4": {
-    name: "C",
-    color: "#00ff00",
+    name: "B",
+    color: "#38B3DA",
     percentile: 70,
   },
   "5": {
-    name: "D",
-    color: "#0000ff",
+    name: "C",
+    color: "#B2C75F",
     percentile: 60,
   },
   "6": {
-    name: "E",
-    color: "#8000ff",
+    name: "D",
+    color: "#C58142",
     percentile: 50,
   },
   "7": {
     name: "F",
-    color: "#ff00ff",
+    color: "#A92626",
     percentile: 40,
   },
 };
