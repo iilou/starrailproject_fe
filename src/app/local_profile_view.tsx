@@ -30,6 +30,7 @@ export default function LocalProfileView({ router }: { router: any }) {
     const localStorage = window.localStorage;
     localStorage.removeItem("data_" + uid);
     setUidList((prev) => prev.filter((item) => item !== uid));
+    setNicknameList((prev) => prev.filter((item) => item !== nicknameList[uidList.indexOf(uid)]));
   };
 
   return (

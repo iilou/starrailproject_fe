@@ -73,13 +73,18 @@ const paths = ["Destruction", "Preservation", "Harmony", "Nihility", "Abundance"
 const elements = ["Physical", "Quantum", "Wind", "Imaginary", "Ice", "Lightning", "Fire"];
 
 const transformDesc = (desc: string, level: number, params: any) => {
+  // console.log("Desc", desc, "Level", level, "Params", params);
   // console.log(desc, level, params);
   const descsplitparams_percent = desc.split("[p]");
 
   for (let i = 0; i < descsplitparams_percent.length; i++) {
     const num = parseInt(descsplitparams_percent[i].split("#")[descsplitparams_percent[i].split("#").length - 1]);
     if (num) {
-      descsplitparams_percent[i] = descsplitparams_percent[i].replace("#" + num, params[level - 1][num - 1] * 100 + "%");
+      const value = params[level - 1][num - 1] * 100;
+      const cleanNum = parseFloat(value.toFixed(10)).toString();
+      // const valueWColor = `<span style="color:#f29e38">${value}%</span>`;
+      descsplitparams_percent[i] = descsplitparams_percent[i].replace("#" + num, cleanNum + "%");
+      // descsplitparams_percent[i] = descsplitparams_percent[i].replace("#" + num, params[level - 1][num - 1] * 100 + "%");
     }
   }
   desc = descsplitparams_percent.join("");
@@ -88,10 +93,16 @@ const transformDesc = (desc: string, level: number, params: any) => {
   for (let i = 0; i < descsplitparams_float.length; i++) {
     const num = parseInt(descsplitparams_float[i].split("#")[descsplitparams_float[i].split("#").length - 1]);
     if (num) {
-      descsplitparams_float[i] = descsplitparams_float[i].replace("#" + num, params[level - 1][num - 1] + "");
+      const value = params[level - 1][num - 1];
+      const cleanNum = parseFloat(value.toFixed(10)).toString();
+      // const valueWColor = `<span style="color:#f29e38">${value}</span>`;
+      descsplitparams_float[i] = descsplitparams_float[i].replace("#" + num, cleanNum);
+      // descsplitparams_float[i] = descsplitparams_float[i].replace("#" + num, params[level - 1][num - 1] + "");
     }
   }
   desc = descsplitparams_float.join("");
+
+  desc = desc.replace(/@([^#]+)#/g, `<span style="color:#f29e38">$1</span>`);
 
   return desc;
 }

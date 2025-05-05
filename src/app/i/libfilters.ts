@@ -16,11 +16,16 @@ const avatarSort = [
     { name: "Element", default: "asc" as "asc" | "desc", displayName: "Element" },
     { name: "Path", default: "asc" as "asc" | "desc", displayName: "Path" },
     { name: "_id", default: "desc" as "asc" | "desc", displayName: "ID" },
+    { name: "stat_atk", default: "desc" as "asc" | "desc", displayName: "ATK" },
+    { name: "stat_def", default: "desc" as "asc" | "desc", displayName: "DEF" },
+    { name: "stat_hp", default: "desc" as "asc" | "desc", displayName: "HP" },
+    { name: "stat_spd", default: "desc" as "asc" | "desc", displayName: "SPD" },
+    { name: "stat_aggro", default: "desc" as "asc" | "desc", displayName: "AGGRO" },
 ]
 
 const weaponFilter = [
     { name: "Path", values: ["All", ...paths] },
-    { name: "Rarity", values: ["All", "4★", "5★"] },
+    { name: "Rarity", displayValues: ["All", "4★", "5★"], values: ["All", "4", "5"] },
 ]
 
 const weaponSort = [

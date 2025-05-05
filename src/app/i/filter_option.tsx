@@ -18,9 +18,8 @@ export default function FilterOption({
   return (
     <div
       key={idx}
-      className={`w-[100px] h-[30px] flex items-center justify-center rounded-lg bg-[#121212] text-white text-sm font-bold mx-2 my-1 cursor-pointer ${
-        includes ? "bg-[#3d3b8a]" : ""
-      }`}
+      className={`w-[170px] h-[30px] flex items-center justify-center rounded-lg bg-[#121212] text-white text-sm font-bold mx-2 my-1 cursor-pointer hover:bg-[#232323] transition-all duration-200
+        ${includes ? "bg-[#3d3b8a]" : ""}`}
       onClick={() => {
         // addAvatarFilter("Element", item, true);
         if (includes) {

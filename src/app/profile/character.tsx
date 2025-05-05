@@ -41,7 +41,8 @@ Castorice	0.35	0	0	1	0	0	0	1	1	0	0	0	0	0	0	0.7	0	0	0	0	0
 Acheron	0	0.2	0	0	0.7	0	0.7	1	1	0	0	0	0	0	0	0	0	0	0	0.7	0
 Gallagher	0.35	0	0	1	0	0	1	0	0	0	0	1	1	1	0	0	0	0	0	0	0
 Robin	0	0.35	0	0	1	0	1	0	0	0	0	0	0	1	0	0	0	0	0	0	0
-Ruan Mei	0	0	0	0	0	0	1	0	0	0	0	1	0	1	0	0	0	0	0	0	0`;
+Ruan Mei	0	0	0	0	0	0	1	0	0	0	0	1	0	1	0	0	0	0	0	0	0
+Anaxa	0	0.2	0	0	0.7	0	1	1	1	0	0	0	0	0	0	0	0	0	0.7	0	0`;
   const charIndex: { [key: string]: string[] } = {};
   scoreLib.split("\n").forEach((line: string) => {
     const lineSplit: string[] = line.split("\t");
@@ -103,6 +104,10 @@ Ruan Mei	0	0	0	0	0	0	1	0	0	0	0	1	0	1	0	0	0	0	0	0	0`;
           style={{
             transform: scrollY > 200 ? `translateX(384px)` : `translateX(-150px)`,
             opacity: scrollY > 200 ? 1 : 0,
+            backgroundImage: `url(https://raw.githubusercontent.com/Mar-7th/StarRailRes/refs/heads/master/${characterJSON["path"]["icon"]})`,
+            backgroundSize: "200px 200px",
+            backgroundRepeat: "no-repeat",
+            backgroundPosition: "50% 60%",
           }}>
           <div className='text-2xl font-extrabold w-[730px] text-center bg-bk1 py-3 rounded-lg' style={{ color: characterJSON["element"]["color"] }}>
             {characterJSON["name"] + " - Level " + characterJSON["level"]}
@@ -110,6 +115,11 @@ Ruan Mei	0	0	0	0	0	0	1	0	0	0	0	1	0	1	0	0	0	0	0	0	0`;
           <div className='w-[730px] flex flex-col flex-wrap gap-[6px] h-[280px] justify-end items-center'>
             <div
               className='flex flex-col flex-wrap items-start h-[159px] pt-1 pb-2 w-[340px] group'
+              style={
+                {
+                  // backgroundColor: "#3d3b8a",
+                }
+              }
               onMouseEnter={(e) => {
                 console.log(e.currentTarget.querySelector("img"));
                 const div = e.currentTarget.querySelector(".icon") as HTMLDivElement;
@@ -139,7 +149,7 @@ Ruan Mei	0	0	0	0	0	0	1	0	0	0	0	1	0	1	0	0	0	0	0	0	0`;
                   stars.style.transform = `scale(1)`;
                 }
               }}>
-              <div className='flex items-center justify-center w-[125px] h-[147px] rounded-lg transition-all duration-150 icon'>
+              <div className='flex items-center justify-center w-[125px] h-[147px] rounded-lg transition-all duration-150 icon '>
                 <Image
                   src={`https://raw.githubusercontent.com/Mar-7th/StarRailRes/refs/heads/master/${characterJSON["light_cone"] && characterJSON["light_cone"]["preview"]}`}
                   width={125}
@@ -157,8 +167,12 @@ Ruan Mei	0	0	0	0	0	0	1	0	0	0	0	1	0	1	0	0	0	0	0	0	0`;
                 alt='Light Cone Rarity'
                 className='mt-3 stars transition-all'
               />
-              <div className='font-extrabold text-lg text-w1'>{`LEVEL ${characterJSON["light_cone"] ? characterJSON["light_cone"]["level"] : 0}`}</div>
-              <div className='font-bold text-lg text-w1 w-[185px]'>{characterJSON["light_cone"] ? characterJSON["light_cone"]["name"] : "No Light Cone"}</div>
+              <div className='font-extrabold text-[14px] text-w1 bg-[#23232381] px-3 mt-[2px] ml-2 rounded-lg'>{`LEVEL ${
+                characterJSON["light_cone"] ? characterJSON["light_cone"]["level"] : 0
+              }`}</div>
+              <div className='font-medium text-[16px] leading-[20px] mt-[2px] w-[155px] text-[#eaeaead0] px-3 rounded-lg py-1 bg-[#232323]'>
+                {characterJSON["light_cone"] ? characterJSON["light_cone"]["name"] : "No Light Cone"}
+              </div>
             </div>
 
             {characterJSON["attributes"].map((attribute: any) => {

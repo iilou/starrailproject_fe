@@ -54,4 +54,6 @@ const get_rank_from_score = (score: number, max: number) => {
   return ranks[7];
 };
 
+
+
 export { ranks, get_rank_from_score };

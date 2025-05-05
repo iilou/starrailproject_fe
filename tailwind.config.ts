@@ -8,6 +8,10 @@ export default {
   ],
   theme: {
     extend: {
+      screens: {
+        'm1_1': {'max': '1600px'}, // m1_1 = when screen <= 1000px
+        'm1_2': {'max': '1300px'},  // m1_2 = when screen <= 800px
+      },
       fontFamily: {
         inter: ["var(--font-inter)", "sans-serif"],
         mono: ["var(--font-inter)", "monospace"],

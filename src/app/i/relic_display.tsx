@@ -25,14 +25,15 @@ export default function RelicDisplay({ item }: { item: any }) {
         </div>
         <div className='flex flex-col items-start justify-start w-[290px] ml-3 h-fit'>
           <div
-            className='font-bold text-[14px] leading-[14px] relative z-[101] mb-1 group-hover:text-[15px] group-hover:font-extrabold'
+            className='font-bold text-[18px] leading-[18px] relative z-[101] mb-1 group-hover:text-[15px] group-hover:font-extrabold'
             style={{
-              textShadow: `1px 0 0px #000, -1px 0 0px #000, 0 1px 0px #000, 0 -1px 0px #000`,
+              textShadow: `1px 0 0px #000, -1px 0 0px #000, 0 1px 0px #000, 0 -1px 0px #000, 1px 0px 0px`,
+              // filter: `drop-shadow(0px 0px 7px #ffffff7a)`,
               color: `${rarityColor}`,
             }}>
             {item["DisplayName"]}
           </div>
-          <div className='text-xs text-[#dadada] font-bold leading-[14px] mb-0'>{item["_id"]}</div>
+          <div className='text-[16px] text-[#dadada] font-extrabold leading-[18px] mb-0'>{item["_id"]}</div>
           {item["Skills"].map((skill: any, idx: number) => {
             return (
               <div key={idx} className='w-full px-0 text-[10px] text-[#dadada] pt-1'>

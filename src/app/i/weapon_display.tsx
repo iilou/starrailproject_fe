@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { get_icon_url_path, get_icon_url_weapon } from "./lib";
 
-export default function WeaponDisplay({ item }: { item: any }) {
+export default function WeaponDisplay({ item, showPassive }: { item: any; showPassive: boolean }) {
   const rarityGradient =
     item["Rarity"] === 5
       ? "linear-gradient(180deg,#885550,#c9a36a 53%)"
@@ -47,10 +47,10 @@ export default function WeaponDisplay({ item }: { item: any }) {
           })}
         </div>
       </div>
-      {item["Passive"] && (
+      {item["Passive"] && showPassive && (
         <div className='w-full px-3 text-[10px] text-[#dadada] py-3'>
           <div className='font-extrabold text-[13px] text-left text-[#f4e135]'>{item["Passive"]["Name"]}</div>
-          <div className='text-[10px] leading-[12px] font-medium text-left text-[#dadada]'>{item["Passive"]["Desc"]}</div>
+          <div className='text-[11px] leading-[13px] font-medium text-left text-[#c2c2c2]'>{item["Passive"]["Desc"]}</div>
         </div>
       )}
     </div>

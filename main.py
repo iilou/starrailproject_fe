@@ -8,7 +8,6 @@ from pydantic import BaseModel
 import requests
 import time
 from scorecalc import add_to_db
-import math
 import random
 import json
 

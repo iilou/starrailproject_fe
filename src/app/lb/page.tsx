@@ -12,8 +12,10 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 
 import { ranks, get_rank_from_score } from "../ranks";
+import { charSetIndex } from "../lib/score";
 
 import { useRouter, useSearchParams } from "next/navigation";
+import { get } from "http";
 
 export default function Leaderboard() {
   const searchParams = useSearchParams();
@@ -48,9 +50,84 @@ export default function Leaderboard() {
     Feixiao: 1220,
     Firefly: 1310,
     Aglaea: 1402,
+    Castorice: 1407,
+    Acheron: 1308,
+    Gallagher: 1301,
+    Robin: 1309,
+    "Ruan Mei": 1303,
+    Anaxa: 1405,
+  };
+
+  const getRankFromScoreWithSet = (lb_name: string) => {
+    var bestRelicSetScore = 0;
+    const headers = charSetIndex["INFO"];
+
+    // 2pc + 2pc
+    var highestSet = "";
+    var highestSetScore = 0;
+    for (let i = 1; i < headers.length; i++) {
+      const setName = headers[i];
+      const setNum = parseInt(setName.split(" ")[0]);
+      if (setNum > 299) {
+        continue;
+      }
+      const setScore = parseFloat(charSetIndex[lb_name][i]);
+      if (setScore > highestSetScore) {
+        highestSetScore = setScore;
+        highestSet = setName;
+      }
+    }
+    for (let i = 1; i < headers.length; i++) {
+      const setName = headers[i];
+      const setNum = parseInt(setName.split(" ")[0]);
+      if (setNum > 299) {
+        continue;
+      }
+      if (setName === highestSet) {
+        continue;
+      }
+      const setScore = parseFloat(charSetIndex[lb_name][i]);
+      if (setScore > bestRelicSetScore) {
+        bestRelicSetScore = setScore;
+      }
+    }
+    bestRelicSetScore += highestSetScore;
+
+    // 4pc
+    for (let i = 1; i < headers.length; i++) {
+      const setNum = parseInt(headers[i].split(" ")[0]);
+      if (setNum > 299) {
+        continue;
+      }
+      const pc2Index = headers.indexOf(setNum + "|2");
+      const pc4Index = headers.indexOf(setNum + "|4");
+      const totalSetScore = parseFloat(charSetIndex[lb_name][pc2Index]) + parseFloat(charSetIndex[lb_name][pc4Index]);
+      if (totalSetScore > bestRelicSetScore) {
+        bestRelicSetScore = totalSetScore;
+      }
+    }
+
+    //planars
+    var highestPlanarSetScore = 0;
+    for (let i = 1; i < headers.length; i++) {
+      const setNum = parseInt(headers[i].split(" ")[0]);
+      if (setNum < 201) {
+        continue;
+      }
+
+      const setScore = parseFloat(charSetIndex[lb_name][i]);
+      if (setScore > highestPlanarSetScore) {
+        highestPlanarSetScore = setScore;
+      }
+    }
+
+    return bestRelicSetScore + highestPlanarSetScore;
+    // return get_rank_from_score( score / 1000 + bestRelicSetScore + highestPlanarSetScore, max);
   };
 
   const lb_name = searchParams.get("char") || "The Herta";
+  const lb_relicSetMaxScore = getRankFromScoreWithSet(lb_name);
+
   // const [lb_name, set_lb_name] = useState(searchParams.get("char") || "The Herta");
   // const [lb_name, set_lb_name] = useState("The Herta");
   const defaultDbType = "Relic Score";
@@ -87,6 +164,36 @@ export default function Leaderboard() {
       id: 1402,
       lb_types: [""],
     },
+    Castorice: {
+      name: "Castorice",
+      id: 1407,
+      lb_types: [""],
+    },
+    Acheron: {
+      name: "Acheron",
+      id: 1308,
+      lb_types: [""],
+    },
+    Gallagher: {
+      name: "Gallagher",
+      id: 1301,
+      lb_types: [""],
+    },
+    Robin: {
+      name: "Robin",
+      id: 1309,
+      lb_types: [""],
+    },
+    "Ruan Mei": {
+      name: "Ruan Mei",
+      id: 1303,
+      lb_types: [""],
+    },
+    Anaxa: {
+      name: "Anaxa",
+      id: 1405,
+      lb_types: [""],
+    },
   };
 
   const charElement: { [key: string]: string } = {
@@ -96,6 +203,12 @@ export default function Leaderboard() {
     Feixiao: "Wind",
     Firefly: "Fire",
     Aglaea: "Lightning",
+    Castorice: "Quantum",
+    Acheron: "Lightning",
+    Gallagher: "Fire",
+    Robin: "Physical",
+    "Ruan Mei": "Ice",
+    Anaxa: "Wind",
   };
 
   const elementColor: { [key: string]: string } = {
@@ -105,7 +218,7 @@ export default function Leaderboard() {
     Wind: "#00FF9C",
     Fire: "#F84F36",
     Lightning: "#8872F1",
-    Physical: "#F84F36",
+    Physical: "#ffffff",
   };
 
   const get_lb = async (pageForce: number = -1, lb_override: string = "") => {
@@ -339,7 +452,7 @@ export default function Leaderboard() {
                     }
                   }}>
                   <span className='cursor-pointer'>
-                    {[get_rank_from_score(parseInt(row[columns.score]) / 1000, 70)].map((rank) => (
+                    {[get_rank_from_score(parseInt(row[columns.score]) / 1000, 70 + lb_relicSetMaxScore)].map((rank, i) => (
                       <div
                         style={{
                           color: rank.color,
@@ -363,7 +476,7 @@ export default function Leaderboard() {
             Page: {page} of {Math.ceil(db_size / pageSize)} | Total: {db_size}
           </div>
           <div
-            onClick={() => on_page_change((page + 1) * pageSize < db_size ? page + 1 : page)}
+            onClick={() => on_page_change(page * pageSize < db_size ? page + 1 : page)}
             className='cursor-pointer bg-[#720002c2] py-2 px-7 rounded-xl hover:bg-[#a20002c2] w-[130px] text-center transition-all active:shadow-[0px_0px_0px_1px_rgb(240,240,240)]'>
             <span className='select-none'>Next</span>
           </div>

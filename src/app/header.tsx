@@ -11,7 +11,7 @@ export default function Header({ current }: { current: string }) {
         <div className='w-full h-[52px] flex justify-between items-center text-w1 px-16 py-3 font-bold gap-16 bg-[#1A1947] z-[1000]'>
           <div className='flex items-center gap-4 cursor-pointer' onClick={() => router.push("/")}>
             <Image src='/srp_logo.png' width={38} height={38} alt='Star Rail Rankings Logo' />
-            <div className='text-[20px] w-fit text-center font-extrabold'>star.lee.moe</div>
+            <div className='text-[20px] w-fit text-center font-extrabold'>star.stylla.moe</div>
           </div>
           <div className='w-[700px] flex justify-between items-center '>
             {[

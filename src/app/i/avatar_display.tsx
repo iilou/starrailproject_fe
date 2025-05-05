@@ -1,12 +1,12 @@
 import { get_icon_url_character, get_icon_url_element, get_icon_url_path, string_with_char_limit, elementColor, elementConvert } from "./lib";
 import Image from "next/image";
 
-export default function AvatarDisplay({ item }: { item: any }) {
+export default function AvatarDisplay({ item, onClick }: { item: any; onClick?: () => void }) {
   //   const rarityColor = item["Rarity"] === 5 ? "#FFD700" :
   const rarityGradient = item["Rarity"] === 5 ? "linear-gradient(180deg,#885550,#c9a36a 53%)" : "linear-gradient(180deg,#343659,#8a5fcc 53%)";
   //   const rarityGradient = item["Rarity"] === 5 ? "linear-gradient(180deg,#885550,#c9a36a 53%)" : "linear-gradient(180deg,#343659,#4172b9 53%)";
   return (
-    <div className='flex flex-col items-center justify-center mx-2 my-4 bg-[#3d3b8a] rounded-lg px-1 py-1 w-[150px] h-[220px] shadow-[0_0_0_0_#ffffff00] text-white text-sm group hover:cursor-pointer'>
+    <div className='flex flex-col items-center justify-center mx-2 my-4 bg-[#3d3b8a] rounded-lg px-1 py-1 w-[150px] h-[290px] shadow-[0_0_0_0_#ffffff00] text-white text-sm group hover:cursor-pointer'>
       <div
         className='mb-1 font-bold text-[18px] relative z-[101] h-[22px] group-hover:text-[18px] group-hover:font-extrabold text-center'
         style={{
@@ -54,15 +54,33 @@ export default function AvatarDisplay({ item }: { item: any }) {
       {/* <div className='text-xs'>{item["Path"]}</div>
       <div className='text-xs'>{item["Element"]}</div> */}
       <div className='font-bold relative z-[101]'>V{item["Ver"]}</div>
-      {/* <div className='flex flex-col text-white text-sm items-center justify-center'>
-                  {Object.keys(item["Stats"]).map((key: string, idx: number) => {
-                    return (
-                      <div key={idx} className=''>
-                        {key}: {item["Stats"][key]}
-                      </div>
-                    );
-                  })}
-                </div> */}
+      <div className='flex flex-col text-[11px] items-start font-medium'>
+        {Object.keys(item["Stats"]).map((key: string, idx: number) => {
+          const hueArr = [0, 120, 240, 60, 300];
+          // const curHue = hueArr[idx % hueArr.length];
+          const curHue = 120;
+          console.log("Rank", item["Rank"], "TotalRank", item["TotalRank"], "Stats", item["Stats"]);
+          return (
+            <div
+              key={idx}
+              className='h-[14px] flex'
+              // style={{ color: `hsl(${curHue}, 50%, 70%)` }}
+              style={{
+                color: item["rank"][key] <= 3 ? "#ffffff" : item["rank"][key] / item["rankTotal"][key] < 0.2 ? "#f4e135" : "#676767",
+                textShadow: item["rank"][key] <= 3 ? `0 0 5px #ffffff` : item["rank"][key] / item["rankTotal"][key] < 0.2 ? `none` : "none",
+              }}>
+              <div className='w-[50px] text-center flex'>
+                <div className='w-[20px] text-right'>{item["rank"][key]}</div>
+                <div className='w-[10px] text-center'>/</div>
+                <div className='w-[20px] text-left'>{item["rankTotal"][key]}</div>
+              </div>
+              <div className='w-[70px] text-center'>
+                {key}: {parseFloat(item["Stats"][key].toFixed(1))}
+              </div>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }

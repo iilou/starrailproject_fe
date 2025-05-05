@@ -33,6 +33,10 @@ export default function Profile() {
 
   const fetchData = async () => {
     if (uid.length !== 9 || isNaN(parseInt(uid)) || parseInt(uid) === 0) {
+      if (localData && localData["player"] && localData["player"]["uid"]) {
+        setUid(() => localData["player"]["uid"]);
+        router.push(`/profile?uid=${localData["player"]["uid"]}`);
+      }
       return;
     }
     setIsLoading(() => true);
@@ -73,6 +77,10 @@ export default function Profile() {
       });
     } catch (error) {
       console.error(error);
+      if (localData && localData["player"] && localData["player"]["uid"]) {
+        setUid(() => localData["player"]["uid"]);
+        router.push(`/profile?uid=${localData["player"]["uid"]}`);
+      }
     }
   };
 
