@@ -21,9 +21,10 @@ const eslintConfig = [
       "react-hooks/exhaustive-deps": "warn",  // Warn about missing dependencies in useEffect
       "react/jsx-key": "warn",  // Warn about missing 'key' prop in JSX
       "no-empty": "off",  // Disable the 'empty object' type warning
-      "@typescript-eslint/explicit-module-boundary-types": "off",  // Ignore explicit return types in functions
+      "@typescript-eslint/no-empty-object-type": "off",  // Disable the empty object type warning
     },
   },
+
 ];
 
 export default eslintConfig;
