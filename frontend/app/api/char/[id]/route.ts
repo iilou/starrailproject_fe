@@ -1,7 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
-  const id = params.id; // e.g. "1407"
+export async function GET(req: NextRequest) {
+  const pathname = req.nextUrl.pathname;
+  
+  // Extracts 'id' from the pathname, assuming it's a dynamic route like /api/char/[id]
+  const id = pathname.split('/').pop() || ""; 
+
+  if (!id) {
+    return NextResponse.json({ error: "ID is required" }, { status: 400 });
+  }
 
   const file = "Avatar";
   const vars = `_avatarskill_,_avatarskilltree_,_avatarrank_`; // updated list
