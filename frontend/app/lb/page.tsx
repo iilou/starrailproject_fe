@@ -125,8 +125,17 @@ export default function Leaderboard() {
     // return get_rank_from_score( score / 1000 + bestRelicSetScore + highestPlanarSetScore, max);
   };
 
-  const lb_name = searchParams.get("char") || "The Herta";
+  // const lb_name = searchParams.get("char") || "The Herta";
+  const [lb_name, set_lb_name] = useState("The Herta");
   const lb_relicSetMaxScore = getRankFromScoreWithSet(lb_name);
+
+  useEffect(() => {
+    // const searchParams = useSearchParams();
+    const char = searchParams.get("char");
+    if (char) {
+      set_lb_name(char);
+    }
+  }, [searchParams]);
 
   // const [lb_name, set_lb_name] = useState(searchParams.get("char") || "The Herta");
   // const [lb_name, set_lb_name] = useState("The Herta");
