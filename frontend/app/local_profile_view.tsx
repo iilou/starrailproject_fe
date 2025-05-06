@@ -42,7 +42,8 @@ export default function LocalProfileView({ router }: { router: any }) {
               className='w-fit px-7 text-[13px] text-[#d1d1d1] group-hover:text-[#f4e135]  
               transition-all font-bold h-fit rounded-lg'
               onClick={() => {
-                router.push(`/profile?uid=${uid}`);
+                // router.push(`/profile?uid=${uid}`);
+                router.push(`/profile/${uid}`);
                 window.location.reload();
               }}>
               {nicknameList[uidList.indexOf(uid)] + " - " + uid}

@@ -1,7 +1,7 @@
 import Image from "next/image";
 import React, { useState, useEffect, useMemo } from "react";
 import SkillNew from "./skill_new";
-import { ranks } from "../ranks";
+import { ranks } from "../../ranks";
 
 export default function SkillsM({ skills, skill_trees, rank, rankIcons, charID }: { skills: any; skill_trees: any; rank: number; rankIcons: any; charID: number }) {
   function unsaturatedColor(hex: string) {

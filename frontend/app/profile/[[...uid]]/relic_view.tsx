@@ -2,7 +2,7 @@ import RelicL from "./relic_l";
 import RelicSetL from "./relicset_l";
 
 import { useState, useEffect, useRef, useMemo } from "react";
-import { scoreLib, scoreSetLib, weightLib, charIndex, charSetIndex, weightParse } from "../lib/score";
+import { scoreLib, scoreSetLib, weightLib, charIndex, charSetIndex, weightParse } from "../../lib/score";
 
 import Image from "next/image";
 

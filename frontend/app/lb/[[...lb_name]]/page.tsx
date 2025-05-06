@@ -2,23 +2,23 @@
 
 import Image from "next/image";
 
-import Header from "../header";
-import LocalProfileView from "../local_profile_view";
+import Header from "../../header";
+import LocalProfileView from "../../local_profile_view";
 import CharSel from "./char_sel";
-import BG from "../bg";
+import BG from "../../bg";
 
 import axios from "axios";
 
 import { useState, useEffect } from "react";
 
-import { ranks, get_rank_from_score } from "../ranks";
-import { charSetIndex } from "../lib/score";
+import { ranks, get_rank_from_score } from "../../ranks";
+import { charSetIndex } from "../../lib/score";
 
-import { useRouter, useSearchParams } from "next/navigation";
-import { get } from "http";
+import { useRouter, useParams } from "next/navigation";
+import { decode } from "punycode";
 
 export default function Leaderboard() {
-  const searchParams = useSearchParams();
+  // const searchParams = useSearchParams();
 
   const columns = {
     uid: 0,
@@ -129,13 +129,28 @@ export default function Leaderboard() {
   const [lb_name, set_lb_name] = useState("The Herta");
   const lb_relicSetMaxScore = getRankFromScoreWithSet(lb_name);
 
+  // const { lb_name: lb_name_param } = useParams() as { lb_name: string };
+  const { lb_name: lb_name_param } = useParams() as { lb_name: string };
   useEffect(() => {
-    // const searchParams = useSearchParams();
-    const char = searchParams.get("char");
-    if (char) {
-      set_lb_name(char);
+    // if (lb_name_param && lb_name_param !== lb_name && lb_name_param !== "") {
+    if (Array.isArray(lb_name_param)) {
+      set_lb_name(decodeURIComponent(lb_name_param[0]));
+      // set_lb_name(lb_name_param[0].replace(/%20/g, " "));
+    } else if (lb_name_param && lb_name_param !== lb_name && lb_name_param !== "") {
+      // set_lb_name(lb_name_param.replace(/%20/g, " "));
+      set_lb_name(decodeURIComponent(lb_name_param));
     }
-  }, [searchParams]);
+
+    console.log("lb_name", lb_name_param, lb_name);
+  }, [lb_name_param]);
+
+  // useEffect(() => {
+  //   // const searchParams = useSearchParams();
+  //   const char = searchParams.get("char");
+  //   if (char) {
+  //     set_lb_name(char);
+  //   }
+  // }, [searchParams]);
 
   // const [lb_name, set_lb_name] = useState(searchParams.get("char") || "The Herta");
   // const [lb_name, set_lb_name] = useState("The Herta");
@@ -429,7 +444,8 @@ export default function Leaderboard() {
                     onClick={(e) => {
                       if (e.button === 0) {
                         if (hoverCell.row === idx && hoverCell.col === i) {
-                          router.push(`/profile?uid=${row[columns.uid]}`);
+                          // router.push(`/profile?uid=${row[columns.uid]}`);
+                          router.push(`/profile/${row[columns.uid]}`);
                         }
                         setHoverCell({
                           row: idx,
@@ -441,7 +457,8 @@ export default function Leaderboard() {
                       className='cursor-pointer'
                       onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
                         if (e.button === 0) {
-                          router.push(`/profile?uid=${row[columns.uid]}`);
+                          // router.push(`/profile?uid=${row[columns.uid]}`);
+                          router.push(`/profile/${row[columns.uid]}`);
                         }
                       }}>
                       {col.text}
@@ -455,7 +472,8 @@ export default function Leaderboard() {
                   onClick={(e) => {
                     if (e.button === 0) {
                       if (hoverCell.row === idx && hoverCell.col === 4) {
-                        router.push(`/profile?uid=${row[columns.uid]}`);
+                        // router.push(`/profile?uid=${row[columns.uid]}`);
+                        router.push(`/profile/${row[columns.uid]}`);
                       }
                       setHoverCell({
                         row: idx,

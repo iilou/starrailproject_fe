@@ -1,15 +1,16 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useRouter } from "next/navigation";
-import Header from "../header";
-import LocalProfileView from "../local_profile_view";
+import Header from "../../header";
+import LocalProfileView from "../../local_profile_view";
 import Image from "next/image";
 import ProfilePreview from "./profile";
 import PHeader from "./p_header";
-import BG from "../bg";
+import BG from "../../bg";
 
-import { filterElementColor } from "../lib/color";
+import { filterElementColor } from "../../lib/color";
 
 import { useEffect, useState } from "react";
 
@@ -18,20 +19,20 @@ import axios from "axios";
 import Character from "./character";
 
 export default function Profile() {
+  // const [uid, setUid] = useState<string | null>(null); // Initial state set to null
   const [uid, setUid] = useState<string | null>(null); // Initial state set to null
-  const [localData, setLocalData] = useState<any>(null);
+  const [localData, setLocalData] = useState<any>(null); // Initial state set to null
   const [currentCharacter, setCurrentCharacter] = useState<any>(null);
-
   const [isLoading, setIsLoading] = useState(false);
-  const [shadow_color, set_shadow_color] = useState("#00000000");
+  const [shadow_color, setShadowColor] = useState("#00000000");
 
   const router = useRouter();
-  const searchParams = useSearchParams();
+  // const { uid: urlUid } = router.query; // Extract uid from dynamic route parameter
+  const { uid: urlUid } = useParams(); // Extract uid from dynamic route parameter
 
   useEffect(() => {
-    // This effect will run after the component mounts, allowing us to use searchParams safely
-    const uidFromParams = searchParams.get("uid");
-    const initialUid = uidFromParams || "000000000";
+    // Check if urlUid is an array and pick the first element, or use the string value directly
+    const initialUid = Array.isArray(urlUid) ? urlUid[0] : urlUid || "000000000"; // Default to "000000000" if no uid is found
     setUid(initialUid);
 
     const savedData = localStorage.getItem("data_" + initialUid);
@@ -43,13 +44,14 @@ export default function Profile() {
         setCurrentCharacter(filteredData.characters[0]);
       }
     }
-  }, [searchParams]); // Re-run when searchParams change
+  }, [urlUid]); // Re-run effect when the `uid` param changes
 
   const fetchData = async () => {
     if (uid && (uid.length !== 9 || isNaN(parseInt(uid)) || parseInt(uid) === 0)) {
       if (localData && localData["player"] && localData["player"]["uid"]) {
         setUid(localData["player"]["uid"]);
-        router.push(`/profile?uid=${localData["player"]["uid"]}`);
+        // router.push(`/profile?uid=${localData["player"]["uid"]}`);
+        router.push(`/profile/${localData["player"]["uid"]}`);
       }
       return;
     }
@@ -79,7 +81,8 @@ export default function Profile() {
       console.error(error);
       if (localData && localData["player"] && localData["player"]["uid"]) {
         setUid(localData["player"]["uid"]);
-        router.push(`/profile?uid=${localData["player"]["uid"]}`);
+        router.push(`/profile/${localData["player"]["uid"]}`);
+        // router.push(`/profile?uid=${localData["player"]["uid"]}`);
       }
     }
   };

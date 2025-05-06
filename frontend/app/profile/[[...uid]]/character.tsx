@@ -1,5 +1,4 @@
 import Image from "next/image";
-import ChangeCircle from "@mui/icons-material/ChangeCircle";
 
 import StatM from "./stat_m";
 
@@ -8,7 +7,7 @@ import SkillsM from "./skills_m";
 import RelicView from "./relic_view";
 
 import PHeader from "./p_header";
-import BG from "../bg";
+import BG from "../../bg";
 
 // import {
 //   scoreLib,
