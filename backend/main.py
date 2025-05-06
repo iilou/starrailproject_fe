@@ -970,58 +970,60 @@ def get_uid(queue, queueIndex, region_list, region_bounds, included):
     # included[uid] = True
     return (uid, queueIndex, region_list, region_bounds, included)
 
-@app.get("/mass_add/{count}")
-def mass_add( count: int):
+# @app.get("/mass_add/{count}")
+# def mass_add( count: int):
 
-    queueIndex = 0
-    region_list = [1,6,7,8]
-    region_bounds = [
-        [0, 20000000],
-        [0, 5000000],
-        [0, 5000000],
-        [0, 17000000]
-    ]
-    included = {}
+#     queueIndex = 0
+#     region_list = [1,6,7,8]
+#     region_bounds = [
+#         [0, 20000000],
+#         [0, 5000000],
+#         [0, 5000000],
+#         [0, 17000000]
+#     ]
+#     included = {}
 
 
-    for i in range(0, count):
-        delay = 1
-        uid, queueIndex, region_list, region_bounds, included = get_uid(queue, queueIndex, region_list, region_bounds, included)
-        if uid is None:
-            print("Stopped at ", i)
-            break
-        response = None
-        while response is None:
-            try:
-                url = route_url.format(UID=uid, LANG=lang_example)
-                response = requests.get(url)
+#     for i in range(0, count):
+#         delay = 1
+#         uid, queueIndex, region_list, region_bounds, included = get_uid(queue, queueIndex, region_list, region_bounds, included)
+#         if uid is None:
+#             print("Stopped at ", i)
+#             break
+#         response = None
+#         while response is None:
+#             try:
+#                 url = route_url.format(UID=uid, LANG=lang_example)
+#                 response = requests.get(url)
 
-                if response is None or not hasattr(response, 'status_code'):
-                    print("Weird Error: ", uid)
-                    break
+#                 if response is None or not hasattr(response, 'status_code'):
+#                     print("Weird Error: ", uid)
+#                     break
 
-                if response.status_code == 429:
-                    print("Rate Limit Exceeded, delaying request for ", delay, " seconds")
-                    time.sleep(delay)
-                    response = None
-                    continue
+#                 if response.status_code == 429:
+#                     print("Rate Limit Exceeded, delaying request for ", delay, " seconds")
+#                     time.sleep(delay)
+#                     response = None
+#                     continue
 
-                if response.status_code == 404:
-                    print("404 Error: ", uid)
-                    break
+#                 if response.status_code == 404:
+#                     print("404 Error: ", uid)
+#                     break
 
-            except Exception as e:
-                print("Error with UID: ", uid, " Error: ", e)
-                response = None
-                break
+#             except Exception as e:
+#                 print("Error with UID: ", uid, " Error: ", e)
+#                 response = None
+#                 break
 
-        if not response:
-            print("Response is None for UID: ", uid)
-            continue
+#         if not response:
+#             print("Response is None for UID: ", uid)
+#             continue
 
-        if response.status_code == 200:
-            print("Adding UID: ", uid)
-            add_to_db(response.json(), conn, cur)
+#         if response.status_code == 200:
+#             print("Adding UID: ", uid)
+#             add_to_db(response.json(), conn, cur)
 
-        else:
-            print("Error with UID: ", uid, " Status Code: ", response.status_code)
+#         else:
+#             print("Error with UID: ", uid, " Status Code: ", response.status_code)
+
+

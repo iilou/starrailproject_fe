@@ -81,7 +81,7 @@ dat_cols = dat_obj["INFO"]
 
 
 
-data_file = open("data.txt", "a", encoding="utf-8")
+# data_file = open("data.txt", "a", encoding="utf-8")
 
 def add_to_db(json, conn, cur):
     if "characters" not in json or "player" not in json or "uid" not in json["player"] or "nickname" not in json["player"] or "avatar" not in json["player"]:
@@ -114,10 +114,10 @@ def add_to_db(json, conn, cur):
             data_to_insert
         )
         conn.commit()
-        if data_file != None:
-            for name in scores:
-                data_file.write(f"{json['player']['uid']},{name},{scores[name] * 1000}\n")
-        data_file.flush()
+        # if data_file != None:
+        #     for name in scores:
+        #         data_file.write(f"{json['player']['uid']},{name},{scores[name] * 1000}\n")
+        # data_file.flush()
         return True
     except Exception as e:
         print(e)
