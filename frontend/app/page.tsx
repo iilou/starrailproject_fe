@@ -32,7 +32,8 @@ export default function Home() {
     console.log(data);
     try {
       const res = await axios.post(
-        "http://127.0.0.1:8000/add-score",
+        // "http://127.0.0.1:8000/add-score",
+        `${process.env.NEXT_PUBLIC_API_URL}/add-score`,
         {
           player_id: uid,
           username: username,

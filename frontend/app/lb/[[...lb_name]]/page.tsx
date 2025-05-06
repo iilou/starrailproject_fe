@@ -254,13 +254,20 @@ export default function Leaderboard() {
     console.log("lookup", lb_name, lb_override, pageForce, pageSize);
 
     try {
-      fetch(`http://127.0.0.1:8000/get_lb_count/${lb_override === "" ? lb_name : lb_override}`)
+      // fetch(`http://127.0.0.1:8000/get_lb_count/${lb_override === "" ? lb_name : lb_override}`)
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/get_lb_count/${lb_override === "" ? lb_name : lb_override}`)
         .then((res) => res.json())
         .then((data) => {
           setDbSize(data[0][0]);
 
           try {
-            fetch(`http://127.0.0.1:8000/get_lb/${lb_override === "" ? lb_name : lb_override}/${pageForce === -1 ? page : pageForce}/${pageSize}`)
+            // fetch(`http://127.0.0.1:8000/get_lb/${lb_override === "" ? lb_name : lb_override}/${pageForce === -1 ? page : pageForce}/${pageSize}`)
+            fetch(`${process.env.NEXT_PUBLIC_API_URL}/get_lb/${lb_override === "" ? lb_name : lb_override}/${pageForce === -1 ? page : pageForce}/${pageSize}`, {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+              },
+            })
               .then((res) => res.json())
               .then((data) => {
                 console.log("fetch lb data - ", data);
