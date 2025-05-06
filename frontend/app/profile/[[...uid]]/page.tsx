@@ -58,8 +58,22 @@ export default function Profile() {
 
     setIsLoading(true);
     try {
-      const response = await fetch(`http://127.0.0.1:8000/srd/${uid}`);
+      // const response = await fetch(`http://127.0.0.1:8000/srd/${uid}`);
+      console.log("fetching data for uid:", uid, "url:", `${process.env.NEXT_PUBLIC_API_URL}/srd/${uid}`);
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/srd/${uid}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      console.log("fetch", response);
+      if (!response.ok) {
+        setIsLoading(false);
+        // alert("Error fetching data. Please try again later.");
+        return;
+      }
       const data = await response.json();
+      console.log("fetch : ", data);
 
       if (data.detail && (data.detail === "Invalid uid" || data.detail === "User not found")) {
         setIsLoading(false);
