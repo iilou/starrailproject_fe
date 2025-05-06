@@ -98,6 +98,7 @@ export default function SkillsM({ skills, skill_trees, rank, rankIcons, charID }
                       desc={skills.filter((o: any) => o["icon"] === skills[index]["icon"] && o["effect"] !== "MazeAttack")}
                       level={skills[index]["level"]}
                       type_text={skills[index]["type_text"]}
+                      key={index}
                     />
                   );
                 })}
@@ -106,7 +107,9 @@ export default function SkillsM({ skills, skill_trees, rank, rankIcons, charID }
               <div className='justify-center items-center gap-[16px] w-fit px-12 py-1 flex rounded-[10px] bg-[#3d3b8a] opacity-90'>
                 {[2, 4, 6].map((val, index) => {
                   return (
-                    <div className='w-fit h-fit block hover:bg-[#4e4d88] active:bg-[#252547] active:shadow-[0px_0px_0px_1px_inset_#e7e7e7] rounded-md px-4 pt-4 pb-2 bg-[#5c59bf]'>
+                    <div
+                      className='w-fit h-fit block hover:bg-[#4e4d88] active:bg-[#252547] active:shadow-[0px_0px_0px_1px_inset_#e7e7e7] rounded-md px-4 pt-4 pb-2 bg-[#5c59bf]'
+                      key={index}>
                       <Image
                         src={`https://raw.githubusercontent.com/Mar-7th/StarRailRes/refs/heads/master/${skill_trees[index + 4]["icon"]}`}
                         width={32}

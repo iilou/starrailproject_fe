@@ -248,13 +248,13 @@ export default function RelicView({
       </div>
       {/* ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */}
       <div className={`${isTable ? "hidden" : "flex"} flex-wrap justify-center items-center gap-x-20 gap-y-7 mt-4 w-[1400px] mx-auto relative z-[100]`}>
-        {relic_list.map((relic: any) => {
-          return <RelicL relicJSON={relic} charName={char_name} element={element} elementColor={elementColor} />;
+        {relic_list.map((relic: any, idx: number) => {
+          return <RelicL relicJSON={relic} charName={char_name} element={element} elementColor={elementColor} key={idx} />;
         })}
       </div>
       <div className={`${isTable ? "hidden" : "flex"} flex-col justify-center items-center gap-1 mt-4  relative z-[100]`}>
-        {relic_set_list.map((relic_set: any) => {
-          return <RelicSetL relicsetJSON={relic_set} charName={char_name} />;
+        {relic_set_list.map((relic_set: any, idx: number) => {
+          return <RelicSetL relicsetJSON={relic_set} charName={char_name} key={idx} />;
         })}
       </div>
       {/* -------------------------------------------------------------------------------------------------------------------    RLEIC TABLE HEADER   -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */}
@@ -282,8 +282,8 @@ export default function RelicView({
           <tbody className='mt-4 text-[11px] '>
             {/* ----------------------------------------------------------------------------------------------------------------    TABLE    ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */}
             <tr className='border-b-[1px] border-t-[1px] border-[#d7d7d733] h-[15px]'>
-              {[...Array(columns.length).fill("")].map(() => (
-                <td></td>
+              {[...Array(columns.length).fill("")].map((a, idx) => (
+                <td key={idx}></td>
               ))}
             </tr>
             {rows.map((row, rowIndex) => (
@@ -326,8 +326,8 @@ export default function RelicView({
             ))}
             {/* ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */}
             <tr className='border-b-[1px] border-t-[1px] border-[#d7d7d733] h-[15px]'>
-              {[...Array(columns.length).fill("")].map(() => (
-                <td></td>
+              {[...Array(columns.length).fill("")].map((a, idx) => (
+                <td key={idx}></td>
               ))}
             </tr>
             {/* -------------------------------------------------------------------------------------------------------------------   WEIGHT    ------------------------------------------------------------------------------------------------------------------------------------------------------------------ */}
@@ -418,8 +418,8 @@ export default function RelicView({
             </tr>
             {/* ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */}
             <tr className='border-b-[1px] border-t-[1px] border-[#d7d7d733] h-[15px]'>
-              {[...Array(columns.length).fill("")].map(() => (
-                <td></td>
+              {[...Array(columns.length).fill("")].map((a, idx) => (
+                <td key={idx}></td>
               ))}
             </tr>
             {/* ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */}
@@ -464,8 +464,8 @@ export default function RelicView({
           </thead>
           <tbody>
             <tr className='border-b-[1px] border-t-[1px] border-[#d7d7d733] h-[15px]'>
-              {[...Array(5).fill("")].map(() => (
-                <td></td>
+              {[...Array(5).fill("")].map((a, idx) => (
+                <td key={idx}></td>
               ))}
             </tr>
             {setScores.map((score: any, index: number) => {
@@ -595,8 +595,8 @@ export default function RelicView({
               );
             })}
             <tr className='border-b-[1px] border-t-[1px] border-[#d7d7d733] h-[15px]'>
-              {[...Array(5).fill("")].map(() => (
-                <td></td>
+              {[...Array(5).fill("")].map((a, idx) => (
+                <td key={idx}></td>
               ))}
             </tr>
             <tr className='border-b-[1px] border-t-[1px] border-[#d7d7d733]'>

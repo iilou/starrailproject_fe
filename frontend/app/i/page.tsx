@@ -482,6 +482,7 @@ export default function Index() {
                     removeAvatarFilter={removeFilter}
                     name={item.name}
                     display={"displayValues" in item && Array.isArray(item.displayValues) ? "" + item.displayValues[idx] : value}
+                    key={idx}
                   />
                 );
               })}
@@ -533,7 +534,7 @@ export default function Index() {
           {getQuery(avatarData).map((item: any, idx: number) => {
             // return <AvatarDisplay item={item} key={idx} onClick={() => router.push("/i?char=" + item._id)} />; // <AvatarDisplay item={item} key={idx} />
             return (
-              <div onClick={() => router.push("/i?char=" + item._id)} className='cursor-pointer'>
+              <div onClick={() => router.push("/i?char=" + item._id)} className='cursor-pointer' key={idx}>
                 <AvatarDisplay item={item} key={idx} />
               </div>
             );

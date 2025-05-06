@@ -348,12 +348,13 @@ export default function Leaderboard() {
         </div>
         <div className='flex justify-center w-full text-w1 font-extrabold text-base'>
           {lb_name in charDbTypes &&
-            charDbTypes[lb_name].lb_types.map((lb_type) => (
+            charDbTypes[lb_name].lb_types.map((lb_type, index) => (
               <div
                 className='cursor-pointer bg-[#323232c2] py-2 px-14 hover:bg-[#525252c2] transition-fast'
                 onClick={() => {
                   get_lb(1, `${lb_name}${lb_type}`);
-                }}>
+                }}
+                key={index}>
                 {lb_type === "" ? defaultDbType.toUpperCase() : lb_type.toUpperCase()}
               </div>
             ))}
@@ -392,6 +393,7 @@ export default function Leaderboard() {
           {data &&
             data.map((row, idx) => (
               <div
+                key={idx}
                 className={`grid grid-cols-[103px,210px,371px,232px,119px] text-[16px] gap-x-3 hover:bg-[#4f4ea3] active:bg-[#ewf7e72b0]  border-[#d7d7d733] ${
                   hoverCell.row === idx ? "bg-[#6861a9c9] underline" : ""
                 } hover:underline  px-[40px] ${idx === 0 ? "border-t-0" : "border-t-[1px]"} ${idx === data.length - 1 ? "border-b-0" : ""}`}>
@@ -413,6 +415,7 @@ export default function Leaderboard() {
                     className={` my-auto text-center py-2 hover:bg-[#1E1C65] transition-fast rounded-md active:shadow-[0px_0px_0px_1px_rgb(240,240,240)]  ${
                       hoverCell.row === idx && hoverCell.col === i ? "bg-[#ffffff20] shadow-[0px_0px_0px_1px_rgb(150,150,150)]" : ""
                     }`}
+                    key={i}
                     style={{ color: color_find(idx, i).color, fontWeight: color_find(idx, i).weight }}
                     onClick={(e) => {
                       if (e.button === 0) {
@@ -456,7 +459,8 @@ export default function Leaderboard() {
                       <div
                         style={{
                           color: rank.color,
-                        }}>
+                        }}
+                        key={i}>
                         {rank.name}
                       </div>
                     ))}

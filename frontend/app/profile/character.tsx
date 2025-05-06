@@ -175,7 +175,7 @@ Anaxa	0	0.2	0	0	0.7	0	1	1	1	0	0	0	0	0	0	0	0	0	0.7	0	0`;
               </div>
             </div>
 
-            {characterJSON["attributes"].map((attribute: any) => {
+            {characterJSON["attributes"].map((attribute: any, idx: number) => {
               return (
                 <StatM
                   name={attribute["name"]}
@@ -193,6 +193,7 @@ Anaxa	0	0.2	0	0	0.7	0	1	1	1	0	0	0	0	0	0	0	0	0	0.7	0	0`;
                     charIndex["INFO"].includes(attribute["name"]) &&
                     parseFloat(charIndex[characterJSON["name"]][charIndex["INFO"].indexOf(attribute["name"])]) > 0.3
                   }
+                  key={idx}
                 />
               );
             })}
@@ -202,7 +203,7 @@ Anaxa	0	0.2	0	0	0.7	0	1	1	1	0	0	0	0	0	0	0	0	0	0.7	0	0`;
                   !characterJSON["attributes"].find((attribute: any) => attribute["field"] === addition["field"]) &&
                   (!addition["name"].includes("DMG Boost") || addition["name"].includes(characterJSON["element"]["name"]))
               )
-              .map((addition: any) => {
+              .map((addition: any, idx: number) => {
                 return (
                   <StatM
                     name={addition["name"]}
@@ -213,6 +214,7 @@ Anaxa	0	0.2	0	0	0.7	0	1	1	1	0	0	0	0	0	0	0	0	0	0.7	0	0`;
                       charIndex["INFO"].includes(addition["name"]) &&
                       parseFloat(charIndex[characterJSON["name"]][charIndex["INFO"].indexOf(addition["name"])]) > 0.3
                     }
+                    key={idx}
                   />
                 );
               })}

@@ -25,6 +25,10 @@ export default function Profile() {
   const [localData, setLocalData] = useState(filterElementColor(JSON.parse(localStorage.getItem("data_" + uid) || '{"sofijweiofjweiofjweiofjwiofj":"fwaefawefwefe"}')));
   const [currentCharacter, setCurrentCharacter] = useState(localData && localData.characters ? localData.characters[0] : null);
 
+  // const [uid, setUid] = useState(searchParams.get("uid") || "000000000");
+  // const [localData, setLocalData] = useState({ sofijweiofjweiofjweiofjwiofj: "fwaefawefwefe" });
+  // const [currentCharacter, setCurrentCharacter] = useState(null);
+
   const [isLoading, setIsLoading] = useState(false);
 
   const [shadow_color, set_shadow_color] = useState("#00000000");
@@ -84,6 +88,20 @@ export default function Profile() {
     }
   };
 
+  // useEffect(() => {
+  //   setLocalData(() => {
+  //     const data = localStorage.getItem("data_" + uid);
+  //     if (data) {
+  //       const parsedData = JSON.parse(data);
+  //       if (checkBadLocalData(parsedData)) {
+  //         return null;
+  //       }
+  //       return filterElementColor(parsedData);
+  //     }
+  //     return null;
+  //   });
+  // }, []);
+
   useEffect(() => {
     console.log("UID", uid);
     fetchData();
@@ -137,7 +155,7 @@ export default function Profile() {
                 {localData.characters.map((character: any) => {
                   const isCurrent = currentCharacter && currentCharacter.id === character.id;
                   return (
-                    <div className='flex items-center justify-center group h-[100px] w-fit px-2 gap-2' onClick={() => handleCharacterSelect(character.id)}>
+                    <div className='flex items-center justify-center group h-[100px] w-fit px-2 gap-2' onClick={() => handleCharacterSelect(character.id)} key={character["id"]}>
                       <div className='w-[100px] h-[100px] flex items-center justify-center rounded-ful'>
                         <Image
                           src={`https://raw.githubusercontent.com/Mar-7th/StarRailRes/refs/heads/master/${character["icon"]}`}
