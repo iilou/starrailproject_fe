@@ -272,7 +272,7 @@ export default function Char({
                         height={100}
                         alt={item["Name"]}
                         onClick={() => {
-                          router.push("/i?char=" + item._id);
+                          router.push("/i/" + item._id);
                         }}
                         className='rounded-full bg-[#232323] w-[70px] h-[70px] object-cover  border-[#232323] hover:cursor-pointer transition-all duration-100'
                         style={{

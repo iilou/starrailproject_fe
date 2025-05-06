@@ -14,12 +14,7 @@ import BG from "./bg";
 import { filterElementColor } from "./lib/color";
 
 export default function Home() {
-  const [data, setData] = useState(null);
-  const [score, setScore] = useState(Math.random() * 10000);
-
   const router = useRouter();
-
-  const asofjsdaiofj = 111008606;
 
   const routes = [
     { href: "/", text: "Home", color: "text-w4" },
@@ -71,13 +66,10 @@ export default function Home() {
       .then((data) => {
         filterElementColor(data);
 
-        setData(data);
         console.log("fetch", data);
         localStorage.setItem("data_" + uid, JSON.stringify(data));
 
         const username: string = data["player"]["nickname"];
-        const score = Math.floor(Math.random() * 1000000);
-        setScore(Math.floor(Math.random() * 1000000));
 
         if (username == null) {
           console.log("Username not found");
@@ -87,12 +79,6 @@ export default function Home() {
         // window.location = `/#/profile?uid=${uid}`;
         router.push(`/profile?uid=${uid}`);
         window.location.reload();
-
-        // add_db(parseInt(uid), username, score);
-
-        // fetch(`http://127.0.0.1:8000/srd_alt/${uid}`).then((res) =>
-        //   console.log("fetch alt", res)
-        // );
       });
   }
 

@@ -11,7 +11,8 @@ export default function CharSel({ charList, currentChar, router }: { charList: {
   const [filteredList, setFilteredList] = useState(charList);
 
   const selChar = (char: string) => {
-    router.push(`/lb?char=${char}`);
+    // router.push(`/lb?char=${char}`);
+    router.push(`/lb/${char}`);
     setIsFocus(() => false);
     setIsHover(() => false);
   };
@@ -111,7 +112,8 @@ export default function CharSel({ charList, currentChar, router }: { charList: {
                 className='w-[24px] h-[24px] relative z-[101] mr-2 ml-1 rounded-full '
                 onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
                   if (e.detail === 1 && e.button === 0) {
-                    router.push(`/lb?char=${key}`);
+                    // router.push(`/lb?char=${key}`);
+                    router.push(`/lb/${key}`);
                     setIsFocus(() => false);
                     setIsHover(() => false);
                   }
@@ -129,7 +131,8 @@ export default function CharSel({ charList, currentChar, router }: { charList: {
                 className='select-none hover:underline hover:cursor-pointer'
                 onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
                   if (e.detail === 1 && e.button === 0) {
-                    router.push(`/lb?char=${key}`);
+                    // router.push(`/lb?char=${key}`);
+                    router.push(`/lb/${key}`);
                     setIsFocus(() => false);
                     setIsHover(() => false);
                   }

@@ -12,7 +12,7 @@ import {
   weightParse,
   charIndexHeaders,
   charSetIndexHeaders,
-} from "../lib/score";
+} from "../../lib/score";
 
 interface RelicJSON {
   icon: string;

@@ -2,11 +2,11 @@
 
 import Image from "next/image";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 
-import Header from "../header";
-import BG from "../bg";
-import LocalProfileView from "../local_profile_view";
+import Header from "../../header";
+import BG from "../../bg";
+import LocalProfileView from "../../local_profile_view";
 
 import { useState, useEffect, useRef } from "react";
 
@@ -22,7 +22,7 @@ import { elementColor, elementConvert } from "./lib";
 import { parse } from "path";
 
 export default function Index() {
-  const searchParams = useSearchParams();
+  // const searchParams = useSearchParams();
 
   const [data, setData] = useState<any>(null);
 
@@ -389,9 +389,17 @@ export default function Index() {
     };
   }, [nextKeyPressReset]);
 
+  // const { char_id } = useParams();
+  const { char_id } = useParams() as { char_id: string | string[] };
+
   useEffect(() => {
-    const char = searchParams.get("char");
-    if (!char) return;
+    // const char = searchParams.get("char");
+
+    // if (!char) return;
+
+    if (!char_id) return;
+
+    const char = Array.isArray(char_id) ? char_id[0] : char_id;
 
     async function fetchCharacter() {
       try {
@@ -414,7 +422,7 @@ export default function Index() {
     }
 
     fetchCharacter();
-  }, [searchParams]);
+  }, [char_id]);
 
   const setNewView = (view: string) => {
     if (view === "Characters" || view === "Weapons" || view === "Relics") {
@@ -534,7 +542,7 @@ export default function Index() {
           {getQuery(avatarData).map((item: any, idx: number) => {
             // return <AvatarDisplay item={item} key={idx} onClick={() => router.push("/i?char=" + item._id)} />; // <AvatarDisplay item={item} key={idx} />
             return (
-              <div onClick={() => router.push("/i?char=" + item._id)} className='cursor-pointer' key={idx}>
+              <div onClick={() => router.push("/i/" + item._id)} className='cursor-pointer' key={idx}>
                 <AvatarDisplay item={item} key={idx} />
               </div>
             );

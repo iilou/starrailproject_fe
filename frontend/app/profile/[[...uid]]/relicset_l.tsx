@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { scoreSetLib, charSetIndex } from "../lib/score";
+import { scoreSetLib, charSetIndex } from "../../lib/score";
 
 interface RelicsetJSON {
   icon: string;

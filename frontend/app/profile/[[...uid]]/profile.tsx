@@ -1,4 +1,3 @@
-import { dividerClasses } from "@mui/material";
 import { Refresh } from "@mui/icons-material";
 import Image from "next/image";
 
@@ -29,7 +28,8 @@ export default function ProfilePreview({ playerData, uid, onUidSearch, isLoading
             className='w-32 bg-transparent'
             onKeyDown={(e) => {
               if (e.key === "Enter") {
-                router.push(`/profile?uid=${(e.target as HTMLInputElement).value}`);
+                // router.push(`/profile?uid=${(e.target as HTMLInputElement).value}`);
+                router.push(`/profile/${(e.target as HTMLInputElement).value}`);
 
                 onUidSearch((e.target as HTMLInputElement).value);
               }
@@ -52,8 +52,9 @@ export default function ProfilePreview({ playerData, uid, onUidSearch, isLoading
             <>
               <div
                 className='w-fit h-fit items-center text-[#8F8F8F] text-[20px] hover:text-[24px] gap-x-2 hover:cursor-pointer hover:text-[#EEAA5B] transition-all flex group bg-[#212121] hover:bg-[#313131] rounded-lg px-4 py-1'
-                onClick={() => router.push(`/profile?uid=${uid}`)}>
-                <Refresh fontSize='large' className='hover:cursor-pointer transition-all' onClick={() => router.push(`/profile?uid=${uid}`)} />
+                // onClick={() => router.push(`/profile?uid=${uid}`)}
+                onClick={() => router.push(`/profile/${uid}`)}>
+                <Refresh fontSize='large' className='hover:cursor-pointer transition-all' onClick={() => router.push(`/profile/${uid}`)} />
 
                 <div>Refresh</div>
               </div>
