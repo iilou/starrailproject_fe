@@ -19,7 +19,9 @@ import Char from "./char";
 
 import * as LF from "./libfilters";
 import { elementColor, elementConvert } from "./lib";
-import { parse } from "path";
+import { FilterAlt, FilterAltOff } from "@mui/icons-material";
+import { Sort } from "@mui/icons-material";
+import { FilterList } from "@mui/icons-material";
 
 export default function Index() {
   // const searchParams = useSearchParams();
@@ -272,52 +274,6 @@ export default function Index() {
     });
   };
 
-  const fetchWeaponDesc = async (id: string) => {
-    const res = await fetch("/api/weapon?id=" + id);
-    const data = await res.json();
-    // const textData = await res.text();
-
-    // console.log("textData", textData);
-    // console.log("data", data);
-    if (!data.error) {
-      const weapon = data;
-      var passive = {};
-      if ("Live" in weapon) {
-        passive = weapon.Live;
-      } else if ("pre" in weapon) {
-        passive = weapon.pre;
-      } else if ("Pre" in weapon) {
-        passive = weapon.Pre;
-      } else {
-        var max = 0;
-        for (const key in weapon) {
-          if (key.startsWith("v")) {
-            const version = parseInt(key.substring(1));
-            if (version > max) {
-              max = version;
-            }
-          }
-        }
-        passive = weapon["v" + max];
-      }
-
-      // if not empty
-      if (Object.keys(passive).length > 0) {
-        setWeaponData((prev: any) => {
-          const newWeaponData = [...prev];
-          const index = newWeaponData.findIndex((w: any) => "" + w._id === id);
-          // console.log(passive);
-          newWeaponData[index]["Passive"] = passive;
-          // newWeaponData[index]["Passive"]["Desc"][0] = newWeaponData[index]["Passive"]["Desc"].replace(/<[^>]+>/g, "");
-          newWeaponData[index]["Passive"]["Desc"] = newWeaponData[index]["Passive"]["Desc"].map(
-            (desc: string) => desc.replace(/<[^>]+>/g, "").split("Hidden Stat")[0]
-          );
-          return newWeaponData;
-        });
-      }
-    }
-  };
-
   const [searchQuery, setSearchQuery] = useState<string>("");
 
   const getQuery = (arr: any[]) => {
@@ -432,10 +388,6 @@ export default function Index() {
   }
 
   useEffect(() => {
-    // const char = searchParams.get("char");
-
-    // if (!char) return;
-
     if (!char_id) return;
 
     const char = Array.isArray(char_id) ? char_id[0] : char_id;
@@ -451,14 +403,9 @@ export default function Index() {
       setView(view);
     }
   };
-  //
-  //   "Stats": {
-  //     "HP": 1358.28,
-  //     "ATK": 679.14,
-  //     "DEF": 460.845,
-  //     "SPD": 94.0,
-  //     "Aggro": 125.0
-  // },
+
+  const [filterVisible, setFilterVisible] = useState(false);
+  const [sortVisible, setSortVisible] = useState(false);
 
   const [isWeaponPassiveHidden, setIsWeaponPassiveHidden] = useState(false);
 
@@ -471,15 +418,13 @@ export default function Index() {
       <div className='w-1 h-[10px]'></div>
       <Header current='/i' />
 
-      {/* <LocalProfileView router={router} /> */}
-
       <div className='w-[full] flex items-center justify-center flex-wrap sticky z-[950] top-[60px] m1_2:top-[6vh]'>
         {views.map((item, idx) => {
           return (
             <div
               key={idx}
               className={`w-[150px] h-[30px] text-center flex items-center justify-center bg-[#4d48db] text-white text-sm font-bold mx-2 my-1 cursor-pointer rounded-sm shadow-lg shadow-[#000000] leading-[30px]
-                m1_4:w-[23vw] m1_4:h-[3vh] m1_4:text-[1.5vh] m1_4:leading-[3vh] m1_4:mx-[0.3vh] m1_4:my-[1vh]
+                m1_4:w-[23vw] m1_4:h-[5.7vw] m1_4:text-[2.6vw] m1_4:leading-[5.7vw] m1_4:mx-[0.3vh] m1_4:my-[1vh]
                 ${view === item ? "bg-[#3d3b8a]" : ""}`}
               onClick={() => {
                 setCurrentSort("");
@@ -496,49 +441,90 @@ export default function Index() {
         })}
       </div>
 
-      <>
-        {(view === "Characters"
-          ? LF.avatarFilter(highestMajorVersion)
-          : view === "Weapons"
-          ? LF.weaponFilter
-          : view === "Relics"
-          ? LF.relicFilter
-          : []
-        ).map((item, idx) => {
-          return (
-            <div
-              key={idx}
-              className='w-full flex items-center justify-center flex-wrap relative z-[900]'>
-              {item.values.map((value, idx) => {
-                return (
-                  <FilterOption
-                    item={value}
-                    idx={idx}
-                    includes={
-                      avatarFilters.includes(item.name + "///" + value) ||
-                      (value === "All" &&
-                        avatarFilters.filter((f) => f.split("///")[0] === item.name).length === 0)
-                    }
-                    addAvatarFilter={addFilter}
-                    removeAvatarFilter={removeFilter}
-                    name={item.name}
-                    display={
-                      "displayValues" in item && Array.isArray(item.displayValues)
-                        ? "" + item.displayValues[idx]
-                        : value
-                    }
-                    key={idx}
-                  />
-                );
-              })}
+      {(view === "Characters" || view === "Weapons" || view === "Relics") && (
+        <div className='rounded-lg text-[#ffffff] relative z-[900] w-full flex justify-center mt-[2vw] gap-[2vw] mb-[1vw]'>
+          <div
+            className=' w-fit flex justify-center items-center pl-[2.5vw] pr-[2vw] py-[0.1vw] rounded-md shadow-md shadow-[#000000] gap-[1vw] hover:shadow-[0_0_1px_2px_#ffffff] cursor-pointer text-[13px]
+          m1_4:w-[32vw] m1_4:text-[2.5vw]
+          '
+            style={{
+              backgroundColor: filterVisible ? "#4d48db" : "#1a1a1a",
+              transition: "background-color 0.2s ease-in-out",
+            }}
+            onClick={() => {
+              setFilterVisible((prev) => !prev);
+            }}>
+            <div className=' font-bold'>Filters</div>
+            <div>
+              <div>{filterVisible ? <FilterAlt /> : <FilterAltOff />}</div>
             </div>
-          );
-        })}
-        {(view === "Characters" || view === "Weapons" || view === "Relics") && (
-          <div className='w-full flex items-center justify-center flex-wrap relative z-[900]'>
+          </div>
+          <div
+            className=' w-fit flex justify-center items-center pl-[2.5vw] pr-[2vw] py-[0.1vw] rounded-md shadow-md shadow-[#000000] gap-[1vw] hover:shadow-[0_0_1px_2px_#ffffff] cursor-pointer text-[13px]
+          m1_4:w-[32vw] m1_4:text-[2.5vw]
+          '
+            style={{
+              backgroundColor: sortVisible ? "#4d48db" : "#1a1a1a",
+              transition: "background-color 0.2s ease-in-out",
+            }}
+            onClick={() => {
+              setSortVisible((prev) => !prev);
+            }}>
+            <div className='font-bold'>Sort</div>
+            <div>
+              <div>{sortVisible ? <FilterList /> : <Sort />}</div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div>
+        {filterVisible &&
+          (view === "Characters"
+            ? LF.avatarFilter(highestMajorVersion)
+            : view === "Weapons"
+            ? LF.weaponFilter
+            : view === "Relics"
+            ? LF.relicFilter
+            : []
+          ).map((item, idx) => {
+            return (
+              <div
+                key={idx}
+                className='w-full flex items-center justify-center flex-wrap relative z-[900]'>
+                {item.values.map((value, idx) => {
+                  return (
+                    <FilterOption
+                      item={value}
+                      idx={idx}
+                      includes={
+                        avatarFilters.includes(item.name + "///" + value) ||
+                        (value === "All" &&
+                          avatarFilters.filter((f) => f.split("///")[0] === item.name).length === 0)
+                      }
+                      addAvatarFilter={addFilter}
+                      removeAvatarFilter={removeFilter}
+                      name={item.name}
+                      display={
+                        "displayValues" in item && Array.isArray(item.displayValues)
+                          ? "" + item.displayValues[idx]
+                          : value
+                      }
+                      key={idx}
+                    />
+                  );
+                })}
+              </div>
+            );
+          })}
+      </div>
+
+      <div>
+        {sortVisible && (view === "Characters" || view === "Weapons" || view === "Relics") && (
+          <div className='w-full flex items-center justify-center flex-wrap relative z-[900] mt-[0.5vw]'>
             <div
-              className='w-[100px] h-[30px] flex items-center justify-center rounded-lg  text-white text-sm font-bold mx-2 my-1 cursor-pointer bg-[#3d3b8a]
-          '>
+              className={`w-[170px] h-[30px] flex items-center justify-center rounded-lg bg-[#121212] text-white text-sm font-bold mx-2 my-1 cursor-pointer transition-all duration-50 hover:shadow-[0_0_1px_2px_#ffffff]
+                m1_4:w-[16vw] m1_4:text-[2.1vw] m1_4:h-[5vw] m1_4:mx-[0.3vw]`}>
               Sort By
             </div>
             {
@@ -555,7 +541,9 @@ export default function Index() {
                 return (
                   <div
                     key={idx}
-                    className='w-[100px] h-[30px] flex items-center justify-center rounded-lg bg-[#121212] text-[#ffffff] text-sm font-bold mx-2 my-1 cursor-pointer hover:bg-[#232323] transition-all duration-200'
+                    className={`w-[170px] h-[30px] flex items-center justify-center rounded-lg bg-[#121212] text-white text-sm font-bold mx-2 my-1 cursor-pointer transition-all duration-50 hover:shadow-[0_0_1px_2px_#ffffff]
+        m1_4:w-[14vw] m1_4:text-[2.1vw] m1_4:h-[5vw] m1_4:mx-[0.3vw] m1_4:my-[0.05vw]
+        ${wasPreviousSort ? "bg-[#3d3b8a]" : ""}`}
                     onClick={() => {
                       if (currentSort.split("///")[0] === item.name) {
                         applySort(
@@ -578,7 +566,7 @@ export default function Index() {
             }
           </div>
         )}
-      </>
+      </div>
 
       {
         <div
@@ -588,8 +576,8 @@ export default function Index() {
           // style={{ opacity: searchQuery.length > 0 ? 1 : 0 }}
         >
           <div
-            className='w-[200px] h-[30px] flex items-center justify-center rounded-lg bg-[#817fd0b8] text-[#e9e9e9] text-sm font-bold mx-2 my-1 cursor-pointer shadow-md shadow-[#000000]
-            m1_4:w-[12vh] m1_4:h-[3vh] text-[1.5vh] leading-[3vh] m1_4:mx-[0.3vh] m1_4:my-[1vh]
+            className='w-[200px] h-[30px] flex items-center justify-center rounded-lg bg-[#817fd0d8] text-[#e9e9e9] text-sm font-bold mx-2 my-1 cursor-pointer shadow-md shadow-[#000000]
+            m1_4:w-[52vw] m1_4:h-[5vw] text-[3.5vw] leading-[5vw] m1_4:mx-[0.3vw] m1_4:my-[1vw]
           '>
             {searchQuery}
           </div>

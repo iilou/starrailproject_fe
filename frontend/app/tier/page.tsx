@@ -25,7 +25,7 @@ export default function TierList() {
             className='w-full h-fit flex justify-center items-center text-[3vw] mt-[2vw]
             m1_4:text-[9vw] m1_4:mt-[5vw] m1_4:mb-[2vw]
           '>
-            <div className='font-bold'>Tier List v3.3</div>
+            <div className='font-extrabold'>Tier List v3.3</div>
           </div>
           <div
             className='w-[60vw] flex justify-center items-start mb-[1vw] h-[5vw] text-[0.7vw] text-[#c2c2c2]
@@ -78,7 +78,9 @@ export default function TierList() {
             ))}
           </div>
           <div
-            className='w-full h-fit flex flex-col justify-start items-start gap-[0.5vw]'
+            className='w-full h-fit flex flex-col justify-start items-start gap-[0.5vw]
+              m1_4:gap-[3vw]
+            '
             style={{}}>
             {get_tiers().map((tierInfo, index) => {
               const rows = get_from_tier(tierInfo["tier"]);
