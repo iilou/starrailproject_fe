@@ -15,10 +15,14 @@ export default function FilterOption({
   name: string;
   display: string;
 }) {
+  const lim = 4;
+  const disp_1 = display.length > lim ? display.slice(0, lim) : display;
+  const disp_2 = display.length > lim ? display.slice(lim) : null;
   return (
     <div
       key={idx}
-      className={`w-[170px] h-[30px] flex items-center justify-center rounded-lg bg-[#121212] text-white text-sm font-bold mx-2 my-1 cursor-pointer hover:bg-[#232323] transition-all duration-200
+      className={`w-[170px] h-[30px] flex items-center justify-center rounded-lg bg-[#121212] text-white text-sm font-bold mx-2 my-1 cursor-pointer transition-all duration-50 hover:shadow-[0_0_1px_2px_#ffffff]
+        m1_4:w-[10vw] m1_4:text-[2.1vw] m1_4:h-[5vw] m1_4:mx-[0.3vw]
         ${includes ? "bg-[#3d3b8a]" : ""}`}
       onClick={() => {
         // addAvatarFilter("Element", item, true);
@@ -30,7 +34,9 @@ export default function FilterOption({
           addAvatarFilter(name, item, true);
         }
       }}>
-      {display}
+      {/* {display} */}
+      <span>{disp_1}</span>
+      {disp_2 ? <span className='m1_4:hidden'>{disp_2}</span> : null}
     </div>
   );
 }

@@ -320,13 +320,19 @@ export default function Leaderboard() {
 
       <div className='h-52 w-1'></div>
 
-      <div className='z-30 my-2 relative block mx-auto w-auto translate-x-[600px]'>
+      <div
+        className='z-30 my-2 relative block ml-auto mr-[0vw] w-fit
+        m1_4:mr-auto
+      '>
         <CharSel charList={charList} currentChar={lb_name} router={router} />
       </div>
 
       <div className='h-2 w-1'></div>
 
-      <div className='w-full flex justify-center flex-wrap font-extrabold text-4xl bg-[#1A1A1Ac9] relative z-20  h-[114px]'>
+      <div
+        className='w-full flex justify-center flex-wrap font-extrabold text-4xl bg-[#1A1A1Ac9] relative z-20  h-[114px]
+        m1_4:text-[5vw] m1_4:h-fit m1_4:leading-[5.2vw]
+      '>
         <div className='pt-6 pb-2'>
           <strong
             style={{
@@ -372,35 +378,50 @@ export default function Leaderboard() {
 
       <div className='h-12 w-1'></div>
 
-      <div className='w-fit m-auto relative z-2 rounded-xl pb-4 bg-[#3d3b8a]  opacity-[90%]'>
-        <div className='grid grid-cols-[103px,210px,371px,232px,119px] gap-x-3 bg-[#020071c2] px-[40px] rounded-md py-[2px] shadow-md shadow-[#000000d2] z-[100] relative'>
+      <div className='w-[97vw] m-auto relative z-2 rounded-xl pb-4 opacity-[90%]  overflow-x-auto '>
+        <div
+          className='grid grid-cols-[103px,210px,371px,232px,119px] gap-x-3 bg-[#020071c2] px-[40px] rounded-md py-[2px] shadow-md shadow-[#000000d2] z-[100] relative w-fit text-[16px]
+                  m1_4:grid-cols-[12vw,20vw,32vw,20vw,12vw] m1_4:gap-x-[0.2vw] m1_4:px-[0.2vw] m1_4:text-[2.3vw] 
+          '
+          // style={{ width: 103 + 210 + 371 + 232 + 119 + 12 * 9 + "px" } /* 12px for gap */}
+        >
           {["RANK", "UID", "NAME", "SCORE", "TIER"].map((col, i) => (
             <div
-              className={`text-center text-[16px] font-extrabold pt-[26px] pb-[5px] hover:bg-[#353385d2] rounded-md active:shadow-[0px_0px_0px_1px_inset_#c7c7c7] active:bg-[#020071e2]`}
+              className={`text-center font-extrabold pt-[26px] pb-[5px] hover:bg-[#353385d2] rounded-md active:shadow-[0px_0px_0px_1px_inset_#c7c7c7] active:bg-[#020071e2]
+                  m1_4:pt-[2.8vw] m1_4:pb-[1.2vw] 
+                `}
               style={{ textShadow: "0 0 7px #000000" }}
               key={col}>
               <span className='select-none cursor-pointer'>{col}</span>
             </div>
           ))}
         </div>
-        <div className='flex flex-col overflow-x-hidden overflow-y-auto max-h-[800px] scrollbar-thin scrollbar-thumb-[#1E1C65] scrollbar-track-[#020071c2] scrollbar-thumb-rounded-full scrollbar-track-rounded-full z-[99] relative'>
+        <div
+          className='flex flex-col scrollbar-thin scrollbar-thumb-[#1E1C65] scrollbar-track-[#020071c2] scrollbar-thumb-rounded-full scrollbar-track-rounded-full z-[99] relative w-fit bg-[#3d3a8c77] rounded-md
+          '
+          // style={{ width: 103 + 210 + 371 + 232 + 119 + 12 * 9 + "px" } /* 12px for gap */}
+        >
           <div className='h-5 w-1 text-[#00000000]'>A</div>
 
           {data &&
             data.map((row, idx) => (
               <div
                 key={idx}
-                className={`grid grid-cols-[103px,210px,371px,232px,119px] text-[16px] gap-x-3 hover:bg-[#4f4ea3] active:bg-[#ewf7e72b0]  border-[#d7d7d733] ${
-                  hoverCell.row === idx ? "bg-[#6861a9c9] underline" : ""
-                } hover:underline  px-[40px] ${idx === 0 ? "border-t-0" : "border-t-[1px]"} ${
+                className={`grid grid-cols-[103px,210px,371px,232px,119px] text-[16px] gap-x-3 hover:bg-[#4f4ea3] active:bg-[#ewf7e72b0]  border-[#d7d7d733] 
+                  ${
+                    hoverCell.row === idx ? "bg-[#6861a9c9] underline" : ""
+                  } hover:underline  px-[40px] ${idx === 0 ? "border-t-0" : "border-t-[1px]"} ${
                   idx === data.length - 1 ? "border-b-0" : ""
-                }`}>
+                }
+
+                  m1_4:grid-cols-[12vw,20vw,32vw,20vw,12vw] m1_4:gap-x-[0.2vw] m1_4:px-[0.2vw] m1_4:text-[2.3vw] 
+                `}>
                 {[
                   { text: `#${idx + 1 + (page - 1) * pageSize}`, fontWeight: "400" },
                   {
                     text: (
                       <div className='flex px-3 justify-around items-center'>
-                        <span className='text-left font-bold'>
+                        <span className='text-left font-bold m1_4:hidden'>
                           {regionIds["" + row[columns.uid].toString().charAt(0)]}
                         </span>
                         <span className='text-[#d7d7d7] text-right font-normal'>
@@ -419,7 +440,9 @@ export default function Leaderboard() {
                       hoverCell.row === idx && hoverCell.col === i
                         ? "bg-[#ffffff20] shadow-[0px_0px_0px_1px_rgb(150,150,150)]"
                         : ""
-                    }`}
+                    }
+                      m1_4:py-[0.5vw]    
+                    `}
                     key={i}
                     style={{
                       color: color_find(idx, i).color,
@@ -450,9 +473,11 @@ export default function Leaderboard() {
                   </div>
                 ))}
                 <div
-                  className={`text-center font-black py-[2px] hover:bg-[#1E1C65] transition-fast rounded-md text-[22px] ${
+                  className={`text-center font-black py-[2px] hover:bg-[#1E1C65] transition-fast rounded-md text-[22px] h-full leading-[150%] ${
                     hoverCell.row === idx && hoverCell.col === 4 ? "bg-[#ffffff20]" : ""
-                  }`}
+                  }
+                    m1_4:text-[2.4vw] 
+                  `}
                   onClick={(e) => {
                     if (e.button === 0) {
                       if (hoverCell.row === idx && hoverCell.col === 4) {

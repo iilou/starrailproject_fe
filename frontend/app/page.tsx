@@ -20,7 +20,7 @@ export default function Home() {
     {
       href: "/i",
       text: "Index",
-      color: "text-w4",
+      color: "text-w1",
       description: "View the descriptions and details of all characters, weapons, and relics.",
     },
     {
@@ -154,16 +154,32 @@ export default function Home() {
           {">"}
         </div>
       </div>
-      <div className='flex w-[80vw] flex-col mx-auto mt-10 justify-center'>
+      <div
+        className='flex w-[80vw] flex-col mx-auto mt-10 justify-center
+        m1_4:w-[98vw]
+      '>
         {routes.map((route) => (
           <button
             key={route.href}
             onClick={() => router.push(route.href)}
-            className={`px-20 py-8 mx-4 my-2 rounded-lg font-medium text-2xl ${route.color} bg-[#1111113f] relative z-[10000] opacity-[1] shadow-[0_0_0_1px_#d1d1d1] hover:shadow-[0_0_0_4px_#ffffff] transition-all duration-200 ease-in-out`}>
+            className={`px-20 py-8 mx-4 my-2 rounded-lg font-medium text-2xl ${route.color} bg-[#1111113f] relative z-[10000] opacity-[1] shadow-[0_0_0_1px_#d1d1d1] hover:shadow-[0_0_0_4px_#ffffff] transition-all duration-200 ease-in-out
+            
+              m1_4:px-[1vw]
+            `}>
             {/* {route.text} */}
             <div className='flex flex-col items-center'>
-              <div className='text-3xl font-bold'>{route.text}</div>
-              <div className='text-[18px] opacity-70 text-center'>{route.description}</div>
+              <div
+                className='text-3xl font-bold
+                m1_4:text-[5vw] m1_4:leading-[5.2vw] 
+              '>
+                {route.text}
+              </div>
+              <div
+                className='text-[18px] opacity-70 text-center text-[#c2c2c2] mt-2 leading-[21px]
+                m1_4:text-[3.1vw] m1_4:leading-[4vw] 
+              '>
+                {route.description}
+              </div>
             </div>
           </button>
         ))}

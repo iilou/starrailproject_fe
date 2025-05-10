@@ -81,12 +81,12 @@ const ranks: {
 };
 
 const get_rank_from_score = (score: number, max: number) => {
-  for (let i = 0; i < 8; i++) {
+  for (let i = 0; i < 7; i++) {
     if (score >= ranks[i].percentile * max * 0.01) {
       return ranks[i];
     }
   }
-  return ranks[7];
+  return ranks[6];
 };
 
 

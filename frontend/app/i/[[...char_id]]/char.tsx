@@ -7,6 +7,7 @@ import StyledText from "./styledtext";
 
 import { Icon } from "@mui/material";
 import { OpenInNew, EmojiEvents } from "@mui/icons-material";
+import { ViewHeadline } from "@mui/icons-material";
 
 import { get_tier_data_from_char_id, get_tier_details_from_tier } from "../../tier/tierData";
 import { get_lb_types } from "../../lb/[[...lb_name]]/lib";
@@ -329,7 +330,19 @@ export default function Char({
         }}
         onClick={() => {
           setSidebarActive((prev) => !prev);
-        }}></div>
+        }}>
+        <div className='w-full h-full flex justify-center items-center'>
+          <ViewHeadline
+            className='text-[#c8c8c8]'
+            style={{
+              fontSize: "30px",
+              lineHeight: "20px",
+              textShadow: "0 0 25px #000,0 0 25px #000",
+              translate: "0px -1px",
+            }}
+          />
+        </div>
+      </div>
       <div
         className='fixed right-3 top-[10%] w-[80px] h-[80%] hover:w-[80px] flex flex-col justify-center bg-[#3d3b8a] shadow-xl shadow-black z-[500] rounded-lg'
         style={{
