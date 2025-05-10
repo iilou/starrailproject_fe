@@ -72,7 +72,7 @@ export default function Header({ current }: { current: string }) {
                   lineHeight: "5vh",
                   textShadow: "0 0 25px #000,0 0 25px #000",
                 }}
-                className={`w-[15vh] text-[1.3vh] text-center h-[5vh] font-bold text-[#e1e1e1] cursor-pointer ${
+                className={`w-[25vh] text-[1.7vh] text-center h-[5vh] font-bold text-[#e1e1e1] cursor-pointer ${
                   item.link == current ? "bg-[#0d0d0d]" : "bg-[#1A1947]"
                 } transition-all duration-100 m1_2:hidden m1_2:group-hover:block`}
                 onMouseEnter={(e) => {
