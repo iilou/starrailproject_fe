@@ -17,10 +17,33 @@ export default function Home() {
   const router = useRouter();
 
   const routes = [
-    { href: "/", text: "Home", color: "text-w4" },
-    { href: "/lb", text: "Leaderboard", color: "text-t1" },
-    { href: "/tier", text: "Tier List", color: "text-t2" },
-    { href: "/profile", text: "Load Profile", color: "text-t3" },
+    {
+      href: "/i",
+      text: "Index",
+      color: "text-w4",
+      description: "View the descriptions and details of all characters, weapons, and relics.",
+    },
+    {
+      href: "/lb",
+      text: "Leaderboard",
+      color: "text-t1",
+
+      description:
+        "View the rankings of specific characters, based on relic quality, damage, and more.",
+    },
+    {
+      href: "/tier",
+      text: "Tier List",
+      color: "text-t2",
+      description: "Tier list of all characters, based on their performance in the game.",
+    },
+    {
+      href: "/profile",
+      text: "Load Profile",
+      color: "text-t3",
+      description:
+        "View the details of a specific user's profile, including their characters, relics, and more.",
+    },
   ];
 
   async function add_db(uid: number, username: string, score: number) {
@@ -85,17 +108,21 @@ export default function Home() {
 
   function handleUidSearchDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === "Enter") {
-      fetchData((e.target as HTMLInputElement).value);
+      // fetchData((e.target as HTMLInputElement).value);
+      router.push(`/profile/${(e.target as HTMLInputElement).value}`);
     }
   }
 
   function handleUidSearchClick(e: React.MouseEvent<HTMLDivElement>) {
     if (document.getElementById("uid_input_field") == null) return;
-    fetchData((document.getElementById("uid_input_field") as HTMLInputElement).value);
+    // fetchData((document.getElementById("uid_input_field") as HTMLInputElement).value);
+    router.push(
+      `/profile/${(document.getElementById("uid_input_field") as HTMLInputElement).value}`
+    );
   }
 
   return (
-    <div className='w-full h-[100vh] text-c2 overflow-y-hidden overflow-x-hidden'>
+    <div className='w-full h-[100vh] text-c2 '>
       <div className='absolute w-full h-[100vh] z-0'>
         <BG />
       </div>
@@ -103,27 +130,41 @@ export default function Home() {
 
       <div className='w-full h-[110px]'></div>
 
-      <Image src='/h/hsr_logo.png' width={900} height={350} alt='HSR Logo' className='block relative mx-auto' />
+      <Image
+        src='/h/hsr_logo.png'
+        width={800}
+        height={350}
+        alt='HSR Logo'
+        className='block relative mx-auto'
+      />
 
       <div className='rounded-lg mx-auto relative w-auto flex justify-center gap-2'>
-        <div className='text-c2 border-c2 border-[1px] rounded-lg px-4 py-2 relative block hover:bg-bk2 cursor-pointer' onMouseDown={handleUidSearchClick}>
+        <div
+          className='text-c2 border-c2 border-[1px] rounded-lg px-4 py-2 relative block hover:bg-bk2 cursor-pointer'
+          onMouseDown={handleUidSearchClick}>
           {">"}
         </div>
         <input
           type='text'
           placeholder='Enter UID'
-          className=' rounded-lg bg-transparent border-c2 border-[1px] text-w5 w-fit relative block px-10 py-2 text-center text-base font-extrabold'
+          className=' rounded-lg bg-transparent border-c2 border-[1px] text-w1 w-fit relative block px-10 py-2 text-center text-base font-extrabold'
           onKeyDown={handleUidSearchDown}
         />
-        <div className='text-c2 border-c2 border-[1px] rounded-lg px-4 py-2 relative block hover:bg-bk2 cursor-pointer'>{">"}</div>
+        <div className='text-c2 border-c2 border-[1px] rounded-lg px-4 py-2 relative block hover:bg-bk2 cursor-pointer'>
+          {">"}
+        </div>
       </div>
-      <div className='flex w-70vw mx-auto mt-20 justify-center'>
+      <div className='flex w-[80vw] flex-col mx-auto mt-10 justify-center'>
         {routes.map((route) => (
           <button
             key={route.href}
             onClick={() => router.push(route.href)}
-            className={`px-20 py-8 mx-4 my-2 bg-b1 rounded-lg font-medium text-2xl opacity-80 hover:opacity-70 transition-all ${route.color}`}>
-            {route.text}
+            className={`px-20 py-8 mx-4 my-2 rounded-lg font-medium text-2xl ${route.color} bg-[#1111113f] relative z-[10000] opacity-[1] shadow-[0_0_0_1px_#d1d1d1] hover:shadow-[0_0_0_4px_#ffffff] transition-all duration-200 ease-in-out`}>
+            {/* {route.text} */}
+            <div className='flex flex-col items-center'>
+              <div className='text-3xl font-bold'>{route.text}</div>
+              <div className='text-[18px] opacity-70 text-center'>{route.description}</div>
+            </div>
           </button>
         ))}
       </div>

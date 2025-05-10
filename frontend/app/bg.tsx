@@ -9,6 +9,8 @@ export default function BG() {
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
         backgroundPosition: "center",
+        filter: "brightness(1) saturate(0.4) contrast(1.2) blur(0.1px) glow(1px #ffffff)",
+        transform: "rotate(180deg)",
       }}></div>
   );
 }

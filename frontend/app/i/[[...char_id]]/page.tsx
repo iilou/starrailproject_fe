@@ -111,8 +111,11 @@ export default function Index() {
 
       data[i]["DisplayName"] = data[i]["Name"];
 
+      console.log("character", data[i]["_id"], data[i]["Name"]);
+
       if (parseInt(data[i]["_id"]) > 8000) {
-        data[i]["DisplayName"] = data[i]["Name"] + (parseInt(data[i]["_id"]) % 2 == 0 ? " F" : " M");
+        data[i]["DisplayName"] =
+          data[i]["Name"] + (parseInt(data[i]["_id"]) % 2 == 0 ? " F" : " M");
       }
 
       data[i]["DisplayOrder"] = i;
@@ -134,7 +137,10 @@ export default function Index() {
       }
       // data[i]["isPreview"] = data[i]["Ver"].find("v") !== -1 ? true : false;
 
-      highestMajorVersion = Math.max(highestMajorVersion, parseInt(data[i]["MajorVersion"].split(".")[0]));
+      highestMajorVersion = Math.max(
+        highestMajorVersion,
+        parseInt(data[i]["MajorVersion"].split(".")[0])
+      );
     }
 
     data = calculateRanks(data);
@@ -163,15 +169,15 @@ export default function Index() {
     }
     setWeaponData(data);
 
-    var i = 0;
-    var interval = setInterval(() => {
-      if (i >= data.length) {
-        clearInterval(interval);
-        return;
-      }
-      fetchWeaponDesc("" + data[i]["_id"]);
-      i++;
-    }, 100);
+    // var i = 0;
+    // var interval = setInterval(() => {
+    //   if (i >= data.length) {
+    //     clearInterval(interval);
+    //     return;
+    //   }
+    //   fetchWeaponDesc("" + data[i]["_id"]);
+    //   i++;
+    // }, 100);
   };
 
   const updateRelicData = (data: any) => {
@@ -236,7 +242,10 @@ export default function Index() {
     if (!avatarFilters.includes(filter)) {
       // setAvatarFilters((prev) => [...prev, filter]);
       setAvatarFilters((prev) => {
-        const newFilters = [...prev.filter((f) => !override_same_name || f.split("///")[0] !== name), filter];
+        const newFilters = [
+          ...prev.filter((f) => !override_same_name || f.split("///")[0] !== name),
+          filter,
+        ];
         if (value === "All") {
           //remove last filter
           // console.log("newFilters", newFilters);
@@ -251,7 +260,14 @@ export default function Index() {
     if (!avatarData) return;
 
     setAvatarFilters((prev) => {
-      const newFilters = [...prev.filter((f) => !(override_same_name ? f === name + "///" + value : f.split("///")[0] === name && f.split("///")[1] === value))];
+      const newFilters = [
+        ...prev.filter(
+          (f) =>
+            !(override_same_name
+              ? f === name + "///" + value
+              : f.split("///")[0] === name && f.split("///")[1] === value)
+        ),
+      ];
       return newFilters;
     });
   };
@@ -293,7 +309,9 @@ export default function Index() {
           // console.log(passive);
           newWeaponData[index]["Passive"] = passive;
           // newWeaponData[index]["Passive"]["Desc"][0] = newWeaponData[index]["Passive"]["Desc"].replace(/<[^>]+>/g, "");
-          newWeaponData[index]["Passive"]["Desc"] = newWeaponData[index]["Passive"]["Desc"].map((desc: string) => desc.replace(/<[^>]+>/g, "").split("Hidden Stat")[0]);
+          newWeaponData[index]["Passive"]["Desc"] = newWeaponData[index]["Passive"]["Desc"].map(
+            (desc: string) => desc.replace(/<[^>]+>/g, "").split("Hidden Stat")[0]
+          );
           return newWeaponData;
         });
       }
@@ -392,6 +410,27 @@ export default function Index() {
   // const { char_id } = useParams();
   const { char_id } = useParams() as { char_id: string | string[] };
 
+  async function fetchCharacter(char: string) {
+    if (!char) return;
+    try {
+      const res = await fetch(`/api/char/${char}`);
+      if (!res.ok) {
+        const errData = await res.json();
+        throw new Error(errData?.error || "Unknown error");
+      }
+
+      const json = await res.json();
+
+      console.log("json", json);
+      setView("char_" + char);
+      setSpecificCharacterData(json);
+      setViews(["Characters", "Weapons", "Relics", "char_" + char]);
+    } catch (err: any) {
+      console.error("Error fetching character data:", err.message);
+    } finally {
+    }
+  }
+
   useEffect(() => {
     // const char = searchParams.get("char");
 
@@ -401,27 +440,7 @@ export default function Index() {
 
     const char = Array.isArray(char_id) ? char_id[0] : char_id;
 
-    async function fetchCharacter() {
-      try {
-        const res = await fetch(`/api/char/${char}`);
-        if (!res.ok) {
-          const errData = await res.json();
-          throw new Error(errData?.error || "Unknown error");
-        }
-
-        const json = await res.json();
-
-        console.log("json", json);
-        setView("char_" + char);
-        setSpecificCharacterData(json);
-        setViews(["Characters", "Weapons", "Relics", "char_" + char]);
-      } catch (err: any) {
-        console.error("Error fetching character data:", err.message);
-      } finally {
-      }
-    }
-
-    fetchCharacter();
+    fetchCharacter(char);
   }, [char_id]);
 
   const setNewView = (view: string) => {
@@ -444,7 +463,7 @@ export default function Index() {
   const [isWeaponPassiveHidden, setIsWeaponPassiveHidden] = useState(false);
 
   return (
-    <div className='w-full h-full relative pb-[200px]' style={{ minHeight: "100vh" }}>
+    <div className='w-full h-full relative pb-[200px] m1_2:pb-[0px]' style={{ minHeight: "100vh" }}>
       <div className='absolute w-full top-0 left-0 z-0'>
         <BG />
       </div>
@@ -454,12 +473,13 @@ export default function Index() {
 
       {/* <LocalProfileView router={router} /> */}
 
-      <div className='w-[full] flex items-center justify-center flex-wrap sticky z-[950] top-[60px]'>
+      <div className='w-[full] flex items-center justify-center flex-wrap sticky z-[950] top-[60px] m1_2:top-[6vh]'>
         {views.map((item, idx) => {
           return (
             <div
               key={idx}
-              className={`w-[150px] h-[30px] flex items-center justify-center bg-[#4d48db] text-white text-sm font-bold mx-2 my-1 cursor-pointer rounded-sm shadow-lg shadow-[#000000] 
+              className={`w-[150px] h-[30px] text-center flex items-center justify-center bg-[#4d48db] text-white text-sm font-bold mx-2 my-1 cursor-pointer rounded-sm shadow-lg shadow-[#000000] leading-[30px]
+                m1_4:w-[23vw] m1_4:h-[3vh] m1_4:text-[1.5vh] m1_4:leading-[3vh] m1_4:mx-[0.3vh] m1_4:my-[1vh]
                 ${view === item ? "bg-[#3d3b8a]" : ""}`}
               onClick={() => {
                 setCurrentSort("");
@@ -468,7 +488,7 @@ export default function Index() {
                   setNewView(item);
                 }
               }}>
-              <div className='w-full h-full bg-[#a2a1dac2] hover:bg-[#8d8cc8c2] text-center leading-[30px] rounded-sm hover:font-extrabold shadow-lg hover:shadow-[#44446e]'>
+              <div className='w-full h-full bg-[#a2a1dac2] hover:bg-[#8d8cc8c2] text-center  rounded-sm hover:font-extrabold shadow-lg hover:shadow-[#44446e]'>
                 {item}
               </div>
             </div>
@@ -477,19 +497,36 @@ export default function Index() {
       </div>
 
       <>
-        {(view === "Characters" ? LF.avatarFilter(highestMajorVersion) : view === "Weapons" ? LF.weaponFilter : view === "Relics" ? LF.relicFilter : []).map((item, idx) => {
+        {(view === "Characters"
+          ? LF.avatarFilter(highestMajorVersion)
+          : view === "Weapons"
+          ? LF.weaponFilter
+          : view === "Relics"
+          ? LF.relicFilter
+          : []
+        ).map((item, idx) => {
           return (
-            <div key={idx} className='w-full flex items-center justify-center flex-wrap relative z-[900]'>
+            <div
+              key={idx}
+              className='w-full flex items-center justify-center flex-wrap relative z-[900]'>
               {item.values.map((value, idx) => {
                 return (
                   <FilterOption
                     item={value}
                     idx={idx}
-                    includes={avatarFilters.includes(item.name + "///" + value) || (value === "All" && avatarFilters.filter((f) => f.split("///")[0] === item.name).length === 0)}
+                    includes={
+                      avatarFilters.includes(item.name + "///" + value) ||
+                      (value === "All" &&
+                        avatarFilters.filter((f) => f.split("///")[0] === item.name).length === 0)
+                    }
                     addAvatarFilter={addFilter}
                     removeAvatarFilter={removeFilter}
                     name={item.name}
-                    display={"displayValues" in item && Array.isArray(item.displayValues) ? "" + item.displayValues[idx] : value}
+                    display={
+                      "displayValues" in item && Array.isArray(item.displayValues)
+                        ? "" + item.displayValues[idx]
+                        : value
+                    }
                     key={idx}
                   />
                 );
@@ -506,7 +543,14 @@ export default function Index() {
             </div>
             {
               // ["DisplayName", "Rarity", "Ver", "Element", "Path", "_id"].map((item, idx
-              (view === "Characters" ? LF.avatarSort : view === "Weapons" ? LF.weaponSort : view === "Relics" ? LF.relicSort : []).map((item, idx) => {
+              (view === "Characters"
+                ? LF.avatarSort
+                : view === "Weapons"
+                ? LF.weaponSort
+                : view === "Relics"
+                ? LF.relicSort
+                : []
+              ).map((item, idx) => {
                 const wasPreviousSort = currentSort.split("///")[0] === item.name;
                 return (
                   <div
@@ -514,13 +558,20 @@ export default function Index() {
                     className='w-[100px] h-[30px] flex items-center justify-center rounded-lg bg-[#121212] text-[#ffffff] text-sm font-bold mx-2 my-1 cursor-pointer hover:bg-[#232323] transition-all duration-200'
                     onClick={() => {
                       if (currentSort.split("///")[0] === item.name) {
-                        applySort(item.name, currentSort.split("///")[1] === "asc" ? "desc" : "asc");
+                        applySort(
+                          item.name,
+                          currentSort.split("///")[1] === "asc" ? "desc" : "asc"
+                        );
                       } else {
                         applySort(item.name, item.default);
                       }
                     }}>
                     {item.displayName}
-                    {wasPreviousSort && <span className='text-xs ml-1'>{currentSort.split("///")[1] === "asc" ? "↑" : "↓"}</span>}
+                    {wasPreviousSort && (
+                      <span className='text-xs ml-1'>
+                        {currentSort.split("///")[1] === "asc" ? "↑" : "↓"}
+                      </span>
+                    )}
                   </div>
                 );
               })
@@ -530,19 +581,32 @@ export default function Index() {
       </>
 
       {
-        <div className='w-full flex items-center justify-center flex-wrap sticky z-[950] top-[95px]' style={{ opacity: searchQuery.length > 0 ? 1 : 0 }}>
-          <div className='w-[200px] h-[30px] flex items-center justify-center rounded-lg bg-[#817fd0b8] text-[#e9e9e9] text-sm font-bold mx-2 my-1 cursor-pointer shadow-md shadow-[#000000]'>
+        <div
+          className='w-full flex items-center justify-center flex-wrap sticky z-[950] top-[95px]
+            m1_4:top-[10vh]
+          '
+          // style={{ opacity: searchQuery.length > 0 ? 1 : 0 }}
+        >
+          <div
+            className='w-[200px] h-[30px] flex items-center justify-center rounded-lg bg-[#817fd0b8] text-[#e9e9e9] text-sm font-bold mx-2 my-1 cursor-pointer shadow-md shadow-[#000000]
+            m1_4:w-[12vh] m1_4:h-[3vh] text-[1.5vh] leading-[3vh] m1_4:mx-[0.3vh] m1_4:my-[1vh]
+          '>
             {searchQuery}
           </div>
         </div>
       }
 
       {avatarData && view === "Characters" && (
-        <div className='w-[97%] mx-auto flex items-start justify-center flex-wrap relative z-[900]' style={{}}>
+        <div
+          className='w-full mx-auto flex items-start justify-center flex-wrap relative z-[900]'
+          style={{}}>
           {getQuery(avatarData).map((item: any, idx: number) => {
             // return <AvatarDisplay item={item} key={idx} onClick={() => router.push("/i?char=" + item._id)} />; // <AvatarDisplay item={item} key={idx} />
             return (
-              <div onClick={() => router.push("/i/" + item._id)} className='cursor-pointer' key={idx}>
+              <div
+                onClick={() => router.push("/i/" + item._id)}
+                className='cursor-pointer'
+                key={idx}>
                 <AvatarDisplay item={item} key={idx} />
               </div>
             );
@@ -564,26 +628,45 @@ export default function Index() {
           </div>
           <div className='w-[97%] mx-auto flex items-start justify-center flex-wrap relative z-[900]'>
             {getQuery(weaponData).map((item: any, idx: number) => (
-              <WeaponDisplay item={item} key={idx} showPassive={weaponPassiveHidden} /> // <AvatarDisplay item={item} key={idx} />
+              <WeaponDisplay
+                item={item}
+                key={idx}
+                showPassive={weaponPassiveHidden}
+                // fetchWeaponDesc={fetchWeaponDesc}
+              />
             ))}
           </div>
         </>
       )}
       {view === "Relics" && relicData && (
-        <div className='w-[97%] mx-auto flex items-start justify-center flex-wrap relative z-[900]' style={{}}>
+        <div
+          className='w-[97%] mx-auto flex items-start justify-center flex-wrap relative z-[900]'
+          style={{}}>
           {getQuery(relicData).map((item: any, idx: number) => {
             return <RelicDisplay item={item} key={idx} />; // <AvatarDisplay item={item} key={idx} />
           })}
         </div>
       )}
       {view.startsWith("char_") && specificCharacterData && avatarData && (
-        <div className='w-[97%] mx-auto flex items-start justify-center flex-wrap relative' style={{}}>
+        <div
+          className='w-full mx-auto flex items-start justify-center flex-wrap relative'
+          style={{}}>
           <Char
             json={specificCharacterData}
             id={view.split("_")[1]}
-            name={avatarData.find((item: any) => "" + item._id === view.split("_")[1])["DisplayName"]}
-            element={avatarData.find((item: any) => "" + item._id === view.split("_")[1])["Element"]}
-            charElementColor={elementColor[elementConvert[avatarData.find((item: any) => "" + item._id === view.split("_")[1])["Element"]]]}
+            name={
+              avatarData.find((item: any) => "" + item._id === view.split("_")[1])["DisplayName"]
+            }
+            element={
+              avatarData.find((item: any) => "" + item._id === view.split("_")[1])["Element"]
+            }
+            charElementColor={
+              elementColor[
+                elementConvert[
+                  avatarData.find((item: any) => "" + item._id === view.split("_")[1])["Element"]
+                ]
+              ]
+            }
             path={avatarData.find((item: any) => "" + item._id === view.split("_")[1])["Path"]}
             rarity={avatarData.find((item: any) => "" + item._id === view.split("_")[1])["Rarity"]}
             version={avatarData.find((item: any) => "" + item._id === view.split("_")[1])["Ver"]}
