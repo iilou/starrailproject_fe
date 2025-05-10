@@ -7,6 +7,8 @@ import LocalProfileView from "../../local_profile_view";
 import CharSel from "./char_sel";
 import BG from "../../bg";
 
+import { charDbTypes } from "./lib";
+
 import axios from "axios";
 
 import { useState, useEffect } from "react";
@@ -101,7 +103,8 @@ export default function Leaderboard() {
       }
       const pc2Index = headers.indexOf(setNum + "|2");
       const pc4Index = headers.indexOf(setNum + "|4");
-      const totalSetScore = parseFloat(charSetIndex[lb_name][pc2Index]) + parseFloat(charSetIndex[lb_name][pc4Index]);
+      const totalSetScore =
+        parseFloat(charSetIndex[lb_name][pc2Index]) + parseFloat(charSetIndex[lb_name][pc4Index]);
       if (totalSetScore > bestRelicSetScore) {
         bestRelicSetScore = totalSetScore;
       }
@@ -155,70 +158,6 @@ export default function Leaderboard() {
   // const [lb_name, set_lb_name] = useState(searchParams.get("char") || "The Herta");
   // const [lb_name, set_lb_name] = useState("The Herta");
   const defaultDbType = "Relic Score";
-  const charDbTypes: {
-    [key: string]: { name: string; id: number; lb_types: string[] };
-  } = {
-    Seele: {
-      name: "Seele",
-      id: 1102,
-      lb_types: ["", "", ""],
-    },
-    "Dan Heng • Imbibitor Lunae": {
-      name: "Dan Heng • Imbibitor Lunae",
-      id: 1213,
-      lb_types: [""],
-    },
-    "The Herta": {
-      name: "The Herta",
-      id: 1401,
-      lb_types: [""],
-    },
-    Feixiao: {
-      name: "Feixiao",
-      id: 1220,
-      lb_types: [""],
-    },
-    Firefly: {
-      name: "Firefly",
-      id: 1310,
-      lb_types: [""],
-    },
-    Aglaea: {
-      name: "Aglaea",
-      id: 1402,
-      lb_types: [""],
-    },
-    Castorice: {
-      name: "Castorice",
-      id: 1407,
-      lb_types: [""],
-    },
-    Acheron: {
-      name: "Acheron",
-      id: 1308,
-      lb_types: [""],
-    },
-    Gallagher: {
-      name: "Gallagher",
-      id: 1301,
-      lb_types: [""],
-    },
-    Robin: {
-      name: "Robin",
-      id: 1309,
-      lb_types: [""],
-    },
-    "Ruan Mei": {
-      name: "Ruan Mei",
-      id: 1303,
-      lb_types: [""],
-    },
-    Anaxa: {
-      name: "Anaxa",
-      id: 1405,
-      lb_types: [""],
-    },
-  };
 
   const charElement: { [key: string]: string } = {
     Seele: "Quantum",
@@ -255,19 +194,28 @@ export default function Leaderboard() {
 
     try {
       // fetch(`http://127.0.0.1:8000/get_lb_count/${lb_override === "" ? lb_name : lb_override}`)
-      fetch(`${process.env.NEXT_PUBLIC_API_URL}/get_lb_count/${lb_override === "" ? lb_name : lb_override}`)
+      fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/get_lb_count/${
+          lb_override === "" ? lb_name : lb_override
+        }`
+      )
         .then((res) => res.json())
         .then((data) => {
           setDbSize(data[0][0]);
 
           try {
             // fetch(`http://127.0.0.1:8000/get_lb/${lb_override === "" ? lb_name : lb_override}/${pageForce === -1 ? page : pageForce}/${pageSize}`)
-            fetch(`${process.env.NEXT_PUBLIC_API_URL}/get_lb/${lb_override === "" ? lb_name : lb_override}/${pageForce === -1 ? page : pageForce}/${pageSize}`, {
-              method: "GET",
-              headers: {
-                "Content-Type": "application/json",
-              },
-            })
+            fetch(
+              `${process.env.NEXT_PUBLIC_API_URL}/get_lb/${
+                lb_override === "" ? lb_name : lb_override
+              }/${pageForce === -1 ? page : pageForce}/${pageSize}`,
+              {
+                method: "GET",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+              }
+            )
               .then((res) => res.json())
               .then((data) => {
                 console.log("fetch lb data - ", data);
@@ -335,9 +283,21 @@ export default function Leaderboard() {
           ? parseInt(data[row][columns.score]) > maxScore
             ? `hsl(${max[0]}, ${max[1]}%, ${max[2]}%)`
             : `hsl(
-        ${((parseInt(data[row][columns.score]) - minCutoff) / (maxScore - minCutoff)) * (max[0] - min[0]) + min[0]}, 
-        ${((parseInt(data[row][columns.score]) - minCutoff) / (maxScore - minCutoff)) * (max[1] - min[1]) + min[1]}%, 
-        ${((parseInt(data[row][columns.score]) - minCutoff) / (maxScore - minCutoff)) * (max[2] - min[2]) + min[2]}%)`
+        ${
+          ((parseInt(data[row][columns.score]) - minCutoff) / (maxScore - minCutoff)) *
+            (max[0] - min[0]) +
+          min[0]
+        }, 
+        ${
+          ((parseInt(data[row][columns.score]) - minCutoff) / (maxScore - minCutoff)) *
+            (max[1] - min[1]) +
+          min[1]
+        }%, 
+        ${
+          ((parseInt(data[row][columns.score]) - minCutoff) / (maxScore - minCutoff)) *
+            (max[2] - min[2]) +
+          min[2]
+        }%)`
           : `hsl(${min[0]}, ${min[1]}%, ${min[2]}%)`;
 
       weight = "900";
@@ -371,7 +331,10 @@ export default function Leaderboard() {
           <strong
             style={{
               color: lb_name in charElement ? elementColor[charElement[lb_name]] : "",
-              textShadow: lb_name in charElement ? `0 0 2px #111111, 0 0 2px #111111, 0 0 15px #a2a2a2, 0 0 45px #e7e7e7` : "",
+              textShadow:
+                lb_name in charElement
+                  ? `0 0 2px #111111, 0 0 2px #111111, 0 0 15px #a2a2a2, 0 0 45px #e7e7e7`
+                  : "",
             }}>
             {lb_name.toUpperCase()}
           </strong>{" "}
@@ -395,7 +358,9 @@ export default function Leaderboard() {
       <div className='absolute w-full z-0'>
         {
           <Image
-            src={`https://raw.githubusercontent.com/Mar-7th/StarRailRes/refs/heads/master/image/character_portrait/${charList[lb_name as keyof typeof charList] || 1102}.png`}
+            src={`https://raw.githubusercontent.com/Mar-7th/StarRailRes/refs/heads/master/image/character_portrait/${
+              charList[lb_name as keyof typeof charList] || 1102
+            }.png`}
             width={724}
             height={724}
             alt='Character Portrait'
@@ -427,14 +392,21 @@ export default function Leaderboard() {
                 key={idx}
                 className={`grid grid-cols-[103px,210px,371px,232px,119px] text-[16px] gap-x-3 hover:bg-[#4f4ea3] active:bg-[#ewf7e72b0]  border-[#d7d7d733] ${
                   hoverCell.row === idx ? "bg-[#6861a9c9] underline" : ""
-                } hover:underline  px-[40px] ${idx === 0 ? "border-t-0" : "border-t-[1px]"} ${idx === data.length - 1 ? "border-b-0" : ""}`}>
+                } hover:underline  px-[40px] ${idx === 0 ? "border-t-0" : "border-t-[1px]"} ${
+                  idx === data.length - 1 ? "border-b-0" : ""
+                }`}>
                 {[
                   { text: `#${idx + 1 + (page - 1) * pageSize}`, fontWeight: "400" },
                   {
                     text: (
                       <div className='flex px-3 justify-around items-center'>
-                        <span className='text-left font-bold'>{regionIds["" + row[columns.uid].toString().charAt(0)]}</span>
-                        <span className='text-[#d7d7d7] text-right font-normal'> {row[columns.uid]}</span>
+                        <span className='text-left font-bold'>
+                          {regionIds["" + row[columns.uid].toString().charAt(0)]}
+                        </span>
+                        <span className='text-[#d7d7d7] text-right font-normal'>
+                          {" "}
+                          {row[columns.uid]}
+                        </span>
                       </div>
                     ),
                     fontWeight: "400",
@@ -444,10 +416,15 @@ export default function Leaderboard() {
                 ].map((col, i) => (
                   <div
                     className={` my-auto text-center py-2 hover:bg-[#1E1C65] transition-fast rounded-md active:shadow-[0px_0px_0px_1px_rgb(240,240,240)]  ${
-                      hoverCell.row === idx && hoverCell.col === i ? "bg-[#ffffff20] shadow-[0px_0px_0px_1px_rgb(150,150,150)]" : ""
+                      hoverCell.row === idx && hoverCell.col === i
+                        ? "bg-[#ffffff20] shadow-[0px_0px_0px_1px_rgb(150,150,150)]"
+                        : ""
                     }`}
                     key={i}
-                    style={{ color: color_find(idx, i).color, fontWeight: color_find(idx, i).weight }}
+                    style={{
+                      color: color_find(idx, i).color,
+                      fontWeight: color_find(idx, i).weight,
+                    }}
                     onClick={(e) => {
                       if (e.button === 0) {
                         if (hoverCell.row === idx && hoverCell.col === i) {
@@ -489,7 +466,12 @@ export default function Leaderboard() {
                     }
                   }}>
                   <span className='cursor-pointer'>
-                    {[get_rank_from_score(parseInt(row[columns.score]) / 1000, 70 + lb_relicSetMaxScore)].map((rank, i) => (
+                    {[
+                      get_rank_from_score(
+                        parseInt(row[columns.score]) / 1000,
+                        70 + lb_relicSetMaxScore
+                      ),
+                    ].map((rank, i) => (
                       <div
                         style={{
                           color: rank.color,

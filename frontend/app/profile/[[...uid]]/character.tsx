@@ -82,7 +82,10 @@ Anaxa	0	0.2	0	0	0.7	0	1	1	1	0	0	0	0	0	0	0	0	0	0.7	0	0`;
           style={{
             transform: scrollY > 200 ? `translateX(-384px)` : `translateX(-50px)`,
             // filter: `drop-shadow(0px 0px 30px ${characterJSON["element"]["color"]}88)`,
-            filter: scrollY > 200 ? `drop-shadow(0px 0px 5px ${characterJSON["element"]["color"]}ee)` : `drop-shadow(0px 0px 30px ${characterJSON["element"]["color"]}99)`,
+            filter:
+              scrollY > 200
+                ? `drop-shadow(0px 0px 5px ${characterJSON["element"]["color"]}ee)`
+                : `drop-shadow(0px 0px 30px ${characterJSON["element"]["color"]}99)`,
           }}>
           <Image
             src={`https://raw.githubusercontent.com/Mar-7th/StarRailRes/refs/heads/master/${characterJSON["portrait"]}`}
@@ -108,7 +111,9 @@ Anaxa	0	0.2	0	0	0.7	0	1	1	1	0	0	0	0	0	0	0	0	0	0.7	0	0`;
             backgroundRepeat: "no-repeat",
             backgroundPosition: "50% 60%",
           }}>
-          <div className='text-2xl font-extrabold w-[730px] text-center bg-bk1 py-3 rounded-lg' style={{ color: characterJSON["element"]["color"] }}>
+          <div
+            className='text-2xl font-extrabold w-[730px] text-center bg-bk1 py-3 rounded-lg'
+            style={{ color: characterJSON["element"]["color"] }}>
             {characterJSON["name"] + " - Level " + characterJSON["level"]}
           </div>
           <div className='w-[730px] flex flex-col flex-wrap gap-[6px] h-[280px] justify-end items-center'>
@@ -150,7 +155,9 @@ Anaxa	0	0.2	0	0	0.7	0	1	1	1	0	0	0	0	0	0	0	0	0	0.7	0	0`;
               }}>
               <div className='flex items-center justify-center w-[125px] h-[147px] rounded-lg transition-all duration-150 icon '>
                 <Image
-                  src={`https://raw.githubusercontent.com/Mar-7th/StarRailRes/refs/heads/master/${characterJSON["light_cone"] && characterJSON["light_cone"]["preview"]}`}
+                  src={`https://raw.githubusercontent.com/Mar-7th/StarRailRes/refs/heads/master/${
+                    characterJSON["light_cone"] && characterJSON["light_cone"]["preview"]
+                  }`}
                   width={125}
                   height={147}
                   alt='Light Cone Portrait'
@@ -170,7 +177,9 @@ Anaxa	0	0.2	0	0	0.7	0	1	1	1	0	0	0	0	0	0	0	0	0	0.7	0	0`;
                 characterJSON["light_cone"] ? characterJSON["light_cone"]["level"] : 0
               }`}</div>
               <div className='font-medium text-[16px] leading-[20px] mt-[2px] w-[155px] text-[#eaeaead0] px-3 rounded-lg py-1 bg-[#232323]'>
-                {characterJSON["light_cone"] ? characterJSON["light_cone"]["name"] : "No Light Cone"}
+                {characterJSON["light_cone"]
+                  ? characterJSON["light_cone"]["name"]
+                  : "No Light Cone"}
               </div>
             </div>
 
@@ -181,8 +190,12 @@ Anaxa	0	0.2	0	0	0.7	0	1	1	1	0	0	0	0	0	0	0	0	0	0.7	0	0`;
                   value={
                     parseFloat(attribute["value"]) +
                     parseFloat(
-                      characterJSON["additions"].find((addition: any) => addition["field"] === attribute["field"]) !== undefined
-                        ? characterJSON["additions"].find((addition: any) => addition["field"] === attribute["field"])["value"]
+                      characterJSON["additions"].find(
+                        (addition: any) => addition["field"] === attribute["field"]
+                      ) !== undefined
+                        ? characterJSON["additions"].find(
+                            (addition: any) => addition["field"] === attribute["field"]
+                          )["value"]
                         : 0
                     )
                   }
@@ -190,7 +203,9 @@ Anaxa	0	0.2	0	0	0.7	0	1	1	1	0	0	0	0	0	0	0	0	0	0.7	0	0`;
                   critical={
                     characterJSON["name"] in charIndex &&
                     charIndex["INFO"].includes(attribute["name"]) &&
-                    parseFloat(charIndex[characterJSON["name"]][charIndex["INFO"].indexOf(attribute["name"])]) > 0.3
+                    parseFloat(
+                      charIndex[characterJSON["name"]][charIndex["INFO"].indexOf(attribute["name"])]
+                    ) > 0.3
                   }
                   key={idx}
                 />
@@ -199,8 +214,11 @@ Anaxa	0	0.2	0	0	0.7	0	1	1	1	0	0	0	0	0	0	0	0	0	0.7	0	0`;
             {characterJSON["additions"]
               .filter(
                 (addition: any) =>
-                  !characterJSON["attributes"].find((attribute: any) => attribute["field"] === addition["field"]) &&
-                  (!addition["name"].includes("DMG Boost") || addition["name"].includes(characterJSON["element"]["name"]))
+                  !characterJSON["attributes"].find(
+                    (attribute: any) => attribute["field"] === addition["field"]
+                  ) &&
+                  (!addition["name"].includes("DMG Boost") ||
+                    addition["name"].includes(characterJSON["element"]["name"]))
               )
               .map((addition: any, idx: number) => {
                 return (
@@ -211,7 +229,11 @@ Anaxa	0	0.2	0	0	0.7	0	1	1	1	0	0	0	0	0	0	0	0	0	0.7	0	0`;
                     critical={
                       characterJSON["name"] in charIndex &&
                       charIndex["INFO"].includes(addition["name"]) &&
-                      parseFloat(charIndex[characterJSON["name"]][charIndex["INFO"].indexOf(addition["name"])]) > 0.3
+                      parseFloat(
+                        charIndex[characterJSON["name"]][
+                          charIndex["INFO"].indexOf(addition["name"])
+                        ]
+                      ) > 0.3
                     }
                     key={idx}
                   />
@@ -227,12 +249,15 @@ Anaxa	0	0.2	0	0	0.7	0	1	1	1	0	0	0	0	0	0	0	0	0	0.7	0	0`;
           opacity: scrollY > 200 ? 1 : 0,
         }}>
         <div className='h-[10px] w-[1px] mx-auto relative -translate-y-[100px]'>
-          {[0, 1, 2, 3, 4, 5].map((num, i) => {
-            const r = Math.floor(num / 2);
-            const c = num % 2;
-            const size = 512;
-            const gap = 400;
-            const gap_y = 40;
+          {/* {[0, 1, 2, 3, 4, 5].map((num, i) => { */}
+          {[0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5].map((num, i) => {
+            // const r = Math.floor(num / 2);
+            const r = Math.floor(i / 2);
+            // const c = num % 2;
+            const c = i % 2;
+            const size = 356;
+            const gap = 500;
+            const gap_y = 0;
             const t_x = c * size - size + gap * (c == 0 ? -1 : 1);
             const t_y = r * size + r * gap_y + 200;
             const op = num >= characterJSON["rank"] ? 0.3 : 1;
@@ -241,7 +266,10 @@ Anaxa	0	0.2	0	0	0.7	0	1	1	1	0	0	0	0	0	0	0	0	0	0.7	0	0`;
               <div
                 className={`absolute top-0 left-0 z-[10] animate-eid_glow filter transition-all`}
                 style={{
-                  transform: scrollY > 400 + 250 * i * 0 ? `translateX(${t_x}px) translateY(${t_y}px)` : `translateX(-250px) translateY(-350px)`,
+                  transform:
+                    scrollY > 400 + 250 * i * 0
+                      ? `translateX(${t_x}px) translateY(${t_y}px)`
+                      : `translateX(-250px) translateY(-350px)`,
                   width: size + "px",
                   height: size + "px",
 
@@ -250,18 +278,26 @@ Anaxa	0	0.2	0	0	0.7	0	1	1	1	0	0	0	0	0	0	0	0	0	0.7	0	0`;
                   filter:
                     scrollY > 400
                       ? num < characterJSON["rank"]
-                        ? "brightness(1.2) drop-shadow(0px 0px 40px #ffffffc9) grayscale(0) opacity(1)"
-                        : "brightness(0.5) drop-shadow(0px 0px 0px #ffffff00) grayscale(0.7) opacity(0.7)"
+                        ? "brightness(1) drop-shadow(0px 0px 20px #ffffff79) grayscale(0) opacity(1) blur(0px)"
+                        : "brightness(0.3) drop-shadow(0px 0px 0px #ffffff00) grayscale(0.7) opacity(0.5) blur(2px)"
                       : num < characterJSON["rank"]
-                      ? "brightness(1.2) drop-shadow(0px 0px 300px #ffffff) grayscale(1) opacity(0)"
-                      : "brightness(0.5) drop-shadow(0px 0px 300px #ffffff) grayscale(1) opacity(0)",
+                      ? "brightness(1) drop-shadow(0px 0px 300px #ffffff) grayscale(1) opacity(0) blur(0px)"
+                      : "brightness(0.3) drop-shadow(0px 0px 300px #ffffff) grayscale(1) opacity(0) blur(2px)",
                   // spd = distance / time
                   // time = distance / spd
-                  transitionDuration: `${Math.sqrt((t_x + size / 2 - (-250 + size / 2)) ** 2 + (t_y + size / 2 - (-350 + size / 2)) ** 2) / moveSpeed}ms`,
+                  transitionDuration: `${
+                    Math.sqrt(
+                      (t_x + size / 2 - (-250 + size / 2)) ** 2 +
+                        (t_y + size / 2 - (-350 + size / 2)) ** 2
+                    ) / moveSpeed
+                  }ms`,
                 }}
-                key={num}>
+                // key={num}
+                key={i}>
                 <Image
-                  src={`https://api.hakush.in/hsr/UI/rank/_dependencies/textures/${characterJSON["id"]}/${characterJSON["id"]}_Rank_${num + 1}.webp`}
+                  src={`https://api.hakush.in/hsr/UI/rank/_dependencies/textures/${
+                    characterJSON["id"]
+                  }/${characterJSON["id"]}_Rank_${num + 1}.webp`}
                   width={1024}
                   height={1024}
                   alt={`Rank ${num}`}

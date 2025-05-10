@@ -9,6 +9,7 @@ export default function BG() {
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
         backgroundPosition: "center",
+        filter: "brightness(0.7) saturate(0.6) contrast(1.2) blur(0.5px)",
       }}></div>
   );
 }
