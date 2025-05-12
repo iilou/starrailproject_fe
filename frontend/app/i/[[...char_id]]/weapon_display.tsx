@@ -117,26 +117,28 @@ export default function WeaponDisplay({
             width={128}
             height={128}
             alt={item["Name"]}
-            className='scale-110 group-hover:scale-150 relative z-[100] w-[128px]'
+            className='scale-[1.1] group-hover:scale-[1.3] relative z-[100] w-[128px] transition-all duration-300  drop-shadow-[5px_5px_0px_#000000a7] '
           />
         </div>
         <div className='flex flex-col items-start justify-start w-[180px] ml-6 h-fit'>
           <div
-            className='font-bold text-[16px] leading-[18px] relative z-[101] mb-1 group-hover:text-[16px] group-hover:font-extrabold'
-            style={{
-              textShadow: `1px 0 0px #000, -1px 0 0px #000, 0 1px 0px #000, 0 -1px 0px #000`,
-              color: `${rarityColor}`,
-            }}>
+            className='font-bold text-[16px] leading-[18px] relative z-[101] mb-1 group-hover:text-[16px] group-hover:font-extrabold text-[#dadada]'
+            style={
+              {
+                // textShadow: `1px 0 0px #000, -1px 0 0px #000, 0 1px 0px #000, 0 -1px 0px #000`,
+                // color: `${rarityColor}`,
+              }
+            }>
             {item["DisplayName"]}
           </div>
-          <div className='text-xs text-[#dadada] font-bold leading-[14px] mb-1'>{item["_id"]}</div>
+          <div className='text-xs text-[#787878] font-bold leading-[14px] mb-1'>{item["_id"]}</div>
           {Object.keys(item["Stats"]).map((key: string, idx: number) => {
             return (
               <div key={idx} className='flex'>
-                <div className='text-[12px] text-[#dadada] font-bold leading-[14px] w-[40px]'>
+                <div className='text-[12px] text-[#b2b2b2] font-bold leading-[14px] w-[40px]'>
                   {key}
                 </div>
-                <div className='text-[12px] text-[#dadada] font-bold leading-[14px]'>
+                <div className='text-[12px] text-[#b2b2b2] font-bold leading-[14px]'>
                   {item["Stats"][key]}
                 </div>
               </div>
