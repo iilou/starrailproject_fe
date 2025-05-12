@@ -66,6 +66,7 @@ export default function Index() {
     // Then, for each stat, sort descending and assign ranks
     const statRankMaps: Record<string, Map<number, number>> = {}; // stat -> id -> rank
     const statTotalCounts: Record<string, number> = {};
+    const statMaxValues: Record<string, number> = {};
 
     for (const [stat, entries] of Object.entries(allStats)) {
       // Sort descending (higher stat = better rank)
@@ -73,12 +74,21 @@ export default function Index() {
 
       const rankMap = new Map<number, number>();
 
-      entries.forEach((entry, index) => {
-        rankMap.set(entry.id, index + 1); // rank 1, 2, 3, ...
-      });
+      // entries.forEach((entry, index) => {
+      //   rankMap.set(entry.id, index + 1); // rank 1, 2, 3, ...
+      // });
+      for (let i = 0; i < entries.length; i++) {
+        const entry = entries[i];
+        if (i > 0 && entry.value.toFixed(1) === entries[i - 1].value.toFixed(1)) {
+          rankMap.set(entry.id, rankMap.get(entries[i - 1].id)!); // Same rank as previous
+        } else {
+          rankMap.set(entry.id, i + 1); // rank 1, 2, 3, ...
+        }
+      }
 
       statRankMaps[stat] = rankMap;
       statTotalCounts[stat] = entries.length;
+      statMaxValues[stat] = parseFloat(entries[0].value.toFixed(1)); // Highest value for this stat
     }
 
     // Finally, assign ranks and rankTotals back to each character
@@ -86,11 +96,13 @@ export default function Index() {
       const stats = character.Stats || {};
       character.rank = {};
       character.rankTotal = {};
+      character.maxStat = {};
 
       for (const stat of Object.keys(stats)) {
         if (statRankMaps[stat]) {
           character.rank[stat] = statRankMaps[stat].get(character._id) || null;
           character.rankTotal[stat] = statTotalCounts[stat];
+          character.maxStat[stat] = statMaxValues[stat];
         }
       }
     }
@@ -137,7 +149,6 @@ export default function Index() {
         data[i]["stat_aggro"] = 0;
         alert("Error: " + e);
       }
-      // data[i]["isPreview"] = data[i]["Ver"].find("v") !== -1 ? true : false;
 
       highestMajorVersion = Math.max(
         highestMajorVersion,
@@ -170,16 +181,6 @@ export default function Index() {
       }
     }
     setWeaponData(data);
-
-    // var i = 0;
-    // var interval = setInterval(() => {
-    //   if (i >= data.length) {
-    //     clearInterval(interval);
-    //     return;
-    //   }
-    //   fetchWeaponDesc("" + data[i]["_id"]);
-    //   i++;
-    // }, 100);
   };
 
   const updateRelicData = (data: any) => {
@@ -595,7 +596,7 @@ export default function Index() {
                 onClick={() => router.push("/i/" + item._id)}
                 className='cursor-pointer'
                 key={idx}>
-                <AvatarDisplay item={item} key={idx} />
+                <AvatarDisplay item={item} key={idx} sortedStat={currentSort} />
               </div>
             );
           })}

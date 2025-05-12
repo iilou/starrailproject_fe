@@ -378,9 +378,9 @@ export default function Leaderboard() {
 
       <div className='h-12 w-1'></div>
 
-      <div className='w-[97vw] m-auto relative z-2 rounded-xl pb-4 opacity-[90%]  overflow-x-auto '>
+      <div className='w-[97vw] m-auto relative z-2 rounded-xl pb-4 opacity-[90%] overflow-x-auto '>
         <div
-          className='grid grid-cols-[103px,210px,371px,232px,119px] gap-x-3 bg-[#020071c2] px-[40px] rounded-md py-[2px] shadow-md shadow-[#000000d2] z-[100] relative w-fit text-[16px]
+          className='grid grid-cols-[103px,210px,371px,232px,119px] gap-x-3 bg-[#020071c2] px-[40px] rounded-md py-[2px] shadow-md shadow-[#000000d2] z-[100] relative w-fit text-[16px] mx-auto
                   m1_4:grid-cols-[12vw,20vw,32vw,20vw,12vw] m1_4:gap-x-[0.2vw] m1_4:px-[0.2vw] m1_4:text-[2.3vw] 
           '
           // style={{ width: 103 + 210 + 371 + 232 + 119 + 12 * 9 + "px" } /* 12px for gap */}
@@ -397,7 +397,7 @@ export default function Leaderboard() {
           ))}
         </div>
         <div
-          className='flex flex-col scrollbar-thin scrollbar-thumb-[#1E1C65] scrollbar-track-[#020071c2] scrollbar-thumb-rounded-full scrollbar-track-rounded-full z-[99] relative w-fit bg-[#3d3a8c77] rounded-md
+          className='flex flex-col scrollbar-thin scrollbar-thumb-[#1E1C65] scrollbar-track-[#020071c2] scrollbar-thumb-rounded-full scrollbar-track-rounded-full z-[99] relative w-fit bg-[#3d3a8c77] rounded-md mx-auto
           '
           // style={{ width: 103 + 210 + 371 + 232 + 119 + 12 * 9 + "px" } /* 12px for gap */}
         >
