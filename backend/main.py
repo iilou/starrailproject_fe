@@ -26,7 +26,7 @@ app.add_middleware(
     allow_origins=["http://localhost:3000"
                    , "https://starrailproject-fe.vercel.app"
                    , "https://stylla.moe"
-                   , "https://star.stylle.moe"
+                   , "https://star.stylla.moe"
                    ],  # Frontend URL
     allow_credentials=True,
     allow_methods=["*"],  # Allow all methods
