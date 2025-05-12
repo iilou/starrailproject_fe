@@ -146,7 +146,7 @@ export default function Home() {
         </div>
         <input
           type='text'
-          placeholder='Enter UID (9 digits) (e.g. 600505603)'
+          placeholder='Enter UID (e.x. 600505603)'
           className=' rounded-lg bg-transparent border-c2 border-[1px] text-w1 w-fit relative block px-10 py-2 text-center text-base font-extrabold'
           onKeyDown={handleUidSearchDown}
         />
