@@ -3,14 +3,31 @@ import React, { useState, useEffect, useMemo } from "react";
 import SkillNew from "./skill_new";
 import { ranks } from "../../ranks";
 
-export default function SkillsM({ skills, skill_trees, rank, rankIcons, charID }: { skills: any; skill_trees: any; rank: number; rankIcons: any; charID: number }) {
+export default function SkillsM({
+  skills,
+  skill_trees,
+  rank,
+  rankIcons,
+  charID,
+}: {
+  skills: any;
+  skill_trees: any;
+  rank: number;
+  rankIcons: any;
+  charID: number;
+}) {
   function unsaturatedColor(hex: string) {
     hex = hex.replace("#", "");
     let r = parseInt(hex.substring(0, 2), 16);
     let g = parseInt(hex.substring(2, 4), 16);
     let b = parseInt(hex.substring(4, 6), 16);
 
-    return "#" + (r * 0.3).toString(16).padStart(2, "0") + (g * 0.3).toString(16).padStart(2, "0") + (b * 0.3).toString(16).padStart(2, "0");
+    return (
+      "#" +
+      (r * 0.3).toString(16).padStart(2, "0") +
+      (g * 0.3).toString(16).padStart(2, "0") +
+      (b * 0.3).toString(16).padStart(2, "0")
+    );
   }
 
   const isLegacy = false;
@@ -53,7 +70,9 @@ export default function SkillsM({ skills, skill_trees, rank, rankIcons, charID }
   useEffect(() => {
     const fetchEidolonData = async () => {
       try {
-        const response = await fetch(`https://raw.githubusercontent.com/Mar-7th/StarRailRes/refs/heads/master/index_new/en/character_ranks.json`);
+        const response = await fetch(
+          `https://raw.githubusercontent.com/Mar-7th/StarRailRes/refs/heads/master/index_new/en/character_ranks.json`
+        );
         const data = await response.json();
         setEidJSON(data);
         console.log("eidolon data - ", data);
@@ -80,13 +99,27 @@ export default function SkillsM({ skills, skill_trees, rank, rankIcons, charID }
         <span className='hover:cursor-pointer hover:underline select-none relative z-[100]'>{isLegacy ? "Legacy View  (Click to change)" : "Normal View (Click to change)"}</span>
       </div> */}
       <div className='w-full flex flex-wrap justify-center mt-1 gap-5 z-[100] relative'>
-        <div className='relative z-[100] w-[1650px] mx-auto mb-3' style={{ display: !isLegacy ? "block" : "none" }}>
+        <div
+          className='relative z-[100] w-[1150px] mx-auto mb-3'
+          style={{ display: !isLegacy ? "block" : "none" }}>
           <div className='flex flex-col justify-center items-center w-full h-fit'>
             <div className='w-full flex justify-center gap-[16px] flex-wrap mt-[10px]'>
-              {[0, 1, 2, 3, skills.findIndex((o: any) => o["icon"].includes("memosprite_skill")), skills.findIndex((o: any) => o["icon"].includes("memosprite_talent"))]
+              {[
+                0,
+                1,
+                2,
+                3,
+                skills.findIndex((o: any) => o["icon"].includes("memosprite_skill")),
+                skills.findIndex((o: any) => o["icon"].includes("memosprite_talent")),
+              ]
                 .filter((o: any) => o !== -1)
                 .map((index: number) => {
-                  const isMax = isMaxLevel(skills[index]["level"], skills[index]["max_level"], true, skills[index]["id"]);
+                  const isMax = isMaxLevel(
+                    skills[index]["level"],
+                    skills[index]["max_level"],
+                    true,
+                    skills[index]["id"]
+                  );
                   const isMemo = index > 3;
                   return (
                     <SkillNew
@@ -95,7 +128,10 @@ export default function SkillsM({ skills, skill_trees, rank, rankIcons, charID }
                       icon={skills[index]["icon"]}
                       elementColor={skills[0]["element"]["color"]}
                       name={skills[index]["name"]}
-                      desc={skills.filter((o: any) => o["icon"] === skills[index]["icon"] && o["effect"] !== "MazeAttack")}
+                      desc={skills.filter(
+                        (o: any) =>
+                          o["icon"] === skills[index]["icon"] && o["effect"] !== "MazeAttack"
+                      )}
                       level={skills[index]["level"]}
                       type_text={skills[index]["type_text"]}
                       key={index}
@@ -111,7 +147,9 @@ export default function SkillsM({ skills, skill_trees, rank, rankIcons, charID }
                       className='w-fit h-fit block hover:bg-[#4e4d88] active:bg-[#252547] active:shadow-[0px_0px_0px_1px_inset_#e7e7e7] rounded-md px-4 pt-4 pb-2 bg-[#5c59bf]'
                       key={index}>
                       <Image
-                        src={`https://raw.githubusercontent.com/Mar-7th/StarRailRes/refs/heads/master/${skill_trees[index + 4]["icon"]}`}
+                        src={`https://raw.githubusercontent.com/Mar-7th/StarRailRes/refs/heads/master/${
+                          skill_trees[index + 4]["icon"]
+                        }`}
                         width={32}
                         height={32}
                         alt={skill_trees[index + 4]["name"]}
@@ -139,15 +177,17 @@ export default function SkillsM({ skills, skill_trees, rank, rankIcons, charID }
                   );
                 })}
                 {Object.values(
-                  skill_trees.slice(8, Math.min(skill_trees.length, 18)).reduce((acc: any, obj: any) => {
-                    if (!acc[obj.icon]) {
-                      acc[obj.icon] = { ...obj }; // First instance
-                    } else {
-                      acc[obj.icon].level += obj.level; // Sum values
-                      acc[obj.icon].max_level += obj.max_level; // Sum maxvalues
-                    }
-                    return acc;
-                  }, {})
+                  skill_trees
+                    .slice(8, Math.min(skill_trees.length, 18))
+                    .reduce((acc: any, obj: any) => {
+                      if (!acc[obj.icon]) {
+                        acc[obj.icon] = { ...obj }; // First instance
+                      } else {
+                        acc[obj.icon].level += obj.level; // Sum values
+                        acc[obj.icon].max_level += obj.max_level; // Sum maxvalues
+                      }
+                      return acc;
+                    }, {})
                 ).map((obj: any) => (
                   <div className='w-fit h-fit block hover:bg-[#4e4d88] active:bg-[#252547] active:shadow-[0px_0px_0px_1px_inset_#e7e7e7] px-4 pt-4 pb-2 bg-[#5c59bf] rounded-md'>
                     <Image
@@ -178,7 +218,10 @@ export default function SkillsM({ skills, skill_trees, rank, rankIcons, charID }
                       style={{
                         // color: skill_trees[index + 4]["level"] >= skill_trees[index + 4]["max_level"] ? skills[0]["element"]["color"] : "#e2e2e2",
                         color: "#e7e7e7",
-                        textShadow: obj.level >= obj.max_level ? `0 0 5px ${skills[0]["element"]["color"]}, 0 0 10px ${skills[0]["element"]["color"]}` : "none",
+                        textShadow:
+                          obj.level >= obj.max_level
+                            ? `0 0 5px ${skills[0]["element"]["color"]}, 0 0 10px ${skills[0]["element"]["color"]}`
+                            : "none",
                       }}>
                       {`x${obj.level}`}
                     </div>
@@ -186,7 +229,7 @@ export default function SkillsM({ skills, skill_trees, rank, rankIcons, charID }
                 ))}
               </div>
             </div>
-            <div className='flex justify-center gap-[16px] flex-wrap mt-[10px] w-[1200px]'>
+            <div className='flex justify-center gap-[16px] flex-wrap mt-[10px] w-[1150px]'>
               {rankIcons.map((icon: any, index: number) => {
                 return (
                   <SkillNew
@@ -198,7 +241,9 @@ export default function SkillsM({ skills, skill_trees, rank, rankIcons, charID }
                     desc={[
                       {
                         name: eidInfo[index] ? eidInfo[index]["name"] : "",
-                        desc: eidInfo[index] ? eidInfo[index]["desc"] : "Eidolon description loading or not available...",
+                        desc: eidInfo[index]
+                          ? eidInfo[index]["desc"]
+                          : "Eidolon description loading or not available...",
                       },
                     ]}
                     level={"" + (rank >= index + 1 ? 1 : 0) + " / 1"}
@@ -228,11 +273,15 @@ export default function SkillsM({ skills, skill_trees, rank, rankIcons, charID }
                     height={50}
                     alt={skill["name"]}
                     style={{
-                      boxShadow: isMax ? `0 0 10px 5px ${skills[0]["element"]["color"]} inset, 0 0 5px 1px ${skills[0]["element"]["color"]}` : "",
+                      boxShadow: isMax
+                        ? `0 0 10px 5px ${skills[0]["element"]["color"]} inset, 0 0 5px 1px ${skills[0]["element"]["color"]}`
+                        : "",
                     }}
                     className='rounded-full'
                   />
-                  <div className='font-bold text-center' style={{ color: isMax ? skills[0]["element"]["color"] : "#898989" }}>
+                  <div
+                    className='font-bold text-center'
+                    style={{ color: isMax ? skills[0]["element"]["color"] : "#898989" }}>
                     {skill["level"]}
                   </div>
                 </div>
@@ -255,7 +304,10 @@ export default function SkillsM({ skills, skill_trees, rank, rankIcons, charID }
                       height={36}
                       alt={`Rank ${index + 1}`}
                       style={{
-                        boxShadow: index < rank ? `0 0 10px 5px ${skills[0]["element"]["color"]} inset, 0 0 5px 1px ${skills[0]["element"]["color"]}` : "",
+                        boxShadow:
+                          index < rank
+                            ? `0 0 10px 5px ${skills[0]["element"]["color"]} inset, 0 0 5px 1px ${skills[0]["element"]["color"]}`
+                            : "",
                       }}
                       className='rounded-full'
                     />
@@ -279,7 +331,9 @@ export default function SkillsM({ skills, skill_trees, rank, rankIcons, charID }
                   return (
                     <div className='w-fit h-fit block hover:bg-[#4e4d88] active:bg-[#252547] active:shadow-[0px_0px_0px_1px_inset_#e7e7e7] rounded-md px-2 pt-3 pb-1 '>
                       <Image
-                        src={`https://raw.githubusercontent.com/Mar-7th/StarRailRes/refs/heads/master/${skill_trees[index + 4]["icon"]}`}
+                        src={`https://raw.githubusercontent.com/Mar-7th/StarRailRes/refs/heads/master/${
+                          skill_trees[index + 4]["icon"]
+                        }`}
                         width={26}
                         height={26}
                         alt={skill_trees[index + 4]["name"]}
@@ -308,15 +362,17 @@ export default function SkillsM({ skills, skill_trees, rank, rankIcons, charID }
                   <span className='select-none hover:cursor-text'>MINOR TRACE</span>
                 </div>
                 {Object.values(
-                  skill_trees.slice(8, Math.min(skill_trees.length, 19)).reduce((acc: any, obj: any) => {
-                    if (!acc[obj.icon]) {
-                      acc[obj.icon] = { ...obj }; // First instance
-                    } else {
-                      acc[obj.icon].level += obj.level; // Sum values
-                      acc[obj.icon].max_level += obj.max_level; // Sum maxvalues
-                    }
-                    return acc;
-                  }, {})
+                  skill_trees
+                    .slice(8, Math.min(skill_trees.length, 19))
+                    .reduce((acc: any, obj: any) => {
+                      if (!acc[obj.icon]) {
+                        acc[obj.icon] = { ...obj }; // First instance
+                      } else {
+                        acc[obj.icon].level += obj.level; // Sum values
+                        acc[obj.icon].max_level += obj.max_level; // Sum maxvalues
+                      }
+                      return acc;
+                    }, {})
                 ).map((obj: any) => (
                   <div className='w-fit h-fit block hover:bg-[#4e4d88] active:bg-[#252547] active:shadow-[0px_0px_0px_1px_inset_#e7e7e7] rounded-md px-2 pt-3 pb-1 '>
                     <Image

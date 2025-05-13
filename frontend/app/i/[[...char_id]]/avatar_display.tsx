@@ -27,7 +27,7 @@ export default function AvatarDisplay({
       : "linear-gradient(180deg,#343659,#8a5fcc 53%)";
   //   const rarityGradient = item["Rarity"] === 5 ? "linear-gradient(180deg,#885550,#c9a36a 53%)" : "linear-gradient(180deg,#343659,#4172b9 53%)";
   return (
-    <div className='flex flex-col items-center justify-center mx-2 my-4 bg-[#3d3b8a] rounded-lg px-1 py-1 w-[150px] h-[290px] shadow-[0_0_0_0_#ffffff00] text-white text-sm group hover:cursor-pointer'>
+    <div className='flex flex-col items-center justify-center mx-1 my-1 bg-[#3d3b8a] rounded-lg px-1 py-2 w-[150px] h-fit shadow-[0_0_0_0_#ffffff00] text-white text-sm group hover:cursor-pointer hover:shadow-[0_0_0_1px_#ffffff]'>
       <div
         className='mb-1 font-bold text-[18px] relative z-[101] h-[22px] group-hover:text-[18px] group-hover:font-extrabold text-center'
         style={{
@@ -75,15 +75,14 @@ export default function AvatarDisplay({
       <div
         className='mb-5 relative z-[101] font-extrabold'
         style={{
-          //   color: rarityColor,
           textShadow: `0 0 7px #000, 0 0 10px #000, 0 0 15px #000, 0 0 7px #ffffff, 0 0 7px #000`,
         }}>
         {item["Rarity"]}★
       </div>
-      <div className='text-xs  relative z-[101]'>{item._id}</div>
+      <div className='text-xs  relative z-[101] text-[#b2b2b2]'>{item._id}</div>
       {/* <div className='text-xs'>{item["Path"]}</div>
       <div className='text-xs'>{item["Element"]}</div> */}
-      <div className='font-bold relative z-[101]'>V{item["Ver"]}</div>
+      <div className='relative z-[101] font-extrabold'>V{item["Ver"]}</div>
       <div className='flex flex-col text-[11px] items-start font-medium'>
         {Object.keys(item["Stats"]).map((key: string, idx: number) => {
           const rank = get_rank_from_score(
@@ -92,33 +91,35 @@ export default function AvatarDisplay({
           );
 
           const isSortedStat = sortedStat.split("///")[0] === "stat_" + key.toLowerCase();
+          if (!isSortedStat) {
+            return null;
+          }
 
           return (
             <div
               key={idx}
-              className='h-[14px] flex px-3 rounded-md'
+              className='h-[13px] flex px-3 rounded-md leading-[14px]'
               style={{
-                color: isSortedStat ? rank.color : "#a1a1a1",
-                // backgroundColor: isSortedStat ? "#121212" : "#00000000",
-                paddingTop: isSortedStat ? "2px" : "0px",
-                paddingBottom: isSortedStat ? "2px" : "0px",
-                height: isSortedStat ? "16px" : "14px",
-                lineHeight: isSortedStat ? "11px" : "14px",
-                // fontWeight: isSortedStat ? "bold" : "normal",
-                // textShadow: isSortedStat ? `0 0 5px #ffffff` : "none",
+                color: isSortedStat ? rank.color + "f2" : "#898989",
+                fontWeight: isSortedStat ? "700" : "600",
               }}>
               <div
                 className='w-[50px] text-center flex justify-center rounded-md'
                 style={{
-                  fontWeight: isSortedStat ? "bold" : "normal",
-                  backgroundColor: isSortedStat ? "#121212" : "#00000000",
+                  fontWeight: isSortedStat ? "700" : "700",
+                  backgroundColor: isSortedStat ? "#12121278" : "#00000000",
                 }}>
                 <div className='w-[20px] text-left'>
                   {((item["Stats"][key] * 100) / item["maxStat"][key]).toFixed(1)}
                 </div>
                 <div className='w-[20px] text-right'>%</div>
               </div>
-              <div className='w-[70px] text-center text-[#a1a1a1]'>
+              <div
+                className='w-[70px] text-center'
+                style={{
+                  color: isSortedStat ? "#b2b2b2" : "#898989",
+                  fontWeight: isSortedStat ? "bold" : "700",
+                }}>
                 {key}: {parseFloat(item["Stats"][key].toFixed(1))}
               </div>
             </div>

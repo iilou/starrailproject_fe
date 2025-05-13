@@ -26,19 +26,6 @@ export default function WeaponDisplay({
     triggerOnce: true,
   });
 
-  useEffect(() => {
-    if (inView) {
-      // fetchWeaponDesc(item["_id"]);
-      setDesc(() => {
-        return {
-          Name: "Loading...",
-          Desc: ["waiting for data..."],
-        };
-      });
-      fetchWeaponDesc(item["_id"]);
-    }
-  }, [inView, item]);
-
   const [desc, setDesc] = useState<any>(null);
   const fetchWeaponDesc = async (id: string) => {
     const res = await fetch("/api/weapon?id=" + id);
@@ -76,17 +63,6 @@ export default function WeaponDisplay({
 
       // if not empty
       if (Object.keys(passive).length > 0) {
-        // setWeaponData((prev: any) => {
-        //   const newWeaponData = [...prev];
-        //   const index = newWeaponData.findIndex((w: any) => "" + w._id === id);
-        //   // console.log(passive);
-        //   newWeaponData[index]["Passive"] = passive;
-        //   // newWeaponData[index]["Passive"]["Desc"][0] = newWeaponData[index]["Passive"]["Desc"].replace(/<[^>]+>/g, "");
-        //   newWeaponData[index]["Passive"]["Desc"] = newWeaponData[index]["Passive"]["Desc"].map(
-        //     (desc: string) => desc.replace(/<[^>]+>/g, "").split("Hidden Stat")[0]
-        //   );
-        //   return newWeaponData;
-        // });
         setDesc(() => {
           return passive;
         });
@@ -94,9 +70,33 @@ export default function WeaponDisplay({
     }
   };
 
+  const [forceDescShow, setForceDescShow] = useState(false);
+  const handleClick = () => {
+    setForceDescShow((prev) => !prev);
+  };
+
+  useEffect(() => {
+    if (forceDescShow && !desc && inView && item["_id"]) {
+      fetchWeaponDesc(item["_id"]);
+    }
+  }, [forceDescShow]);
+
+  useEffect(() => {
+    if (showPassive && !desc && inView && item["_id"]) {
+      fetchWeaponDesc(item["_id"]);
+    }
+  }, [showPassive]);
+
+  useEffect(() => {
+    if (inView && !desc && (showPassive || forceDescShow) && item["_id"]) {
+      fetchWeaponDesc(item["_id"]);
+    }
+  }, [inView, item]);
+
   return (
     <div
-      className=' mx-2 my-4 bg-[#3d3b8a] rounded-lg py-2 w-[320px] h-fit shadow-[0_0_0_0_#ffffff00] text-white text-sm group hover:cursor-pointer'
+      className=' mx-1 my-1 bg-[#3d3b8a] rounded-lg py-2 w-[320px] h-fit shadow-[0_0_0_0_#ffffff00] text-white text-sm group hover:cursor-pointer hover:shadow-[0_0_0_1px_#ffffff]'
+      onClick={handleClick}
       ref={ref}>
       <div
         className='w-full flex items-start py-3 justify-center h-[120px]'
@@ -147,7 +147,7 @@ export default function WeaponDisplay({
         </div>
       </div>
       {/* {item["Passive"] && showPassive && ( */}
-      {desc && showPassive && (
+      {desc && (showPassive || forceDescShow) && (
         <div className='w-full px-3 text-[10px] text-[#dadada] py-3'>
           <div className='font-extrabold text-[13px] text-left text-[#f4e135]'>
             {/* {item["Passive"]["Name"]} */}

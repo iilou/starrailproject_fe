@@ -318,39 +318,44 @@ export default function Leaderboard() {
         <LocalProfileView router={router} />
       </div>
 
-      <div className='h-52 w-1'></div>
-
-      <div
-        className='z-30 my-2 relative block ml-auto mr-[0vw] w-fit
-        m1_4:mr-auto
-      '>
-        <CharSel charList={charList} currentChar={lb_name} router={router} />
+      <div className='relative z-[10] h-[300px] w-full bg-[#000000] flex items-end pb-[20px]'>
+        <div className='absolute w-full z-[12]'>
+          {
+            <Image
+              src={`https://raw.githubusercontent.com/Mar-7th/StarRailRes/refs/heads/master/image/character_portrait/${
+                charList[lb_name as keyof typeof charList] || 1102
+              }.png`}
+              width={724}
+              height={724}
+              alt='Character Portrait'
+              className='translate-y-[400px] m1_4:translate-y-[190px] m-auto'
+              rel='preload'
+            />
+          }
+        </div>
       </div>
 
-      <div className='h-2 w-1'></div>
-
       <div
-        className='w-full flex justify-center flex-wrap font-extrabold text-4xl bg-[#1A1A1Ac9] relative z-20  h-[114px]
-        m1_4:text-[5vw] m1_4:h-fit m1_4:leading-[5.2vw]
+        className='w-full flex justify-center flex-wrap font-extrabold text-4xl relative z-[60]  h-[114px]
+        m1_4:text-[24px] m1_4:h-fit m1_4:leading-[24px] 
       '>
-        <div className='pt-6 pb-2'>
+        <div className='pt-6 pb-2 w-full flex justify-center gap-[10px] bg-[#1A1A1A]'>
           <strong
             style={{
               color: lb_name in charElement ? elementColor[charElement[lb_name]] : "",
-              textShadow:
-                lb_name in charElement
-                  ? `0 0 2px #111111, 0 0 2px #111111, 0 0 15px #a2a2a2, 0 0 45px #e7e7e7`
-                  : "",
+              textShadow: lb_name in charElement ? `0 0 2px #111111, 0 0 0px #787878` : "",
             }}>
             {lb_name.toUpperCase()}
           </strong>{" "}
           LEADERBOARDS
         </div>
-        <div className='flex justify-center w-full text-w1 font-extrabold text-base'>
+        <div className='flex justify-center w-full text-w1 font-extrabold  bg-[#00000092]'>
           {lb_name in charDbTypes &&
             charDbTypes[lb_name].lb_types.map((lb_type, index) => (
               <div
-                className='cursor-pointer bg-[#323232c2] py-2 px-14 hover:bg-[#525252c2] transition-fast'
+                className='cursor-pointer bg-[#323232c2] py-2 px-14 hover:bg-[#525252c2] transition-fast text-base
+                  m1_4:text-[11px] m1_4:py-[1px] m1_4:px-[32px]
+                '
                 onClick={() => {
                   get_lb(1, `${lb_name}${lb_type}`);
                 }}
@@ -361,24 +366,14 @@ export default function Leaderboard() {
         </div>
       </div>
 
-      <div className='absolute w-full z-0'>
-        {
-          <Image
-            src={`https://raw.githubusercontent.com/Mar-7th/StarRailRes/refs/heads/master/image/character_portrait/${
-              charList[lb_name as keyof typeof charList] || 1102
-            }.png`}
-            width={724}
-            height={724}
-            alt='Character Portrait'
-            className='-translate-y-[450px] m-auto'
-            rel='preload'
-          />
-        }
+      <div
+        className='z-[190] relative block ml-auto mr-[0vw] w-fit translate-y-[-180px]
+        m1_4:mr-auto m1_4:translate-y-[-130px] 
+      '>
+        <CharSel charList={charList} currentChar={lb_name} router={router} />
       </div>
 
-      <div className='h-12 w-1'></div>
-
-      <div className='w-[97vw] m-auto relative z-2 rounded-xl pb-4 opacity-[90%] overflow-x-auto '>
+      <div className='w-[97vw] m-auto relative z-2 rounded-xl pb-4 opacity-[90%] overflow-x-auto z-[40]'>
         <div
           className='grid grid-cols-[103px,210px,371px,232px,119px] gap-x-3 bg-[#020071c2] px-[40px] rounded-md py-[2px] shadow-md shadow-[#000000d2] z-[100] relative w-fit text-[16px] mx-auto
                   m1_4:grid-cols-[12vw,20vw,32vw,20vw,12vw] m1_4:gap-x-[0.2vw] m1_4:px-[0.2vw] m1_4:text-[2.3vw] 

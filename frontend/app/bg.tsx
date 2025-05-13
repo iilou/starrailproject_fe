@@ -1,9 +1,11 @@
-export default function BG() {
+export default function BG({ isImage = true }: { isImage?: boolean }) {
   return (
     <div
       className='fixed top-0 left-0 w-[100vw] h-[100vh] z-[-1]'
       style={{
-        backgroundImage: `url("/image.png")`,
+        // backgroundImage: `url("/image.png")`,
+        backgroundImage: isImage ? `url("/image.png")` : ``,
+        backgroundColor: isImage ? `#000000` : `#000000`,
         // backgroundSize: `${width}px ${height}px`,
 
         backgroundSize: "cover",
