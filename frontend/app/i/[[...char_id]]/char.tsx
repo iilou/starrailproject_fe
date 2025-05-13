@@ -213,7 +213,7 @@ export default function Char({
 
   return (
     <div
-      className='flex static h-fit pl-[520px] m1_4:pl-0 m1_4:flex-wrap'
+      className='flex static h-fit pl-[520px] m1_4:pl-0 m1_4:flex-wrap m1_4:mt-[17vh]'
       style={{ width: "100%", maxWidth: "1800px" }}>
       <div
         className='flex justify-end flex-col items-center h-full fixed top-0 bottom-0 z-[5] -translate-x-[420px]  w-[380px]
@@ -402,8 +402,8 @@ export default function Char({
         </div>
       </div>
 
-      <div className='mt-[30px] flex flex-wrap gap-[30px] justify-center w-full h-full relative z-[10] m1_1:px-[3%]'>
-        <div className='flex flex-col gap-[20px] h-fit w-[450px] m1_1:w-[500px] m1_2:w-full m1_2:basis-full'>
+      <div className='mt-[30px] flex flex-wrap gap-[10px] justify-center w-full h-full relative z-[10] m1_1:px-[3%]'>
+        <div className='flex flex-col gap-[3px] h-fit w-[450px] m1_1:w-[500px] m1_2:w-full m1_2:basis-full'>
           <SubHeader text='Skills' width={w1} />
           {processedData &&
             Object.keys(processedData.skill).map((key) => {
@@ -440,7 +440,7 @@ export default function Char({
               );
             })}
         </div>
-        <div className='flex flex-col gap-[20px] h-fit w-[300px] m1_1:w-[250px] m1_2:w-full m1_2:basis-full'>
+        <div className='flex flex-col gap-[3px] h-fit w-[300px] m1_1:w-[250px] m1_2:w-full m1_2:basis-full'>
           <SubHeader text='Ascension Traces' width={w2} />
           {processedData &&
             processedData.asc &&
@@ -463,7 +463,7 @@ export default function Char({
               );
             })}
         </div>
-        <div className='flex flex-col gap-[20px] h-fit w-[350px] m1_1:w-[640px] m1_2:w-full'>
+        <div className='flex flex-col gap-[3px] h-fit w-[350px] m1_1:w-[640px] m1_2:w-full'>
           <SubHeader text='Eidolons' width={w3} />
           {processedData &&
             processedData.rank &&

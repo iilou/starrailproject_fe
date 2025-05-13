@@ -2,7 +2,14 @@ import RelicL from "./relic_l";
 import RelicSetL from "./relicset_l";
 
 import { useState, useEffect, useRef, useMemo } from "react";
-import { scoreLib, scoreSetLib, weightLib, charIndex, charSetIndex, weightParse } from "../../lib/score";
+import {
+  scoreLib,
+  scoreSetLib,
+  weightLib,
+  charIndex,
+  charSetIndex,
+  weightParse,
+} from "../../lib/score";
 
 import Image from "next/image";
 
@@ -44,12 +51,52 @@ export default function RelicView({
     columnHash[columns[i]] = i;
   }
 
-  const columnNames = ["Item", "Name", "HP", "ATK", "DEF", "HP%", "ATK%", "DEF%", "SPD", "CR%", "CD%", "EHR%", "EFF%", "BE%", "HEAL%", "DMG%", "ERR%", "Score"];
-  const columnMultiplier = [0, 0, 1, 1, 1, 100, 100, 100, 1, 100, 100, 100, 100, 100, 100, 100, 100, 1];
+  const columnNames = [
+    "Item",
+    "Name",
+    "HP",
+    "ATK",
+    "DEF",
+    "HP%",
+    "ATK%",
+    "DEF%",
+    "SPD",
+    "CR%",
+    "CD%",
+    "EHR%",
+    "EFF%",
+    "BE%",
+    "HEAL%",
+    "DMG%",
+    "ERR%",
+    "Score",
+  ];
+  const columnMultiplier = [
+    0, 0, 1, 1, 1, 100, 100, 100, 1, 100, 100, 100, 100, 100, 100, 100, 100, 1,
+  ];
   const columnFixed = [0, 0, 1, 1, 1, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 1, 2];
   const columnPercentage = [0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0];
   const columnWidth = [80, 150, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 100];
-  const columnType = ["img", "label", "stat", "stat", "stat", "stat", "stat", "stat", "stat", "stat", "stat", "stat", "stat", "stat", "stat", "stat", "stat", "score"];
+  const columnType = [
+    "img",
+    "label",
+    "stat",
+    "stat",
+    "stat",
+    "stat",
+    "stat",
+    "stat",
+    "stat",
+    "stat",
+    "stat",
+    "stat",
+    "stat",
+    "stat",
+    "stat",
+    "stat",
+    "stat",
+    "score",
+  ];
 
   if (
     columns.length != columnNames.length ||
@@ -86,7 +133,8 @@ export default function RelicView({
     for (let key in columnHash) {
       if (charIndex["INFO"].includes(key)) {
         const data_index = charIndex["INFO"].indexOf(key);
-        const multiplier: number = char_name in charIndex ? parseFloat(charIndex[char_name][data_index]) : 0;
+        const multiplier: number =
+          char_name in charIndex ? parseFloat(charIndex[char_name][data_index]) : 0;
         // console.log(key, multiplier);
 
         newMultiplierRow[columnHash[key]] = multiplier;
@@ -115,10 +163,20 @@ export default function RelicView({
     return 0;
   };
 
-  const [weightRow, setWeightRow] = useState<any[]>(["", "Weight", ...Array(columns.length - 2).fill("")]);
+  const [weightRow, setWeightRow] = useState<any[]>([
+    "",
+    "Weight",
+    ...Array(columns.length - 2).fill(""),
+  ]);
   const [multiplierRow, setMultiplierRow] = useState<any[]>(populateMultiplierRow());
-  const [multiplierRowOriginal, setMultiplierRowOriginal] = useState<any[]>(populateMultiplierRow());
-  const [scoreRow, setScoreRow] = useState<any[]>(["", "Total", ...Array(columns.length - 2).fill("")]);
+  const [multiplierRowOriginal, setMultiplierRowOriginal] = useState<any[]>(
+    populateMultiplierRow()
+  );
+  const [scoreRow, setScoreRow] = useState<any[]>([
+    "",
+    "Total",
+    ...Array(columns.length - 2).fill(""),
+  ]);
 
   const [setScores, setSetScores] = useState<number[]>([]);
   const [setScoresOriginal, setSetScoresOriginal] = useState<number[]>([]);
@@ -141,7 +199,15 @@ export default function RelicView({
     setSetScores((prev) => {
       const newSetScores = [
         ...relic_set_list.map((relic_set) => {
-          return char_name in charSetIndex ? parseFloat(parseFloat(charSetIndex[char_name][charSetIndex["INFO"].indexOf(relic_set["id"] + "|" + relic_set["num"])]).toFixed(1)) : 0;
+          return char_name in charSetIndex
+            ? parseFloat(
+                parseFloat(
+                  charSetIndex[char_name][
+                    charSetIndex["INFO"].indexOf(relic_set["id"] + "|" + relic_set["num"])
+                  ]
+                ).toFixed(1)
+              )
+            : 0;
         }),
       ];
       return newSetScores;
@@ -150,7 +216,15 @@ export default function RelicView({
     setSetScoresOriginal((prev) => {
       const newSetScores = [
         ...relic_set_list.map((relic_set) => {
-          return char_name in charSetIndex ? parseFloat(parseFloat(charSetIndex[char_name][charSetIndex["INFO"].indexOf(relic_set["id"] + "|" + relic_set["num"])]).toFixed(1)) : 0;
+          return char_name in charSetIndex
+            ? parseFloat(
+                parseFloat(
+                  charSetIndex[char_name][
+                    charSetIndex["INFO"].indexOf(relic_set["id"] + "|" + relic_set["num"])
+                  ]
+                ).toFixed(1)
+              )
+            : 0;
         }),
       ];
       return newSetScores;
@@ -171,18 +245,26 @@ export default function RelicView({
     const newScoreRow: any[] = ["", "Total", ...Array(columns.length - 2).fill("")];
 
     relic_list.forEach((relic: any) => {
-      const row = [relic["icon"], relic["name"].substring(0, 18) + (relic["name"].length > 18 ? "..." : ""), ...Array(columns.length - 2).fill(0)];
+      const row = [
+        relic["icon"],
+        relic["name"].substring(0, 18) + (relic["name"].length > 18 ? "..." : ""),
+        ...Array(columns.length - 2).fill(0),
+      ];
 
       if (!(relic["main_affix"] && !(relic["main_affix"]["type"] in columnHash))) {
         const mainAffixType = relic["main_affix"]["type"] as keyof typeof columnHash;
-        row[columnHash[mainAffixType]] = parseFloat(row[columnHash[mainAffixType]]) + parseFloat(relic["main_affix"]["value"]) || row[columnHash[mainAffixType]];
+        row[columnHash[mainAffixType]] =
+          parseFloat(row[columnHash[mainAffixType]]) + parseFloat(relic["main_affix"]["value"]) ||
+          row[columnHash[mainAffixType]];
       }
 
       relic["sub_affix"].forEach((affix: any) => {
         if (affix["type"] in columnHash) {
           const subAffixType = affix["type"] as keyof typeof columnHash;
           // row[columnHash[subAffixType]] += parseFloat(affix["value"]) || 0;
-          row[columnHash[subAffixType]] = parseFloat(row[columnHash[subAffixType]]) + parseFloat(affix["value"]) || row[columnHash[subAffixType]];
+          row[columnHash[subAffixType]] =
+            parseFloat(row[columnHash[subAffixType]]) + parseFloat(affix["value"]) ||
+            row[columnHash[subAffixType]];
         }
       });
 
@@ -207,12 +289,16 @@ export default function RelicView({
             const multiplier = Number(multiplierRow[index]);
 
             // weightRow[index] = weightRow[index] == "" ? weight : Number(weightRow[index]) + Number(weight);
-            newWeightRow[index] = newWeightRow[index] == "" ? weight : Number(newWeightRow[index]) + Number(weight);
+            newWeightRow[index] =
+              newWeightRow[index] == "" ? weight : Number(newWeightRow[index]) + Number(weight);
             // multiplierRow[index] = Number(multiplier);
 
             const scoreValue = Number(weight) * Number(multiplier);
             // scoreRow[index] = scoreRow[index] == "" ? scoreValue : scoreRow[index] + scoreValue;
-            newScoreRow[index] = newScoreRow[index] == "" ? scoreValue : Number(newScoreRow[index]) + Number(scoreValue);
+            newScoreRow[index] =
+              newScoreRow[index] == ""
+                ? scoreValue
+                : Number(newScoreRow[index]) + Number(scoreValue);
             return scoreValue;
           }
           return 0;
@@ -220,7 +306,8 @@ export default function RelicView({
         .reduce((sum, current) => sum + current, 0);
 
       row[columnHash["Score"]] = score;
-      newScoreRow[columnHash["Score"]] = newScoreRow[columnHash["Score"]] == "" ? score : newScoreRow[columnHash["Score"]] + score;
+      newScoreRow[columnHash["Score"]] =
+        newScoreRow[columnHash["Score"]] == "" ? score : newScoreRow[columnHash["Score"]] + score;
 
       newRows.push(row);
     });
@@ -247,12 +334,26 @@ export default function RelicView({
         </div>
       </div>
       {/* ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */}
-      <div className={`${isTable ? "hidden" : "flex"} flex-wrap justify-center items-center gap-x-20 gap-y-7 mt-4 w-[1400px] mx-auto relative z-[100]`}>
+      <div
+        className={`${
+          isTable ? "hidden" : "flex"
+        } flex-wrap justify-center items-center gap-x-[10px] gap-y-[10px] mt-[10px] w-[1100px] mx-auto relative z-[100]`}>
         {relic_list.map((relic: any, idx: number) => {
-          return <RelicL relicJSON={relic} charName={char_name} element={element} elementColor={elementColor} key={idx} />;
+          return (
+            <RelicL
+              relicJSON={relic}
+              charName={char_name}
+              element={element}
+              elementColor={elementColor}
+              key={idx}
+            />
+          );
         })}
       </div>
-      <div className={`${isTable ? "hidden" : "flex"} flex-col justify-center items-center gap-1 mt-4  relative z-[100]`}>
+      <div
+        className={`${
+          isTable ? "hidden" : "flex"
+        } flex-col justify-center items-center gap-1 mt-4  relative z-[100]`}>
         {relic_set_list.map((relic_set: any, idx: number) => {
           return <RelicSetL relicsetJSON={relic_set} charName={char_name} key={idx} />;
         })}
@@ -262,7 +363,9 @@ export default function RelicView({
         className={`${
           isTable ? "flex" : "hidden"
         } flex-col justify-center bg-[#3d3b8a] opacity-[90%] rounded-lg px-14 py-6 mx-auto items-center gap-1 mt-4 relative z-[100] w-fit overflow-y-hidden`}>
-        <table className='mx-auto' style={{ width: columnWidth.reduce((a, b) => a + b, 0) + 8 * columnWidth.length + "px" }}>
+        <table
+          className='mx-auto'
+          style={{ width: columnWidth.reduce((a, b) => a + b, 0) + 8 * columnWidth.length + "px" }}>
           <thead>
             <tr className='border-b-2 border-t-2 border-[#d7d7d733] bg-[#020071c2] py-1'>
               {columns.map((column, index) => (
@@ -296,9 +399,12 @@ export default function RelicView({
                       className={`rounded-md px-2 py-1 text-center font-extrabold active:shadow-[0px_0px_0px_1px_rgb(240,240,240)] hover:bg-[#4f4ea3] active:bg-[#292E5D] ${
                         // ![0, 1, columns.length - 1].includes(cellIndex) &&
                         columnType[cellIndex] == "stat" &&
-                        ["text-[#9a9a9a] font-medium", "text-[#9a9a9a] font-medium", "text-[#f4e135] font-extrabold", "text-[#e0d680] font-extrabold "][
-                          weight_state(columns[cellIndex], cell)
-                        ]
+                        [
+                          "text-[#9a9a9a] font-medium",
+                          "text-[#9a9a9a] font-medium",
+                          "text-[#f4e135] font-extrabold",
+                          "text-[#e0d680] font-extrabold ",
+                        ][weight_state(columns[cellIndex], cell)]
                       }
                       `}
                       style={{ width: columnWidth[cellIndex] + "px" }}>
@@ -306,7 +412,9 @@ export default function RelicView({
                         <span className='hover:cursor-pointer hover:underline'>
                           {isNaN(parseFloat(cell)) || cell == "" || (cell == "0" && cellIndex != 1)
                             ? cell
-                            : (parseFloat(cell) * columnMultiplier[cellIndex]).toFixed(columnFixed[cellIndex]) + (columnPercentage[cellIndex] ? "%" : "")}
+                            : (parseFloat(cell) * columnMultiplier[cellIndex]).toFixed(
+                                columnFixed[cellIndex]
+                              ) + (columnPercentage[cellIndex] ? "%" : "")}
                         </span>
                       ) : (
                         <div className='w-[26px] h-[26px] mx-auto'>
@@ -336,8 +444,13 @@ export default function RelicView({
                 <td
                   key={cellIndex}
                   className={`rounded-lg px-2 py-2 text-center active:shadow-[0px_0px_0px_1px_rgb(240,240,240)] hover:bg-[#4f4ea3] active:bg-[#292E5D] `}
-                  style={{ width: columnWidth[cellIndex] + "px", fontWeight: cellIndex == 1 ? "bold" : "500" }}>
-                  <span className='hover:cursor-pointer hover:underline'>{isNaN(parseFloat(cell)) ? cell : cell == 0 ? "-" : parseFloat(cell).toFixed(1)}</span>
+                  style={{
+                    width: columnWidth[cellIndex] + "px",
+                    fontWeight: cellIndex == 1 ? "bold" : "500",
+                  }}>
+                  <span className='hover:cursor-pointer hover:underline'>
+                    {isNaN(parseFloat(cell)) ? cell : cell == 0 ? "-" : parseFloat(cell).toFixed(1)}
+                  </span>
                 </td>
               ))}
             </tr>
@@ -376,7 +489,10 @@ export default function RelicView({
                 <td
                   key={cellIndex + 2}
                   className={`rounded-lg px-2 py-2 text-center active:shadow-[0px_0px_0px_1px_rgb(240,240,240)] hover:bg-[#4f4ea3] active:bg-[#292E5D] `}
-                  style={{ width: columnWidth[cellIndex + 2] + "px", fontWeight: cellIndex == 1 ? "bold" : "400" }}>
+                  style={{
+                    width: columnWidth[cellIndex + 2] + "px",
+                    fontWeight: cellIndex == 1 ? "bold" : "400",
+                  }}>
                   <input
                     type='number'
                     defaultValue={cell}
@@ -390,7 +506,10 @@ export default function RelicView({
                     }}
                     onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
                       if (e.key === "Enter" || e.key === "Tab") {
-                        if (isNaN(parseFloat(e.currentTarget.value)) || parseFloat(e.currentTarget.value) < 0) {
+                        if (
+                          isNaN(parseFloat(e.currentTarget.value)) ||
+                          parseFloat(e.currentTarget.value) < 0
+                        ) {
                           e.currentTarget.value = "0";
                           return;
                         }
@@ -404,7 +523,10 @@ export default function RelicView({
                     }}
                     className={`bg-transparent text-center w-full font-bold focus:outline-none focus:ring-0 focus:border-b-[1px] focus:border-[#8D92C5] 
                         [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none ${
-                          columns[cellIndex + 2] in columnHash && Number(multiplierRow[columnHash[columns[cellIndex + 2]]]) > 0 ? "text-[#f4e135] font-extrabold" : "text-[#c1c1c1]"
+                          columns[cellIndex + 2] in columnHash &&
+                          Number(multiplierRow[columnHash[columns[cellIndex + 2]]]) > 0
+                            ? "text-[#f4e135] font-extrabold"
+                            : "text-[#c1c1c1]"
                         }`}
                   />
                 </td>
@@ -428,8 +550,13 @@ export default function RelicView({
                 <td
                   key={cellIndex}
                   className={`rounded-lg px-2 py-2 text-center active:shadow-[0px_0px_0px_1px_inset_rgb(240,240,240)] hover:bg-[#4f4ea3] active:bg-[#292E5D] `}
-                  style={{ width: columnWidth[cellIndex] + "px", fontWeight: cellIndex == 1 || cellIndex == scoreRow.length - 1 ? "bold" : "400" }}>
-                  <span className='hover:cursor-pointer hover:underline'>{isNaN(parseFloat(cell)) ? cell : cell == 0 ? "-" : parseFloat(cell).toFixed(1)}</span>
+                  style={{
+                    width: columnWidth[cellIndex] + "px",
+                    fontWeight: cellIndex == 1 || cellIndex == scoreRow.length - 1 ? "bold" : "400",
+                  }}>
+                  <span className='hover:cursor-pointer hover:underline'>
+                    {isNaN(parseFloat(cell)) ? cell : cell == 0 ? "-" : parseFloat(cell).toFixed(1)}
+                  </span>
                 </td>
               ))}
             </tr>
@@ -484,9 +611,13 @@ export default function RelicView({
                             className={`w-[26px] h-[26px] `}
                           />
                         </div>,
-                        <div className='text-center text-[12px] font-bold text-[#f4e135]'>{relic_set["num"] == 2 ? "2-Piece" : "4-Piece"}</div>,
-                        relic_set["name"].substring(0, 18) + (relic_set["name"].length > 18 ? "..." : ""),
-                        relic_set["desc"].substring(0, 50) + (relic_set["desc"].length > 50 ? "..." : ""),
+                        <div className='text-center text-[12px] font-bold text-[#f4e135]'>
+                          {relic_set["num"] == 2 ? "2-Piece" : "4-Piece"}
+                        </div>,
+                        relic_set["name"].substring(0, 18) +
+                          (relic_set["name"].length > 18 ? "..." : ""),
+                        relic_set["desc"].substring(0, 50) +
+                          (relic_set["desc"].length > 50 ? "..." : ""),
                         <input
                           type='number'
                           defaultValue={score}
@@ -494,7 +625,10 @@ export default function RelicView({
                             setScoresRefs.current[index] = el;
                           }}
                           onBlur={(e) => {
-                            if (isNaN(parseFloat(e.currentTarget.value)) || parseFloat(e.currentTarget.value) < 0) {
+                            if (
+                              isNaN(parseFloat(e.currentTarget.value)) ||
+                              parseFloat(e.currentTarget.value) < 0
+                            ) {
                               e.currentTarget.value = setScoresOriginal[index].toFixed(2);
                               setSetScores(() => setScoresOriginal);
                               return;
@@ -505,7 +639,10 @@ export default function RelicView({
                           }}
                           onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
                             if (e.key === "Enter" || e.key === "Tab") {
-                              if (isNaN(parseFloat(e.currentTarget.value)) || parseFloat(e.currentTarget.value) < 0) {
+                              if (
+                                isNaN(parseFloat(e.currentTarget.value)) ||
+                                parseFloat(e.currentTarget.value) < 0
+                              ) {
                                 e.currentTarget.value = setScoresOriginal[index].toFixed(2);
                                 setSetScores(() => setScoresOriginal);
                                 return;
@@ -626,7 +763,9 @@ export default function RelicView({
                 <span className='hover:cursor-pointer hover:underline'>Total</span>
               </td>
               <td className='rounded-lg px-2 py-2 text-center text-[12px] active:shadow-[0px_0px_0px_1px_rgb(240,240,240)] hover:bg-[#d7d7d733] bg-[#020071c2] active:bg-[#292E5D] '>
-                <span className='hover:cursor-pointer hover:underline'>{setScores.reduce((a, b) => a + b, 0).toFixed(2)}</span>
+                <span className='hover:cursor-pointer hover:underline'>
+                  {setScores.reduce((a, b) => a + b, 0).toFixed(2)}
+                </span>
               </td>
             </tr>
           </tbody>

@@ -11,6 +11,7 @@ import PHeader from "./p_header";
 import BG from "../../bg";
 
 import { filterElementColor } from "../../lib/color";
+import { OpenInNew } from "@mui/icons-material";
 
 import { useEffect, useState } from "react";
 
@@ -156,7 +157,7 @@ export default function Profile() {
   return (
     <div className='w-full h-fit relative' style={{ minHeight: "100vh" }}>
       <Header current='/profile' />
-      <div className='w-full h-[4000px] absolute top-0 left-0 z-[700]'>
+      <div className='w-full absolute top-0 left-0 z-[700]'>
         <BG />
       </div>
       <div className='w-full mt-[30px] mb-[50px] z-[900] relative'>
@@ -181,17 +182,30 @@ export default function Profile() {
                     className='flex items-center justify-center group h-[100px] w-fit px-2 gap-2'
                     onClick={() => handleCharacterSelect(character.id)}
                     key={character.id}>
-                    <div className='w-[100px] h-[100px] flex items-center justify-center rounded-full'>
+                    <div className='w-[100px] h-[100px] flex items-center justify-center rounded-full group relative'>
+                      <div
+                        className='hidden absolute w-[100px] h-[100px] group-hover:flex items-center justify-center z-[130] rounded-full bg-[#00000078]'
+                        onClick={(e) => {
+                          router.push(`/i/${character.id}`);
+                        }}>
+                        <OpenInNew
+                          className='text-[#c7c7c7] text-[50px]'
+                          style={{
+                            filter: `drop-shadow(0 0 5px ${character.element.color})`,
+                          }}
+                        />
+                      </div>
                       <Image
                         src={`https://raw.githubusercontent.com/Mar-7th/StarRailRes/refs/heads/master/${character.icon}`}
                         width={68}
                         height={68}
                         alt='Character Icon'
-                        className={`rounded-full bg-background transition-all bg-w1 w-[88px] h-[88px] block z-[120] duration-100 group-hover:bg-[#c3c3c3] shadow-[0_0_10px_2px_#000000_inset] group-hover:brightness-110 ${
-                          isCurrent
-                            ? "animate-bordewefr-glow  border-[2px] group-hover:border-[2px] group-hover:bg-w2 brightness-110"
-                            : "border-[#121212] border-[15px] group-hover:border-[5px] group-hover:bg-w2 brightness-90"
-                        }`}
+                        className={` relative
+                          rounded-full bg-background transition-all bg-w1 w-[88px] h-[88px] block z-[120] duration-100 group-hover:bg-[#c3c3c3] shadow-[0_0_10px_2px_#000000_inset] group-hover:brightness-110 ${
+                            isCurrent
+                              ? "animate-border-glow  border-[2px] group-hover:border-[2px] group-hover:bg-w2 brightness-110"
+                              : "border-[#121212] border-[15px] group-hover:border-[5px] group-hover:bg-w2 brightness-90"
+                          }`}
                         style={{
                           borderColor: isCurrent ? character.element.color : "",
                           ["--glow_profile_char" as any]: character.element.color,
@@ -204,17 +218,17 @@ export default function Profile() {
                       {isCurrent ? (
                         <div className='relative group w-fit'>
                           <div
-                            className='absolute inset-0 rounded-md border-2 animate-wefewborder-glow pointer-events-none'
+                            className='absolute inset-0 rounded-md border-2 animate-border-glow pointer-events-none'
                             style={{
                               borderColor: currentCharacter.element.color,
-                              // ["--glow_profile_char" as any]: currentCharacter.element.color,
+                              ["--glow_profile_char" as any]: currentCharacter.element.color,
                             }}
                           />
                           <div
-                            className='w-[230px] text-[#c7c7c7] font-bold text-2xl transition-all pl-4 pr-4 py-2 rounded-md bg-[#121212] group-hover:text-2xl group-hover:font-extrabold group-hover:bg-[#0f0f0f] animate-text-gfdlow'
+                            className='w-[230px] text-[#c7c7c7] font-bold text-2xl transition-all pl-4 pr-4 py-2 rounded-md bg-[#121212] group-hover:text-2xl group-hover:font-extrabold group-hover:bg-[#0f0f0f] animate-text-glow'
                             style={{
                               border: `2px solid ${currentCharacter.element.color}`,
-                              // ["--glow_profile_char_text" as any]: currentCharacter.element.color,
+                              ["--glow_profile_char_text" as any]: currentCharacter.element.color,
                             }}>
                             {character.name.substring(0, 12) +
                               (character.name.length > 12 ? "..." : "")}

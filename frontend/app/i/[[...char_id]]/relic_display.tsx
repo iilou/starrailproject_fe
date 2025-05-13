@@ -8,7 +8,7 @@ export default function RelicDisplay({ item }: { item: any }) {
       : "linear-gradient(180deg,#885550,#c9a36a 53%)";
   const rarityColor = item["Type"] === "Planar" ? "#8a5fcc" : "#c9a36a";
   return (
-    <div className=' mx-2 my-4 bg-[#3d3b8a] rounded-lg py-2 w-[340px] h-fit shadow-[0_0_0_0_#ffffff00] text-white text-sm group hover:cursor-pointer'>
+    <div className=' mx-1 my-1 bg-[#3d3b8a] rounded-lg py-2 w-[340px] h-fit shadow-[0_0_0_0_#ffffff00] text-white text-sm group hover:cursor-pointer'>
       <div
         className='w-full flex items-start py-3 justify-center h-fit'
         style={{

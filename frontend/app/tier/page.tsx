@@ -17,19 +17,19 @@ export default function TierList() {
     <div>
       <Header current='/tier' />
       <div className='z-[10] fixed'>
-        <BG />
+        <BG isImage={true} />
       </div>
       <div className='flex flex-col w-full h-full justify-center items-center z-[11] relative'>
         <div className='w-[95vw] h-fit flex flex-col justify-start items-center'>
           <div
-            className='w-full h-fit flex justify-center items-center text-[3vw] mt-[2vw]
-            m1_4:text-[9vw] m1_4:mt-[5vw] m1_4:mb-[2vw]
+            className='w-full h-fit flex justify-center items-center text-[3vw] mt-[5vw]
+            m1_4:text-[6vw] m1_4:mt-[5vw]
           '>
-            <div className='font-extrabold'>Tier List v3.3</div>
+            <div className='font-extrabold'>Tier List for v3.3</div>
           </div>
           <div
-            className='w-[60vw] flex justify-center items-start mb-[1vw] h-[5vw] text-[0.7vw] text-[#c2c2c2]
-            m1_4:w-[90vw] m1_4:h-fit m1_4:mb-[3vw] m1_4:text-[2.1vw] m1_4:text-[#a1a1a1] m1_4:leading-[2.8vw]
+            className='w-[60vw] flex justify-center items-start h-fit text-[0.7vw] text-[#c2c2c2]
+            m1_4:w-[90vw] m1_4:h-fit m1_4:text-[2.1vw] m1_4:text-[#a1a1a1] m1_4:leading-[2.8vw]
           '>
             {showDetails && (
               <div className=' text-center font-bold rounded-full px-[2vw] py-[0.2vw]'>
@@ -39,8 +39,10 @@ export default function TierList() {
               </div>
             )}
           </div>
+        </div>
+        <div className='w-full h-fit bg-[#000000] flex items-center flex-col pt-[5vw] pb-[5vw] rounded-lg mb-[10vw] mt-[5vw]'>
           <div
-            className='w-[95vw] h-fit flex justify-end items-center mb-[1vw] gap-[0.2vw]
+            className='w-[95vw] h-fit flex justify-end items-center mb-[1vw] gap-[0.2vw] 
             m1_4:justify-center m1_4:gap-[2vw] m1_4:mb-[3vw]
           '>
             {/* <div className='text-xl font-bold'>Characters</div> */}
@@ -64,13 +66,13 @@ export default function TierList() {
               <div
                 key={index}
                 className='text-[0.7vw] font-bold text-[#c2c2c2] rounded-full px-[2vw] py-[0.2vw] hover:cursor-pointer hover:shadow-[0_0_1px_2px_#ffffff]
-                  m1_4:text-[2.8vw] m1_4:px-[8vw] m1_4:py-[2vw]
+                  m1_4:text-[2.8vw] m1_4:px-[8vw] m1_4:py-[1vw]
                 '
                 onClick={() => {
                   item.setFunction((oldpar) => !oldpar);
                 }}
                 style={{
-                  backgroundColor: item.state ? "#3d3b8ac1" : "#121212c1",
+                  backgroundColor: item.state ? "#3d3b8ac1" : "#232323",
                   transition: "0.05s",
                 }}>
                 {item.text}
@@ -78,7 +80,7 @@ export default function TierList() {
             ))}
           </div>
           <div
-            className='w-full h-fit flex flex-col justify-start items-start gap-[0.5vw]
+            className='w-[95vw] h-fit flex flex-col justify-start items-start gap-[0.5vw]
               m1_4:gap-[3vw]
             '
             style={{}}>

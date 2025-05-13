@@ -60,28 +60,19 @@ Anaxa	0	0.2	0	0	0.7	0	1	1	1	0	0	0	0	0	0	0	0	0	0.7	0	0`;
     };
   }, []);
 
-  // const translateX = Math.min(-384, Math.max(-384 - scrollY / 2, -768));
-
   return (
     <div className='h-fit'>
-      {/* <div className='h-full w-full z-0 absolute'>
-        <BG />
-      </div> */}
-      {/* <PHeader text={characterJSON["name"]} /> */}
       <div className='w-1 h-[60px]'></div>
       <div
         className='w-full rounded-lg flex justify-center py-5 items-center bg-b2 z-[100] relative transition-all duration-500'
         style={{
           backgroundColor: scrollY > 200 ? "#414aa2" : "#414aa882",
           boxShadow: scrollY > 200 ? `0px 0px 3px 0px #414aa2` : `0px 0px 10px 7px #414aa882`,
-        }}
-        //   style={{ backgroundColor: characterJSON["element"]["color"] }}
-      >
+        }}>
         <div
           className=' w-fit h-fit -translate-y  absolute transition-all duration-500 z-[99]'
           style={{
             transform: scrollY > 200 ? `translateX(-384px)` : `translateX(-50px)`,
-            // filter: `drop-shadow(0px 0px 30px ${characterJSON["element"]["color"]}88)`,
             filter:
               scrollY > 200
                 ? `drop-shadow(0px 0px 5px ${characterJSON["element"]["color"]}ee)`
@@ -119,11 +110,6 @@ Anaxa	0	0.2	0	0	0.7	0	1	1	1	0	0	0	0	0	0	0	0	0	0.7	0	0`;
           <div className='w-[730px] flex flex-col flex-wrap gap-[6px] h-[280px] justify-end items-center'>
             <div
               className='flex flex-col flex-wrap items-start h-[159px] pt-1 pb-2 w-[340px] group'
-              style={
-                {
-                  // backgroundColor: "#3d3b8a",
-                }
-              }
               onMouseEnter={(e) => {
                 console.log(e.currentTarget.querySelector("img"));
                 const div = e.currentTarget.querySelector(".icon") as HTMLDivElement;
@@ -308,29 +294,10 @@ Anaxa	0	0.2	0	0	0.7	0	1	1	1	0	0	0	0	0	0	0	0	0	0.7	0	0`;
           })}
         </div>
 
-        {/* <div className={`w-[1130px] text-center text-xl bg-[#2b2876cb] text-w1 font-extrabold mx-auto py-3 mt-3  relative z-[100]`}>TALENTS</div> */}
-        <div className='h-[80px] w-1'></div>
-
-        <PHeader text='TALENTS' />
-
-        <div className='h-[50px] w-1'></div>
-
-        <SkillsM
-          skills={characterJSON["skills"]}
-          skill_trees={characterJSON["skill_trees"]}
-          rank={characterJSON["rank"]}
-          rankIcons={characterJSON["rank_icons"]}
-          charID={Number(characterJSON["id"])}
-        />
-        {/* <div className={`w-[1130px] text-center text-xl bg-b5 text-w1 font-extrabold mx-auto py-3 mt-3  relative z-[100]`}>RELICS</div> */}
         <div className='h-[30px] w-1'></div>
+
         <PHeader text='RELICS' />
         <div className='h-[10px] w-1'></div>
-        {/* <div
-        className={`px-7 py-1 bg-b6 text-b0 hover:bg-b4 hover:text-b6 font-medium text-medium rounded-lg w-fit mx-auto mt-3 flex gap-x-3  relative z-[100]`}
-        onClick={() => setIsTableView(() => !isTableView)}>
-        <span className='hover:cursor-pointer hover:underline select-none relative z-[100]'>{isTableView ? "Table View  (Click to change)" : "Block View (Click to change)"}</span>
-      </div> */}
 
         <RelicView
           relic_list={characterJSON["relics"]}
@@ -339,7 +306,19 @@ Anaxa	0	0.2	0	0	0.7	0	1	1	1	0	0	0	0	0	0	0	0	0	0.7	0	0`;
           element={characterJSON["element"]["id"]}
           elementColor={characterJSON["element"]["color"]}
         />
-        {/* <div className='w-[1130px] text-center text-xl bg-b5 text-w1 font-extrabold mx-auto py-3 mt-3 relative z-[100]'>DAMAGE</div> */}
+
+        <PHeader text='TALENTS' />
+
+        <div className='h-[10px] w-1'></div>
+
+        <SkillsM
+          skills={characterJSON["skills"]}
+          skill_trees={characterJSON["skill_trees"]}
+          rank={characterJSON["rank"]}
+          rankIcons={characterJSON["rank_icons"]}
+          charID={Number(characterJSON["id"])}
+        />
+        <div className='h-[10px] w-1'></div>
         <PHeader text='DAMAGE' />
       </div>
     </div>

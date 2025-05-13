@@ -42,6 +42,12 @@ export default function Header({ current }: { current: string }) {
                 description:
                   "View the descriptions and details of all characters, weapons, and relics.",
               },
+              {
+                name: "Tier List",
+                link: "/tier",
+                color: "text-t2",
+                description: "Tier list of all characters, based on their performance in the game.",
+              },
               // { name: "Leaderboard", link: "/lb", color: "text-t1" },
               // { name: "Profile", link: "/profile", color: "text-t3" },
               // { name: "Tier List", link: "/", color: "text-t2" },
@@ -58,12 +64,6 @@ export default function Header({ current }: { current: string }) {
                 color: "text-t3",
                 description:
                   "View the details of a specific user's profile, including their characters, relics, and more.",
-              },
-              {
-                name: "Tier List",
-                link: "/tier",
-                color: "text-t2",
-                description: "Tier list of all characters, based on their performance in the game.",
               },
             ].map((item) => (
               <div

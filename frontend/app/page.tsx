@@ -24,18 +24,18 @@ export default function Home() {
       description: "View the descriptions and details of all characters, weapons, and relics.",
     },
     {
+      href: "/tier",
+      text: "Tier List",
+      color: "text-t2",
+      description: "Tier list of all characters, based on their performance in the game.",
+    },
+    {
       href: "/lb",
       text: "Leaderboard",
       color: "text-t1",
 
       description:
         "View the rankings of specific characters, based on relic quality, damage, and more.",
-    },
-    {
-      href: "/tier",
-      text: "Tier List",
-      color: "text-t2",
-      description: "Tier list of all characters, based on their performance in the game.",
     },
     {
       href: "/profile",

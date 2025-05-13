@@ -22,9 +22,11 @@ export const metadata: Metadata = {
   title: "star.stylla.moe",
   description: "Honkai Star Rail Assistance Website",
   icons: {
-    icon: "/srp_logo.png",
+    icon: "/tabicon.png",
   },
 };
+
+//
 
 export default function RootLayout({
   children,

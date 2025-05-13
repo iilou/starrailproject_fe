@@ -405,27 +405,29 @@ export default function Index() {
     }
   };
 
-  const [filterVisible, setFilterVisible] = useState(false);
-  const [sortVisible, setSortVisible] = useState(false);
+  const [filterVisible, setFilterVisible] = useState(true);
+  const [sortVisible, setSortVisible] = useState(true);
 
   const [isWeaponPassiveHidden, setIsWeaponPassiveHidden] = useState(false);
 
   return (
     <div className='w-full h-full relative pb-[200px] m1_2:pb-[0px]' style={{ minHeight: "100vh" }}>
       <div className='absolute w-full top-0 left-0 z-0'>
-        <BG />
+        <BG isImage={false} />
       </div>
 
-      <div className='w-1 h-[10px]'></div>
-      <Header current='/i' />
+      {/* <div className='w-1 h-[10px]'></div> */}
+      <div className='absolute'>
+        <Header current='/i' />
+      </div>
 
-      <div className='w-[full] flex items-center justify-center flex-wrap sticky z-[950] top-[60px] m1_2:top-[6vh]'>
+      <div className='w-[full] flex items-center justify-center flex-wrap sticky z-[950] top-[6vh] m1_2:top-[6vh]'>
         {views.map((item, idx) => {
           return (
             <div
               key={idx}
-              className={`w-[150px] h-[30px] text-center flex items-center justify-center bg-[#4d48db] text-white text-sm font-bold mx-2 my-1 cursor-pointer rounded-sm shadow-lg shadow-[#000000] leading-[30px]
-                m1_4:w-[23vw] m1_4:h-[5.7vw] m1_4:text-[2.6vw] m1_4:leading-[5.7vw] m1_4:mx-[0.3vh] m1_4:my-[1vh]
+              className={`w-[150px] h-[30px] text-center flex items-center justify-center bg-[#4d48db] text-white text-sm font-bold mx-2  cursor-pointer rounded-sm shadow-lg shadow-[#000000] leading-[30px]
+                m1_4:w-[23vw] m1_4:h-[5.7vw] m1_4:text-[2.6vw] m1_4:leading-[5.7vw] m1_4:mx-[0.3vh] 
                 ${view === item ? "bg-[#3d3b8a]" : ""}`}
               onClick={() => {
                 setCurrentSort("");
@@ -443,7 +445,7 @@ export default function Index() {
       </div>
 
       {(view === "Characters" || view === "Weapons" || view === "Relics") && (
-        <div className='rounded-lg text-[#ffffff] relative z-[900] w-full flex justify-center mt-[2vw] gap-[2vw] mb-[1vw]'>
+        <div className='rounded-lg text-[#ffffff] relative z-[900] w-full flex justify-center mt-[7vh] gap-[2vw] mb-[0.5vw]'>
           <div
             className=' w-fit flex justify-center items-center pl-[2.5vw] pr-[2vw] py-[0.1vw] rounded-md shadow-md shadow-[#000000] gap-[1vw] hover:shadow-[0_0_1px_2px_#ffffff] cursor-pointer text-[13px]
           m1_4:w-[32vw] m1_4:text-[2.5vw]
