@@ -9,6 +9,11 @@ import RelicView from "./relic_view";
 import PHeader from "./p_header";
 import BG from "../../bg";
 
+import { get_tier_data_from_char_id, get_tier_details_from_tier } from "../../tier/tierData";
+import { get_lb_types } from "../../lb/[[...lb_name]]/lib";
+
+import { OpenInNew, EmojiEvents } from "@mui/icons-material";
+
 // import {
 //   scoreLib,
 //   scoreSetLib,
@@ -26,7 +31,7 @@ import BG from "../../bg";
 import { use, useState } from "react";
 import { useEffect } from "react";
 
-export default function Character({ characterJSON }: { characterJSON: any }) {
+export default function Character({ characterJSON, router }: { characterJSON: any; router: any }) {
   const [isTableView, setIsTableView] = useState(true);
 
   const scoreLib = `INFO	wefe	wef	gawef	HP	ATK	DEF	SPD	CRIT Rate	CRIT DMG	Effect Hit Rate	Effect RES	Break Effect	Outgoing Healing Boost	Energy Regeneration Rate	Ice DMG Boost	Quantum DMG Boost	Imaginary DMG Boost	Fire DMG Boost	Wind DMG Boost	Thunder DMG Boost	Physical DMG Boost
@@ -50,15 +55,29 @@ Anaxa	0	0.2	0	0	0.7	0	1	1	1	0	0	0	0	0	0	0	0	0	0.7	0	0`;
   console.log(charIndex);
 
   const [scrollY, setScrollY] = useState(0);
+  const [windowWidth, setWindowWidth] = useState(10000);
   useEffect(() => {
     const handleScroll = () => {
       setScrollY(window.scrollY);
     };
     window.addEventListener("scroll", handleScroll);
+
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener("resize", handleResize);
+    handleResize();
+
     return () => {
       window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
+
+  if (windowWidth < 768) {
+    return null;
+  }
 
   return (
     <div className='h-fit'>
@@ -103,20 +122,76 @@ Anaxa	0	0.2	0	0	0.7	0	1	1	1	0	0	0	0	0	0	0	0	0	0.7	0	0`;
             backgroundPosition: "50% 60%",
           }}>
           <div
-            className='text-2xl font-extrabold w-[730px] text-center bg-bk1 py-3 rounded-lg'
-            style={{ color: characterJSON["element"]["color"] }}>
-            {characterJSON["name"] + " - Level " + characterJSON["level"]}
+            className='text-2xl font-extrabold w-[730px] text-center bg-[#121212] py-3 rounded-lg text-[#e9e9e9]'
+            // style={{ color: characterJSON["element"]["color"] }}
+            style={{
+              // textShadow: `0px 0px 5px ${characterJSON["element"]["color"]}ee`,
+              textShadow: `0px 0px 5px #000000`,
+            }}>
+            {/* {characterJSON["name"] + " - Level " + characterJSON["level"]} */}
+            {characterJSON["name"]}
           </div>
-          <div className='w-[730px] flex flex-col flex-wrap gap-[6px] h-[280px] justify-end items-center'>
+          <div className='mx-auto  flex justify-center gap-[5px] items-center relative translate-y-[5px]'>
+            <div className='w-[62px] text-center font-extrabold text-[16px] bg-[#232323] rounded-lg h-fit py-[2px]'>
+              {"E" + characterJSON["rank"]}
+            </div>
+            <div className='w-[92px] text-center font-extrabold text-[16px] bg-[#232323] rounded-lg h-fit py-[2px] mr-[20px]'>
+              {"LV" + characterJSON["level"]}
+            </div>
+            {/* <div>{characterJSON["element"]["name"]}</div>
+            <div>{characterJSON["path"]["name"]}</div> */}
+            <div className='flex items-center justify-center w-[36px] aspect-square rounded-lg bg-[#232323]'>
+              <Image
+                src={`https://raw.githubusercontent.com/Mar-7th/StarRailRes/refs/heads/master/${characterJSON["path"]["icon"]}`}
+                width={30}
+                height={30}
+                alt={characterJSON["path"]["name"]}
+                className='rounded-full'
+              />
+            </div>
+            <div className='flex items-center justify-center w-[36px] aspect-square rounded-lg bg-[#232323] mr-[290px]'>
+              <Image
+                src={`https://raw.githubusercontent.com/Mar-7th/StarRailRes/refs/heads/master/${characterJSON["element"]["icon"]}`}
+                width={30}
+                height={30}
+                alt={characterJSON["element"]["name"]}
+                className='rounded-full'
+              />
+            </div>
+            <div className='flex gap-[3px]'>
+              {/* <div className='px-4 text-[14px] font-bold bg-[#232323] rounded-lg leading-[26px]'>
+                View Kit
+              </div> */}
+              <div
+                className='flex justify-center items-center aspect-square bg-[#232323] rounded-lg w-[28px] h-[28px]'
+                onClick={() => {
+                  if (characterJSON["name"] in charIndex) {
+                    router.push(`/i/${characterJSON["id"]}`);
+                  }
+                }}>
+                <OpenInNew className='text-[#e9e9e9] cursor-pointer scale-[0.5]' />
+              </div>
+              <div
+                className='flex justify-center items-center aspect-square bg-[#232323] rounded-lg w-[28px] h-[28px]'
+                onClick={() => {
+                  if (characterJSON["name"] in charIndex) {
+                    router.push(`/lb/${characterJSON["name"]}`);
+                  }
+                }}>
+                <EmojiEvents className='text-[#e9e9e9] cursor-pointer scale-[0.6]' />
+              </div>
+            </div>
+          </div>
+          <div className='w-[730px] flex flex-col flex-wrap gap-[3px] h-[210px] justify-end items-center'>
             <div
-              className='flex flex-col flex-wrap items-start h-[159px] pt-1 pb-2 w-[340px] group'
+              className='flex flex-col flex-wrap items-start h-[119px] pt-1 pb-2 w-[310px] group'
               onMouseEnter={(e) => {
                 console.log(e.currentTarget.querySelector("img"));
                 const div = e.currentTarget.querySelector(".icon") as HTMLDivElement;
                 const stars = e.currentTarget.querySelector(".stars") as HTMLImageElement;
 
                 if (div) {
-                  div.style.filter = `drop-shadow(0px 0px 15px ${characterJSON["element"]["color"]}) brightness(1.1)`;
+                  // div.style.filter = `drop-shadow(0px 0px 15px ${characterJSON["element"]["color"]}) brightness(1.1)`;
                   div.style.transform = `scale(1.1)`;
                 }
 
@@ -139,7 +214,7 @@ Anaxa	0	0.2	0	0	0.7	0	1	1	1	0	0	0	0	0	0	0	0	0	0.7	0	0`;
                   stars.style.transform = `scale(1)`;
                 }
               }}>
-              <div className='flex items-center justify-center w-[125px] h-[147px] rounded-lg transition-all duration-150 icon '>
+              <div className='flex items-center justify-center w-[95px] h-[107px] rounded-lg transition-all duration-150 icon '>
                 <Image
                   src={`https://raw.githubusercontent.com/Mar-7th/StarRailRes/refs/heads/master/${
                     characterJSON["light_cone"] && characterJSON["light_cone"]["preview"]
@@ -150,19 +225,29 @@ Anaxa	0	0.2	0	0	0.7	0	1	1	1	0	0	0	0	0	0	0	0	0	0.7	0	0`;
                   className='z-[101]'
                 />
               </div>
-              <Image
-                src={`https://raw.githubusercontent.com/Mar-7th/StarRailRes/refs/heads/master/icon/deco/Star${
-                  characterJSON["light_cone"] ? characterJSON["light_cone"]["rarity"] : 3
-                }.png`}
-                width={162}
-                height={33}
-                alt='Light Cone Rarity'
-                className='mt-3 stars transition-all'
-              />
-              <div className='font-extrabold text-[14px] text-w1 bg-[#23232381] px-3 mt-[2px] ml-2 rounded-lg'>{`LEVEL ${
-                characterJSON["light_cone"] ? characterJSON["light_cone"]["level"] : 0
-              }`}</div>
-              <div className='font-medium text-[16px] leading-[20px] mt-[2px] w-[155px] text-[#eaeaead0] px-3 rounded-lg py-1 bg-[#232323]'>
+              <div className=' translate-x-[-20px] relative'>
+                <Image
+                  src={`https://raw.githubusercontent.com/Mar-7th/StarRailRes/refs/heads/master/icon/deco/Star${
+                    characterJSON["light_cone"] ? characterJSON["light_cone"]["rarity"] : 3
+                  }.png`}
+                  width={143}
+                  height={162}
+                  alt='Light Cone Rarity'
+                  className='mt-1 stars transition-all'
+                />
+              </div>
+              <div className='font-extrabold text-[11px] text-w1 flex translate-x-[-10px] relative'>
+                {/* {`LEVEL ${characterJSON["light_cone"] ? characterJSON["light_cone"]["level"] : 0}`} */}
+                <div className='bg-[#232323e1] px-3 mt-[2px] rounded-lg w-fit'>
+                  {`S${characterJSON["light_cone"] ? characterJSON["light_cone"]["rank"] : 0}`}
+                </div>
+                <div className='bg-[#23232381] px-3 mt-[2px] ml-[2px] rounded-lg'>
+                  {characterJSON["light_cone"]
+                    ? `Lv ${characterJSON["light_cone"]["level"]}`
+                    : "N/A"}
+                </div>
+              </div>
+              <div className='font-medium text-[16px] leading-[20px] mt-[2px] w-[155px] text-[#eaeaead0] px-3 rounded-lg py-1 bg-[#232323] translate-x-[-30px] relative'>
                 {characterJSON["light_cone"]
                   ? characterJSON["light_cone"]["name"]
                   : "No Light Cone"}
@@ -193,6 +278,13 @@ Anaxa	0	0.2	0	0	0.7	0	1	1	1	0	0	0	0	0	0	0	0	0	0.7	0	0`;
                       charIndex[characterJSON["name"]][charIndex["INFO"].indexOf(attribute["name"])]
                     ) > 0.3
                   }
+                  negative={
+                    characterJSON["name"] in charIndex &&
+                    charIndex["INFO"].includes(attribute["name"]) &&
+                    parseFloat(
+                      charIndex[characterJSON["name"]][charIndex["INFO"].indexOf(attribute["name"])]
+                    ) < 0
+                  }
                   key={idx}
                 />
               );
@@ -221,6 +313,15 @@ Anaxa	0	0.2	0	0	0.7	0	1	1	1	0	0	0	0	0	0	0	0	0	0.7	0	0`;
                         ]
                       ) > 0.3
                     }
+                    negative={
+                      characterJSON["name"] in charIndex &&
+                      charIndex["INFO"].includes(addition["name"]) &&
+                      parseFloat(
+                        charIndex[characterJSON["name"]][
+                          charIndex["INFO"].indexOf(addition["name"])
+                        ]
+                      ) < 0
+                    }
                     key={idx}
                   />
                 );
@@ -236,7 +337,7 @@ Anaxa	0	0.2	0	0	0.7	0	1	1	1	0	0	0	0	0	0	0	0	0	0.7	0	0`;
         }}>
         <div className='h-[10px] w-[1px] mx-auto relative -translate-y-[100px]'>
           {/* {[0, 1, 2, 3, 4, 5].map((num, i) => { */}
-          {[0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5].map((num, i) => {
+          {/* {[0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5].map((num, i) => {
             // const r = Math.floor(num / 2);
             const r = Math.floor(i / 2);
             // const c = num % 2;
@@ -291,35 +392,37 @@ Anaxa	0	0.2	0	0	0.7	0	1	1	1	0	0	0	0	0	0	0	0	0	0.7	0	0`;
                 />
               </div>
             );
-          })}
+          })} */}
         </div>
 
-        <div className='h-[30px] w-1'></div>
+        {/* <div className='h-[30px] w-1'></div> */}
 
-        <PHeader text='RELICS' />
+        {/* <PHeader text='RELICS' /> */}
         <div className='h-[10px] w-1'></div>
 
-        <RelicView
-          relic_list={characterJSON["relics"]}
-          relic_set_list={characterJSON["relic_sets"]}
-          char_name={characterJSON["name"]}
-          element={characterJSON["element"]["id"]}
-          elementColor={characterJSON["element"]["color"]}
-        />
+        <div className='flex w-full justify-center'>
+          <RelicView
+            relic_list={characterJSON["relics"]}
+            relic_set_list={characterJSON["relic_sets"]}
+            char_name={characterJSON["name"]}
+            element={characterJSON["element"]["id"]}
+            elementColor={characterJSON["element"]["color"]}
+          />
+          <SkillsM
+            skills={characterJSON["skills"]}
+            skill_trees={characterJSON["skill_trees"]}
+            rank={characterJSON["rank"]}
+            rankIcons={characterJSON["rank_icons"]}
+            charID={Number(characterJSON["id"])}
+          />
+        </div>
 
-        <PHeader text='TALENTS' />
+        {/* <PHeader text='TALENTS' /> */}
+
+        {/* <div className='h-[10px] w-1'></div> */}
 
         <div className='h-[10px] w-1'></div>
-
-        <SkillsM
-          skills={characterJSON["skills"]}
-          skill_trees={characterJSON["skill_trees"]}
-          rank={characterJSON["rank"]}
-          rankIcons={characterJSON["rank_icons"]}
-          charID={Number(characterJSON["id"])}
-        />
-        <div className='h-[10px] w-1'></div>
-        <PHeader text='DAMAGE' />
+        {/* <PHeader text='DAMAGE' /> */}
       </div>
     </div>
   );

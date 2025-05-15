@@ -27,7 +27,17 @@ interface RelicJSON {
   sub_affix: {}[];
 }
 
-export default function RelicL({ relicJSON, charName, element, elementColor }: { relicJSON: RelicJSON; charName: string; element: string; elementColor: string }) {
+export default function RelicL({
+  relicJSON,
+  charName,
+  element,
+  elementColor,
+}: {
+  relicJSON: RelicJSON;
+  charName: string;
+  element: string;
+  elementColor: string;
+}) {
   const relicTypes = ["Head", "Hand", "Body", "Feet", "Ball", "Rope"];
 
   //   const relicData = `HPDelta	42.337549	38.1037941	33.8700392
@@ -78,15 +88,28 @@ export default function RelicL({ relicJSON, charName, element, elementColor }: {
   const relicScores = relicJSON["sub_affix"].map((affix: any) => {
     const foundLine = relicDataParsedFull.find((line) => line[0] === affix["type"]);
     return foundLine && charName in charIndex
-      ? (affix["value"] / Number(foundLine[1])) * Number(charIndex["INFO"].includes(affix["type"]) ? charIndex[charName][charIndex["INFO"].indexOf(affix["type"])] : 0)
+      ? (affix["value"] / Number(foundLine[1])) *
+          Number(
+            charIndex["INFO"].includes(affix["type"])
+              ? charIndex[charName][charIndex["INFO"].indexOf(affix["type"])]
+              : 0
+          )
       : -1;
   });
-  const relicMainstatWeight = relicDataParsedFull.find((line) => line[0] === (relicJSON["main_affix"] as any)["type"])
-    ? relicJSON["main_affix"]["value"] / Number(relicDataParsedFull.find((line) => line[0] === (relicJSON["main_affix"] as any)["type"])![1])
+  const relicMainstatWeight = relicDataParsedFull.find(
+    (line) => line[0] === (relicJSON["main_affix"] as any)["type"]
+  )
+    ? relicJSON["main_affix"]["value"] /
+      Number(
+        relicDataParsedFull.find((line) => line[0] === (relicJSON["main_affix"] as any)["type"])![1]
+      )
     : 0;
   const relicMainstatScore =
     charName in charIndex && charIndex["INFO"].includes((relicJSON["main_affix"] as any)["type"])
-      ? relicMainstatWeight * Number(charIndex[charName][charIndex["INFO"].indexOf((relicJSON["main_affix"] as any)["type"])])
+      ? relicMainstatWeight *
+        Number(
+          charIndex[charName][charIndex["INFO"].indexOf((relicJSON["main_affix"] as any)["type"])]
+        )
       : 0;
   const relicScore = relicScores.reduce((a, b) => a + b, 0);
   const subAffixWeights = relicJSON["sub_affix"].map((affix: any) => {
@@ -95,34 +118,51 @@ export default function RelicL({ relicJSON, charName, element, elementColor }: {
   });
 
   const isCriticalStat = (type: string) => {
-    return charName in charIndex && charIndex["INFO"].includes(type) && parseFloat(charIndex[charName][charIndex["INFO"].indexOf(type)]) > 0;
+    return (
+      charName in charIndex &&
+      charIndex["INFO"].includes(type) &&
+      parseFloat(charIndex[charName][charIndex["INFO"].indexOf(type)]) > 0
+    );
   };
 
   return (
     <div className=' w-[259px] flex justify-center items-center rounded-sm flex-col'>
-      <div className='grid grid-cols-[75px,auto] mb-1  w-full '>
-        <div className='w-[75px] h-[75px] flex justify-center items-center bg-[#020071c2] rounded-md'>
-          <Image src={`https://raw.githubusercontent.com/Mar-7th/StarRailRes/refs/heads/master/${relicJSON["icon"]}`} width={59} height={59} alt='Relic Icon' />
+      <div className='flex mb-[2px]'>
+        <div className='w-[56px] h-[56px] flex justify-center items-center bg-[#020071c2] rounded-md relative'>
+          <Image
+            src={`https://raw.githubusercontent.com/Mar-7th/StarRailRes/refs/heads/master/${relicJSON["icon"]}`}
+            width={64}
+            height={64}
+            alt='Relic Icon'
+            className='w-[44px] h-[44px]'
+          />
         </div>
-        <div className='flex flex-col w-full text-center text-xl font-extrabold h-[75px]'>
-          <div className='bg-w2 hover:bg-w1 active:bg-w3 hover:underline hover:cursor-default w-full pt-4 text-r4'>{`${relicTypes[relicJSON["type"] - 1]} +${
-            relicJSON["level"]
-          }`}</div>
-          <div className='bg-w2 hover:bg-w1 active:bg-w3 pb-1 hover:underline hover:cursor-default w-full pt-1 text-sm text-r1' style={{ borderTop: "3px solid #A29FDD" }}>
-            {`${relicJSON["main_affix"]["name"].replace("Boost", "").replace("Energy Regeneration Rate", "Energy Regen")} ${relicJSON["main_affix"]["display"]}
+        <div className='flex flex-col text-center ml-[10px] gap-[2px] font-bold'>
+          <div className='bg-[#e8e8e8]  active:bg-w3 hover:underline hover:cursor-default w-[180px] text-[15px] text-r1 rounded-sm pt-[8px] pb-[0px] font-extrabold'>
+            {`${relicJSON["main_affix"]["name"]
+              .replace("Boost", "")
+              .replace("Energy Regeneration Rate", "Energy Regen")}  ${
+              relicJSON["main_affix"]["display"]
+            }
             `}
+          </div>
+          <div className='bg-[#e8e8e8]  active:bg-w3 hover:underline hover:cursor-default w-[180px] text-[13px] text-[#7b0b0bc9] rounded-sm '>
+            LV {relicJSON["level"]}
           </div>
         </div>
       </div>
 
-      <div className='w-[90%] rounded-sm mb-1 flex justify-between items-center bg-[#5c59bf] text-[13px] font-extrabold py-[3px] px-7'>
+      {/* <div className='w-[90%] rounded-sm mb-1 flex justify-between items-center bg-[#5c59bf] text-[13px] font-extrabold py-[3px] px-7'>
         <div className=' text-[#5bdc79] text-left '>
           M: {relicMainstatScore.toFixed(1)} S: {relicScore.toFixed(1)}
         </div>
         <div className=' text-[#f4e135] font-extrabold'>
-          {"Total: " + ((relicScore + relicMainstatScore).toFixed(1) == "-1.0" ? "-" : (relicScore + relicMainstatScore).toFixed(1))}
+          {"Total: " +
+            ((relicScore + relicMainstatScore).toFixed(1) == "-1.0"
+              ? "-"
+              : (relicScore + relicMainstatScore).toFixed(1))}
         </div>
-      </div>
+      </div> */}
 
       {[0, 1, 2, 3].map((index, i) => {
         const affix: any = index in relicJSON["sub_affix"] ? relicJSON["sub_affix"][index] : null;
@@ -134,18 +174,38 @@ export default function RelicL({ relicJSON, charName, element, elementColor }: {
             key={i}
             style={{
               opacity: i % 2 === 0 ? "0.8" : "1",
-              textShadow: isCriticalStat(affix ? affix["type"] : "") ? "0 0 1px #E5D64A, 0 0 10px #E5D64A" : "none",
+              textShadow: isCriticalStat(affix ? affix["type"] : "")
+                ? "0 0 1px #E5D64A, 0 0 10px #E5D64A"
+                : "none",
               color: isCriticalStat(affix ? affix["type"] : "") ? "#E5D64A" : "#d9d9d9",
             }}>
             <div className='hover:underline hover:cursor-default w-full py-[2px] bg-[#020071c2] text-[12px]'>
-              {(affix ? relicScores[index].toFixed(1) : "-").toString() == "-1.0" ? "-" : affix ? relicScores[index].toFixed(1) : "-"}
+              {(affix ? relicScores[index].toFixed(1) : "-").toString() == "-1.0"
+                ? "-"
+                : affix
+                ? relicScores[index].toFixed(1)
+                : "-"}
             </div>
             <div className='hover:underline hover:cursor-default w-full py-[2px] text-justify flex justify-between text-[12px] pl-2 pr-2'>
-              <div>{affix ? affix["name"].substring(0, 10) + (affix["name"].length > 10 ? "..." : "") : `Stat ${i + 1}`}</div>
-              <div>{affix ? (affix["type"] == "SpeedDelta" ? affix["value"].toFixed(1) : affix["display"]) : "-"}</div>
+              <div>
+                {affix
+                  ? affix["name"].substring(0, 10) + (affix["name"].length > 10 ? "..." : "")
+                  : `Stat ${i + 1}`}
+              </div>
+              <div>
+                {affix
+                  ? affix["type"] == "SpeedDelta"
+                    ? affix["value"].toFixed(1)
+                    : affix["display"]
+                  : "-"}
+              </div>
             </div>
-            <div className='hover:underline hover:cursor-default w-full py-[2px] text-center text-[12px]'>{"•••••"}</div>
-            <div className='hover:underline hover:cursor-default w-full py-[2px] text-left text-[12px] pl-2 relic_weight'>{affix ? subAffixWeights[index].toFixed(1) : "-"}</div>
+            <div className='hover:underline hover:cursor-default w-full py-[2px] text-center text-[12px]'>
+              {"•••••"}
+            </div>
+            <div className='hover:underline hover:cursor-default w-full py-[2px] text-left text-[12px] pl-2 relic_weight'>
+              {affix ? subAffixWeights[index].toFixed(1) : "-"}
+            </div>
           </div>
         );
       })}
