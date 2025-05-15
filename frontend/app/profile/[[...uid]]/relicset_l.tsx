@@ -9,7 +9,13 @@ interface RelicsetJSON {
   id: string;
 }
 
-export default function RelicsetL({ relicsetJSON, charName }: { relicsetJSON: RelicsetJSON; charName: string }) {
+export default function RelicsetL({
+  relicsetJSON,
+  charName,
+}: {
+  relicsetJSON: RelicsetJSON;
+  charName: string;
+}) {
   //   const charRelicSetData = `INFO	101|2	102|2	103|2	104|2	105|2	106|2	107|2	108|2	109|2	110|2	111|2	112|2	113|2	114|2	115|2	116|2	117|2	118|2	119|2	120|2	121|2	122|2	123|2	124|2	101|4	102|4	103|4	104|4	105|4	106|4	107|4	108|4	109|4	110|4	111|4	112|4	113|4	114|4	115|4	116|4	117|4	118|4	119|4	120|4	121|4	122|4	123|4	124|4	301|2	302|2	303|2	304|2	305|2	306|2	307|2	308|2	309|2	310|2	311|2	312|2	313|2	314|2	315|2	316|2	317|2	318|2	319|2	320|2
   // Seele	0	1.944444415	0	0	0	0	0	1.800397631	0	0	0	0	0	0.01615384615	0	1.944444415	1.62037037	0	0	1.944444415	0.01615384615	2.469135738	1.944444415	1.800397631	0	0	0	2.314814815	3.240740741	0	0.9020618557	8.504983391	0	0	0	3.086419753	1.234567901	2.153846154	0	0	1.804123711	0	0	1.851851852	0	3.608247423	0	0	3.888888889	0	0	0	2.469135802	3.822228586	0	0	4.273259514	0	4.650630011	0	2.469135802	1.944444444	0	1.615384615	0	2.469135802	0	1.615384615
   // Dan Heng \u2022 Imbibitor Lunae	0	1.944444415	0	0	0	0	0	0	0	0	0	1.800397631	0	0.01615384615	0	1.944444415	1.62037037	0	0	1.944444415	0.01615384615	2.469135738	1.944444415	0	0	0	0	2.314814815	3.240740741	0	0	6.334440753	0	0	0	4.166666667	2.469135802	2.153846154	0	0	1.804123711	0	0	1.851851852	0	0	0	6.172839506	3.888888889	0	0	0	2.469135802	2.469135802	0	0	6.077383225	0	1.944444444	0	2.469135802	1.944444444	0	1.615384615	0	2.469135802	0	1.615384615
@@ -30,20 +36,43 @@ export default function RelicsetL({ relicsetJSON, charName }: { relicsetJSON: Re
   //   });
 
   return (
-    <div className='flex w-fit h-[75px] justify-center items-center rounded-sm opacity-90'>
-      <div className='flex justify-center items-center w-[75px] h-[75px] bg-[#5c59bf] rounded-md'>
-        <Image src={`https://raw.githubusercontent.com/Mar-7th/StarRailRes/refs/heads/master/${relicsetJSON["icon"]}`} width={59} height={59} alt='Relic Set Icon' />
-      </div>
-      <div className='text-y1 h-[75px] bg-[#3d3b8a] font-extrabold w-[67px] text-center flex items-center justify-center'>
-        <div className='h-[75px] leading-[75px] w-full bg-[#020071c2]'>{`+${
+    <div className='flex justify-center items-center rounded-sm opacity-90 relative z-[90] gap-[4px] w-[500px] ml-[32px]'>
+      <div className='text-y1 bg-[#3d3b8a] font-extrabold text-center flex items-center justify-center absolute text-[12px] rounded-lg top-[-6px] z-[99] left-[41px]'>
+        <div className='w-full bg-[#020071c2] px-2 py-[1px] rounded-lg'>{`+${
           // charName in charRelicSetIndex ? parseFloat(charRelicSetIndex[charName][charRelicSetIndex["INFO"].indexOf(relicsetJSON["id"] + "|" + relicsetJSON["num"])]).toFixed(2) : 0
-          charName in charSetIndex ? parseFloat(charSetIndex[charName][charSetIndex["INFO"].indexOf(relicsetJSON["id"] + "|" + relicsetJSON["num"])]).toFixed(2) : 0
+          charName in charSetIndex
+            ? parseFloat(
+                charSetIndex[charName][
+                  charSetIndex["INFO"].indexOf(relicsetJSON["id"] + "|" + relicsetJSON["num"])
+                ]
+              ).toFixed(2)
+            : 0
         }`}</div>
       </div>
-      <div className='w-[800px] bg-[#3d3b8a]  h-full flex flex-col px-4'>
-        <div className='text-lg font-extrabold pt-3 text-w1'>{`${relicsetJSON["name"]} ${relicsetJSON["num"]}pc`}</div>
-        <div className='text-xs -translate-y-1 text-w2 h-[30px] overflow-y-auto overflow-x-hidden'>{`${relicsetJSON["desc"]}`}</div>
+      <div className='flex justify-center items-center w-[50px] h-[50px] bg-[#5c59bf] rounded-md'>
+        <Image
+          src={`https://raw.githubusercontent.com/Mar-7th/StarRailRes/refs/heads/master/${relicsetJSON["icon"]}`}
+          width={64}
+          height={64}
+          alt='Relic Set Icon'
+          className='w-[42px] aspect-square'
+        />
       </div>
+      <div className='w-fit h-[42px] bg-[#3d3b8a] flex items-center rounded-lg'>
+        <div className='text-[14px] font-extrabold text-w1 bg-[#020071c2] rounded-lg px-1 h-full leading-[42px]'>
+          {relicsetJSON["num"]}p
+        </div>
+      </div>
+      <div className='text-[16px] font-bold text-w1 w-[300px] bg-[#3d3b8a] rounded-lg px-4 h-[50px] flex items-center'>
+        <div className='w-fit h-fit'>
+          {relicsetJSON["name"].length > 28
+            ? `${relicsetJSON["name"].substring(0, 28)}...`
+            : relicsetJSON["name"]}
+        </div>
+      </div>
+
+      {/* <div className='text-lg font-extrabold pt-3 text-w1'>{`${relicsetJSON["name"]} ${relicsetJSON["num"]}pc`}</div> */}
+      {/* <div className='text-xs -translate-y-1 text-w2 h-[30px] overflow-y-auto overflow-x-hidden'>{`${relicsetJSON["desc"]}`}</div> */}
     </div>
   );
 }

@@ -323,8 +323,8 @@ export default function RelicView({
   }, [multiplierRow]);
 
   return (
-    <div>
-      <div
+    <div className='w-fit'>
+      {/* <div
         className='bg-[#3d3b8a] text-[#e9e9e9] font-bold text-[14px] hover:font-extrabold hover:text-[16px] text-center w-[280px] mt-2 mx-auto h-[42px] flex items-center justify-center opacity-90 transition-all duration-200 active:shadow-[0px_0px_0px_1px_rgb(240,240,240)] cursor-pointer'
         onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
           setIsTable((prev) => !prev);
@@ -332,12 +332,12 @@ export default function RelicView({
         <div className='w-full h-full flex items-center justify-center bg-[#020071c2] hover:bg-[#0e0d72a2]  border-[#d7d7d733] border-b-2 border-t-2 py-[1px]'>
           <span>{isTable ? "Relics - Table View" : "Relics - Block View"}</span>
         </div>
-      </div>
+      </div> */}
       {/* ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */}
       <div
         className={`${
           isTable ? "hidden" : "flex"
-        } flex-wrap justify-center items-center gap-x-[10px] gap-y-[10px] mt-[10px] w-[1100px] mx-auto relative z-[100]`}>
+        } flex-wrap justify-center items-center gap-x-[10px] gap-y-[10px] mt-[10px] w-[1070px]  relative z-[100]`}>
         {relic_list.map((relic: any, idx: number) => {
           return (
             <RelicL
@@ -349,17 +349,17 @@ export default function RelicView({
             />
           );
         })}
-      </div>
-      <div
-        className={`${
-          isTable ? "hidden" : "flex"
-        } flex-col justify-center items-center gap-1 mt-4  relative z-[100]`}>
-        {relic_set_list.map((relic_set: any, idx: number) => {
-          return <RelicSetL relicsetJSON={relic_set} charName={char_name} key={idx} />;
-        })}
+        <div
+          className={`${
+            isTable ? "hidden" : "flex"
+          } flex-col justify-center items-center gap-1 mt-4  relative z-[100]`}>
+          {relic_set_list.map((relic_set: any, idx: number) => {
+            return <RelicSetL relicsetJSON={relic_set} charName={char_name} key={idx} />;
+          })}
+        </div>
       </div>
       {/* -------------------------------------------------------------------------------------------------------------------    RLEIC TABLE HEADER   -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */}
-      <div
+      {/* <div
         className={`${
           isTable ? "flex" : "hidden"
         } flex-col justify-center bg-[#3d3b8a] opacity-[90%] rounded-lg px-14 py-6 mx-auto items-center gap-1 mt-4 relative z-[100] w-fit overflow-y-hidden`}>
@@ -383,7 +383,7 @@ export default function RelicView({
             </tr>
           </thead>
           <tbody className='mt-4 text-[11px] '>
-            {/* ----------------------------------------------------------------------------------------------------------------    TABLE    ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */}
+            ----------------------------------------------------------------------------------------------------------------    TABLE    -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
             <tr className='border-b-[1px] border-t-[1px] border-[#d7d7d733] h-[15px]'>
               {[...Array(columns.length).fill("")].map((a, idx) => (
                 <td key={idx}></td>
@@ -432,13 +432,13 @@ export default function RelicView({
                 })}
               </tr>
             ))}
-            {/* ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */}
+            ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
             <tr className='border-b-[1px] border-t-[1px] border-[#d7d7d733] h-[15px]'>
               {[...Array(columns.length).fill("")].map((a, idx) => (
                 <td key={idx}></td>
               ))}
             </tr>
-            {/* -------------------------------------------------------------------------------------------------------------------   WEIGHT    ------------------------------------------------------------------------------------------------------------------------------------------------------------------ */}
+            -------------------------------------------------------------------------------------------------------------------   WEIGHT    ------------------------------------------------------------------------------------------------------------------------------------------------------------------
             <tr className='border-b-[1px] border-t-[1px] border-[#d7d7d733]'>
               {weightRow.map((cell, cellIndex) => (
                 <td
@@ -454,7 +454,7 @@ export default function RelicView({
                 </td>
               ))}
             </tr>
-            {/* ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */}
+            ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
             <tr className='border-b-[1px] border-t-[1px] border-[#d7d7d733]'>
               <td
                 key={0}
@@ -538,13 +538,13 @@ export default function RelicView({
                 <span className='hover:cursor-pointer hover:underline'></span>
               </td>
             </tr>
-            {/* ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */}
+            ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
             <tr className='border-b-[1px] border-t-[1px] border-[#d7d7d733] h-[15px]'>
               {[...Array(columns.length).fill("")].map((a, idx) => (
                 <td key={idx}></td>
               ))}
             </tr>
-            {/* ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */}
+            ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
             <tr className='border-b-[2px] border-t-[2px] border-[#d7d7d733] bg-[#020071c2]'>
               {scoreRow.map((cell, cellIndex) => (
                 <td
@@ -562,11 +562,11 @@ export default function RelicView({
             </tr>
           </tbody>
         </table>
-      </div>
+      </div> */}
       {/* ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */}
       {/* ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */}
       {/* -------------------------------------------------------------------------------------------------------------------------SET TABLE------------------------------------------------------------------------------------------------------------------------------------------------------- */}
-      <div
+      {/* <div
         className={`${
           isTable ? "flex" : "hidden"
         } flex-col justify-center bg-[#3d3b8a] opacity-[90%] rounded-lg px-14 py-6 w-fit mx-auto items-center gap-1 mt-4 relative z-[100]`}>
@@ -670,62 +670,7 @@ export default function RelicView({
                           </td>
                         );
                       })}
-                      {/* <td className='rounded-lg px-2 py-2 text-center text-[12px] active:shadow-[0px_0px_0px_1px_rgb(240,240,240)] hover:bg-[#8D92C5] active:bg-[#292E5D] '>
-                          <div className='w-[26px] h-[26px] mx-auto'>
-                            <Image
-                              src={`https://raw.githubusercontent.com/Mar-7th/StarRailRes/refs/heads/master/${relic_set["icon"]}`}
-                              width={26}
-                              height={26}
-                              alt='Relic Icon'
-                              className={`w-[26px] h-[26px] `}
-                            />
-                          </div>
-                        </td>
-                        <td className='rounded-lg px-2 py-2 text-center text-[12px] active:shadow-[0px_0px_0px_1px_rgb(240,240,240)] hover:bg-[#8D92C5] active:bg-[#292E5D] '>
-                          {relic_set["num"] == 2 ? "2-Piece" : "4-Piece"}
-                        </td>
-                        <td className='rounded-lg px-2 py-2 text-center text-[12px] active:shadow-[0px_0px_0px_1px_rgb(240,240,240)] hover:bg-[#8D92C5] active:bg-[#292E5D] '>
-                          {relic_set["name"].substring(0, 18) + (relic_set["name"].length > 18 ? "..." : "")}
-                        </td>
-                        <td className='rounded-lg px-2 py-2 text-center text-[12px] active:shadow-[0px_0px_0px_1px_rgb(240,240,240)] hover:bg-[#8D92C5] active:bg-[#292E5D] '>
-                          {relic_set["desc"].substring(0, 50) + (relic_set["desc"].length > 50 ? "..." : "")}
-                        </td>
-                        <td className='rounded-lg px-2 py-2 text-center text-[12px] active:shadow-[0px_0px_0px_1px_rgb(240,240,240)] hover:bg-[#8D92C5] active:bg-[#292E5D] '>
-                          <input
-                            type='number'
-                            defaultValue={score}
-                            ref={(el: HTMLInputElement | null) => {
-                              setScoresRefs.current[index] = el;
-                            }}
-                            onBlur={(e) => {
-                              if (isNaN(parseFloat(e.currentTarget.value)) || parseFloat(e.currentTarget.value) < 0) {
-                                e.currentTarget.value = setScoresOriginal[index].toFixed(2);
-                                setSetScores(() => setScoresOriginal);
-                                return;
-                              }
-                              const newSetScores = [...setScores];
-                              newSetScores[index] = parseFloat(e.target.value);
-                              setSetScores(() => newSetScores);
-                            }}
-                            onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                              if (e.key === "Enter" || e.key === "Tab") {
-                                if (isNaN(parseFloat(e.currentTarget.value)) || parseFloat(e.currentTarget.value) < 0) {
-                                  e.currentTarget.value = setScoresOriginal[index].toFixed(2);
-                                  setSetScores(() => setScoresOriginal);
-                                  return;
-                                }
-                                const newSetScores = [...setScores];
-                                newSetScores[index] = parseFloat(e.currentTarget.value);
-                                setSetScores(() => newSetScores);
-                              }
-                            }}
-                            onFocus={(e) => {
-                              e.target.select();
-                            }}
-                            className='bg-transparent text-center w-full text-[12px] font-bold text-[#e8e8e8] focus:outline-none focus:ring-0 focus:border-b-[1px] focus:border-[#8D92C5] 
-                          [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
-                          />
-                        </td> */}
+                      
                     </>
                   )}
                 </tr>
@@ -770,7 +715,7 @@ export default function RelicView({
             </tr>
           </tbody>
         </table>
-      </div>
+      </div> */}
     </div>
   );
 }

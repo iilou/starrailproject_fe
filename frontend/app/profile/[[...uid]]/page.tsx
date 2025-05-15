@@ -250,7 +250,7 @@ export default function Profile() {
             </div>
           </div>
         )}
-        {currentCharacter && <Character characterJSON={currentCharacter} />}
+        {currentCharacter && <Character characterJSON={currentCharacter} router={router} />}
       </div>
     </div>
   );

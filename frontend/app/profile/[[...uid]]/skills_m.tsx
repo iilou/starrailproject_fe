@@ -98,12 +98,12 @@ export default function SkillsM({
         >
         <span className='hover:cursor-pointer hover:underline select-none relative z-[100]'>{isLegacy ? "Legacy View  (Click to change)" : "Normal View (Click to change)"}</span>
       </div> */}
-      <div className='w-full flex flex-wrap justify-center mt-1 gap-5 z-[100] relative'>
+      <div className=' flex flex-wrap justify-center mt-1 gap-5 z-[100] relative w-[650px]'>
         <div
-          className='relative z-[100] w-[1150px] mx-auto mb-3'
+          className='relative z-[100] mx-auto mb-3'
           style={{ display: !isLegacy ? "block" : "none" }}>
-          <div className='flex flex-col justify-center items-center w-full h-fit'>
-            <div className='w-full flex justify-center gap-[16px] flex-wrap mt-[10px]'>
+          <div className='flex flex-col justify-center items-center h-fit'>
+            <div className=' flex justify-center gap-[16px] flex-wrap mt-[10px]'>
               {[
                 0,
                 1,
@@ -139,12 +139,12 @@ export default function SkillsM({
                   );
                 })}
             </div>
-            <div className='w-full flex justify-center gap-[16px] mt-[10px]'>
-              <div className='justify-center items-center gap-[16px] w-fit px-12 py-1 flex rounded-[10px] bg-[#3d3b8a] opacity-90'>
+            <div className='flex justify-center gap-[16px] mt-[10px]'>
+              <div className='justify-center items-center gap-[16px] w-fit px-12 py-1 flex rounded-[10px] opacity-90'>
                 {[2, 4, 6].map((val, index) => {
                   return (
                     <div
-                      className='w-fit h-fit block hover:bg-[#4e4d88] active:bg-[#252547] active:shadow-[0px_0px_0px_1px_inset_#e7e7e7] rounded-md px-4 pt-4 pb-2 bg-[#5c59bf]'
+                      className='w-fit h-fit block hover:bg-[#4e4d88] active:bg-[#252547] active:shadow-[0px_0px_0px_1px_inset_#e7e7e7] rounded-md px-3 pt-4 pb-2 bg-[#5c59bf]'
                       key={index}>
                       <Image
                         src={`https://raw.githubusercontent.com/Mar-7th/StarRailRes/refs/heads/master/${
@@ -162,13 +162,16 @@ export default function SkillsM({
                         className='rounded-full bg-[#232323]'
                       />
                       <div
-                        className='font-bold text-center'
+                        className='font-bold text-center text-[14px] mt-[2px]'
                         style={{
                           // color: skill_trees[index + 4]["level"] >= skill_trees[index + 4]["max_level"] ? skills[0]["element"]["color"] : "#e2e2e2",
-                          color: "#e7e7e7",
+                          color:
+                            skill_trees[index + 4]["level"] >= skill_trees[index + 4]["max_level"]
+                              ? "#e9e9e9"
+                              : "#898989",
                           textShadow:
                             skill_trees[index + 4]["level"] >= skill_trees[index + 4]["max_level"]
-                              ? `0 0 5px ${skills[0]["element"]["color"]}, 0 0 10px ${skills[0]["element"]["color"]}`
+                              ? `0 0 5px #000000aa`
                               : "none",
                         }}>
                         {`A${val}`}
@@ -188,48 +191,38 @@ export default function SkillsM({
                       }
                       return acc;
                     }, {})
-                ).map((obj: any) => (
-                  <div className='w-fit h-fit block hover:bg-[#4e4d88] active:bg-[#252547] active:shadow-[0px_0px_0px_1px_inset_#e7e7e7] px-4 pt-4 pb-2 bg-[#5c59bf] rounded-md'>
-                    <Image
-                      src={`https://raw.githubusercontent.com/Mar-7th/StarRailRes/refs/heads/master/${obj.icon}`}
-                      width={32}
-                      height={32}
-                      alt={obj.icon}
-                      style={
-                        obj.level >= obj.max_level
-                          ? {
-                              boxShadow: `0 0 10px 5px ${skills[0]["element"]["color"]} inset, 0 0 5px 1px ${skills[0]["element"]["color"]}`,
-                            }
-                          : {}
-                      }
-                      className='rounded-full bg-[#232323]'
-                    />
-                    <div
-                      className='font-bold text-center'
-                      // style={
-                      //   obj.level >= obj.max_level
-                      //     ? {
-                      //         color: skills[0]["element"]["color"],
-                      //       }
-                      //     : {
-                      //         color: "#e2e2e2",
-                      //       }
-                      // }
-                      style={{
-                        // color: skill_trees[index + 4]["level"] >= skill_trees[index + 4]["max_level"] ? skills[0]["element"]["color"] : "#e2e2e2",
-                        color: "#e7e7e7",
-                        textShadow:
+                ).map((obj: any) => {
+                  // console.log("obj - ", obj);
+                  return (
+                    <div className='w-fit h-fit block hover:bg-[#4e4d88] active:bg-[#252547] active:shadow-[0px_0px_0px_1px_inset_#e7e7e7] px-3 pt-4 pb-2 bg-[#5c59bf] rounded-md'>
+                      <Image
+                        src={`https://raw.githubusercontent.com/Mar-7th/StarRailRes/refs/heads/master/${obj.icon}`}
+                        width={32}
+                        height={32}
+                        alt={obj.icon}
+                        style={
                           obj.level >= obj.max_level
-                            ? `0 0 5px ${skills[0]["element"]["color"]}, 0 0 10px ${skills[0]["element"]["color"]}`
-                            : "none",
-                      }}>
-                      {`x${obj.level}`}
+                            ? {
+                                boxShadow: `0 0 2px 1px ${skills[0]["element"]["color"]} inset, 0 0 5px 1px ${skills[0]["element"]["color"]}`,
+                              }
+                            : {}
+                        }
+                        className='rounded-full bg-[#232323]'
+                      />
+                      <div
+                        className='font-bold text-center text-[14px] mt-[2px]'
+                        style={{
+                          color: obj.level >= obj.max_level ? "#e9e9e9" : "#898989",
+                          textShadow: obj.level >= obj.max_level ? `0 0 5px #000000aa` : "none",
+                        }}>
+                        {`${obj.level}/${obj.max_level}`}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
-            <div className='flex justify-center gap-[16px] flex-wrap mt-[10px] w-[1150px]'>
+            <div className='flex justify-center gap-[16px] flex-wrap mt-[10px]'>
               {rankIcons.map((icon: any, index: number) => {
                 return (
                   <SkillNew
@@ -258,7 +251,7 @@ export default function SkillsM({
           className='w-fit bg-[#333262] hover:bg-[#3f3e77] active:shadow-[0px_0px_0px_1px_inset_#e7e7e7] transition-all rounded-lg py-3 px-8 items-center mt-3 mb-3'
           style={{ display: !isLegacy ? "none" : "flex" }}>
           <div className='flex flex-wrap gap-x-2 gap-y-2 justify-center items-center h-fit w-[340px] hover:bg-[#585799] active:bg-[#6867a7] active:shadow-[0px_0px_0px_1px_inset_#e7e7e7] rounded-lg py-3 px-4'>
-            <div className='font-extrabold text-2xl text-w1 text-center w-full hover:bg-[#4e4d88] active:bg-[#252547] active:shadow-[0px_0px_0px_1px_inset_#e7e7e7] rounded-md px-2'>
+            <div className='font-extrabold text-2xl text-w1 text-center hover:bg-[#4e4d88] active:bg-[#252547] active:shadow-[0px_0px_0px_1px_inset_#e7e7e7] rounded-md px-2'>
               <span className='select-none hover:cursor-text'>SKILLS</span>
             </div>
             {skills.slice(0, 4).map((skill: any, idx: number) => {
