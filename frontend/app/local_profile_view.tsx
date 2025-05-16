@@ -51,7 +51,6 @@ export default function LocalProfileView({ router }: { router: any }) {
               onClick={() => {
                 // router.push(`/profile?uid=${uid}`);
                 router.push(`/profile/${uid}`);
-                window.location.reload();
               }}>
               {nicknameList[uidList.indexOf(uid)].length > 15
                 ? nicknameList[uidList.indexOf(uid)].substring(0, 15) + "..."

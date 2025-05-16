@@ -103,7 +103,6 @@ export default function Header({ current }: { current: string }) {
                 onClick={(e: React.MouseEvent<HTMLDivElement>) => {
                   if (item.link !== current) {
                     router.push(item.link);
-                    window.location.reload();
                   }
                 }}>
                 <span>{item.name}</span>

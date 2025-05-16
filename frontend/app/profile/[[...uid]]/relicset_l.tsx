@@ -50,7 +50,7 @@ export default function RelicsetL({
         }`}</div>
       </div>
       <div className='flex justify-center items-center w-[50px] h-[50px] bg-[#5c59bf] rounded-md'>
-        <Image
+        <img
           src={`https://raw.githubusercontent.com/Mar-7th/StarRailRes/refs/heads/master/${relicsetJSON["icon"]}`}
           width={64}
           height={64}
@@ -63,10 +63,10 @@ export default function RelicsetL({
           {relicsetJSON["num"]}p
         </div>
       </div>
-      <div className='text-[16px] font-bold text-w1 w-[300px] bg-[#3d3b8a] rounded-lg px-4 h-[50px] flex items-center'>
+      <div className='text-[13px] font-bold text-w1 w-[300px] bg-[#3d3b8a] rounded-lg px-4 h-[50px] flex items-center'>
         <div className='w-fit h-fit'>
-          {relicsetJSON["name"].length > 28
-            ? `${relicsetJSON["name"].substring(0, 28)}...`
+          {relicsetJSON["name"].length > 42
+            ? `${relicsetJSON["name"].substring(0, 42)}...`
             : relicsetJSON["name"]}
         </div>
       </div>
