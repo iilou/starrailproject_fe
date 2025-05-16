@@ -17,7 +17,7 @@ import { weightLib, weightParse } from "../../lib/score";
 import { OpenInNew, EmojiEvents } from "@mui/icons-material";
 import { Download } from "@mui/icons-material";
 
-import { useRef } from "react";
+// import { useRef } from "react";
 
 import { toPng } from "html-to-image";
 // import html2canvas from "html2canvas";
@@ -42,10 +42,12 @@ import { useEffect } from "react";
 export default function Character({
   characterJSON,
   router,
+  charRef,
   reactive = true,
 }: {
   characterJSON: any;
   router: any;
+  charRef: any;
   reactive?: boolean;
 }) {
   const [isTableView, setIsTableView] = useState(true);
@@ -101,7 +103,7 @@ Anaxa	0	0.2	0	0	0.7	0	1	1	1	0	0	0	0	0	0	0	0	0	0.7	0	0`;
     return null;
   }
 
-  const charRef = useRef<HTMLDivElement>(null);
+  // const charRef = useRef<HTMLDivElement>(null);
 
   return (
     <div className='h-fit relative w-full' id={`char_${characterJSON["id"]}`} ref={charRef}>

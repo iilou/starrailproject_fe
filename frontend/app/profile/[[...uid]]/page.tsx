@@ -229,6 +229,8 @@ export default function Profile() {
     }
   };
 
+  const currentCharRef = useRef<any>(null);
+
   return (
     <div
       className='w-full h-fit relative'
@@ -412,7 +414,12 @@ export default function Profile() {
                       transformOrigin: "top left",
                       width: "1920px",
                     }}>
-                    <Character characterJSON={character} router={router} reactive={false} />
+                    <Character
+                      characterJSON={character}
+                      router={router}
+                      reactive={false}
+                      charRef={null}
+                    />
                   </div>
                 );
               })}
@@ -533,7 +540,7 @@ export default function Profile() {
                 </div>
               </div>
             </div>
-            <Character characterJSON={currentCharacter} router={router} />
+            <Character characterJSON={currentCharacter} router={router} charRef={currentCharRef} />
           </div>
         )}
       </div>
