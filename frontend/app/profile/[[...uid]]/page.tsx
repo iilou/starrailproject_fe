@@ -23,7 +23,7 @@ import Character from "./character";
 
 import { toPng } from "html-to-image";
 import { toJpeg } from "html-to-image";
-import { image } from "html2canvas/dist/types/css/types/image";
+// import { image } from "html2canvas/dist/types/css/types/image";
 
 export default function Profile() {
   // const [uid, setUid] = useState<string | null>(null); // Initial state set to null
