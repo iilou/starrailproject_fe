@@ -98,55 +98,54 @@ export default function SkillsM({
         >
         <span className='hover:cursor-pointer hover:underline select-none relative z-[100]'>{isLegacy ? "Legacy View  (Click to change)" : "Normal View (Click to change)"}</span>
       </div> */}
-      <div className=' flex flex-wrap justify-center mt-1 gap-5 z-[100] relative w-[650px]'>
-        <div
-          className='relative z-[100] mx-auto mb-3'
-          style={{ display: !isLegacy ? "block" : "none" }}>
-          <div className='flex flex-col justify-center items-center h-fit'>
-            <div className=' flex justify-center gap-[16px] flex-wrap mt-[10px]'>
-              {[
-                0,
-                1,
-                2,
-                3,
-                skills.findIndex((o: any) => o["icon"].includes("memosprite_skill")),
-                skills.findIndex((o: any) => o["icon"].includes("memosprite_talent")),
-              ]
-                .filter((o: any) => o !== -1)
-                .map((index: number) => {
-                  const isMax = isMaxLevel(
-                    skills[index]["level"],
-                    skills[index]["max_level"],
-                    true,
-                    skills[index]["id"]
-                  );
-                  const isMemo = index > 3;
-                  return (
-                    <SkillNew
-                      isMemo={isMemo}
-                      isMax={isMax}
-                      icon={skills[index]["icon"]}
-                      elementColor={skills[0]["element"]["color"]}
-                      name={skills[index]["name"]}
-                      desc={skills.filter(
-                        (o: any) =>
-                          o["icon"] === skills[index]["icon"] && o["effect"] !== "MazeAttack"
-                      )}
-                      level={skills[index]["level"]}
-                      type_text={skills[index]["type_text"]}
-                      key={index}
-                    />
-                  );
-                })}
-            </div>
-            <div className='flex justify-center gap-[16px] mt-[10px]'>
-              <div className='justify-center items-center gap-[16px] w-fit px-12 py-1 flex rounded-[10px] opacity-90'>
-                {[2, 4, 6].map((val, index) => {
-                  return (
-                    <div
-                      className='w-fit h-fit block hover:bg-[#4e4d88] active:bg-[#252547] active:shadow-[0px_0px_0px_1px_inset_#e7e7e7] rounded-md px-3 pt-4 pb-2 bg-[#5c59bf]'
-                      key={index}>
-                      <Image
+      <div className=' flex flex-wrap justify-center mt-1 gap-5 z-[100] relative w-[590px] items-start'>
+        <div className='flex flex-col justify-center items-center h-fit w-full'>
+          <div className=' flex justify-center gap-[16px] flex-wrap mt-[10px] w-full'>
+            {[
+              0,
+              1,
+              2,
+              3,
+              skills.findIndex((o: any) => o["icon"].includes("memosprite_skill")),
+              skills.findIndex((o: any) => o["icon"].includes("memosprite_talent")),
+            ]
+              .filter((o: any) => o !== -1)
+              .map((index: number) => {
+                const isMemo = index > 3;
+
+                const isMax = isMaxLevel(
+                  skills[index]["level"],
+                  skills[index]["max_level"],
+                  true,
+                  skills[index]["id"]
+                );
+                return (
+                  <SkillNew
+                    isMemo={isMemo}
+                    isMax={isMax}
+                    icon={skills[index]["icon"]}
+                    elementColor={skills[0]["element"]["color"]}
+                    name={skills[index]["name"]}
+                    desc={skills.filter(
+                      (o: any) =>
+                        o["icon"] === skills[index]["icon"] && o["effect"] !== "MazeAttack"
+                    )}
+                    level={skills[index]["level"]}
+                    type_text={skills[index]["type_text"]}
+                    key={index}
+                  />
+                );
+              })}
+          </div>
+          <div className='flex justify-center gap-[16px] mt-[10px] w-full'>
+            <div className='justify-center items-center gap-[16px] w-fit px-12 py-1 flex rounded-[10px] opacity-90'>
+              {[2, 4, 6].map((val, index) => {
+                return (
+                  <div
+                    className='w-fit h-fit block hover:shadow-[0px_0px_0px_2px_inset_#e7e7e7] rounded-md px-1 py-1 bg-[#3d3b8a]'
+                    key={index}>
+                    <div className='w-fit h-fit bg-[#5c59bf] rounded-md px-2 pt-3 pb-2'>
+                      <img
                         src={`https://raw.githubusercontent.com/Mar-7th/StarRailRes/refs/heads/master/${
                           skill_trees[index + 4]["icon"]
                         }`}
@@ -156,13 +155,13 @@ export default function SkillsM({
                         style={{
                           boxShadow:
                             skill_trees[index + 4]["level"] >= skill_trees[index + 4]["max_level"]
-                              ? `0 0 10px 5px ${skills[0]["element"]["color"]} inset, 0 0 5px 1px ${skills[0]["element"]["color"]}`
+                              ? `0 0 2px 1px ${skills[0]["element"]["color"]} inset, 0 0 5px 1px ${skills[0]["element"]["color"]}`
                               : "",
                         }}
-                        className='rounded-full bg-[#232323]'
+                        className='rounded-full bg-[#232323] w-[28px] h-[28px]'
                       />
                       <div
-                        className='font-bold text-center text-[14px] mt-[2px]'
+                        className='font-bold text-center text-[13px] mt-[2px]'
                         style={{
                           // color: skill_trees[index + 4]["level"] >= skill_trees[index + 4]["max_level"] ? skills[0]["element"]["color"] : "#e2e2e2",
                           color:
@@ -177,40 +176,41 @@ export default function SkillsM({
                         {`A${val}`}
                       </div>
                     </div>
-                  );
-                })}
-                {Object.values(
-                  skill_trees
-                    .slice(8, Math.min(skill_trees.length, 18))
-                    .reduce((acc: any, obj: any) => {
-                      if (!acc[obj.icon]) {
-                        acc[obj.icon] = { ...obj }; // First instance
-                      } else {
-                        acc[obj.icon].level += obj.level; // Sum values
-                        acc[obj.icon].max_level += obj.max_level; // Sum maxvalues
-                      }
-                      return acc;
-                    }, {})
-                ).map((obj: any) => {
-                  // console.log("obj - ", obj);
-                  return (
-                    <div className='w-fit h-fit block hover:bg-[#4e4d88] active:bg-[#252547] active:shadow-[0px_0px_0px_1px_inset_#e7e7e7] px-3 pt-4 pb-2 bg-[#5c59bf] rounded-md'>
+                  </div>
+                );
+              })}
+              {Object.values(
+                skill_trees
+                  .slice(8, Math.min(skill_trees.length, 18))
+                  .reduce((acc: any, obj: any) => {
+                    if (!acc[obj.icon]) {
+                      acc[obj.icon] = { ...obj }; // First instance
+                    } else {
+                      acc[obj.icon].level += obj.level; // Sum values
+                      acc[obj.icon].max_level += obj.max_level; // Sum maxvalues
+                    }
+                    return acc;
+                  }, {})
+              ).map((obj: any) => {
+                // console.log("obj - ", obj);
+                return (
+                  <div className='w-fit h-fit block hover:shadow-[0px_0px_0px_2px_inset_#e7e7e7] rounded-md px-1 py-1 bg-[#3d3b8a]'>
+                    <div className='w-fit h-fit bg-[#5c59bf] rounded-md px-2 pt-3 pb-2'>
                       <Image
                         src={`https://raw.githubusercontent.com/Mar-7th/StarRailRes/refs/heads/master/${obj.icon}`}
                         width={32}
                         height={32}
                         alt={obj.icon}
-                        style={
-                          obj.level >= obj.max_level
-                            ? {
-                                boxShadow: `0 0 2px 1px ${skills[0]["element"]["color"]} inset, 0 0 5px 1px ${skills[0]["element"]["color"]}`,
-                              }
-                            : {}
-                        }
-                        className='rounded-full bg-[#232323]'
+                        style={{
+                          boxShadow:
+                            obj.level >= obj.max_level
+                              ? `0 0 2px 1px ${skills[0]["element"]["color"]} inset, 0 0 5px 1px ${skills[0]["element"]["color"]}`
+                              : "",
+                        }}
+                        className='rounded-full bg-[#232323] w-[28px] h-[28px]'
                       />
                       <div
-                        className='font-bold text-center text-[14px] mt-[2px]'
+                        className='font-bold text-center text-[13px] mt-[2px]'
                         style={{
                           color: obj.level >= obj.max_level ? "#e9e9e9" : "#898989",
                           textShadow: obj.level >= obj.max_level ? `0 0 5px #000000aa` : "none",
@@ -218,36 +218,37 @@ export default function SkillsM({
                         {`${obj.level}/${obj.max_level}`}
                       </div>
                     </div>
-                  );
-                })}
-              </div>
-            </div>
-            <div className='flex justify-center gap-[16px] flex-wrap mt-[10px]'>
-              {rankIcons.map((icon: any, index: number) => {
-                return (
-                  <SkillNew
-                    isMemo={false}
-                    isMax={index < rank}
-                    icon={icon}
-                    elementColor={skills[0]["element"]["color"]}
-                    name={`E${index + 1}`}
-                    desc={[
-                      {
-                        name: eidInfo[index] ? eidInfo[index]["name"] : "",
-                        desc: eidInfo[index]
-                          ? eidInfo[index]["desc"]
-                          : "Eidolon description loading or not available...",
-                      },
-                    ]}
-                    level={"" + (rank >= index + 1 ? 1 : 0) + " / 1"}
-                    type_text={`E${index + 1}`}
-                  />
+                  </div>
                 );
               })}
             </div>
           </div>
+          <div className='flex justify-center gap-[16px] flex-wrap mt-[10px] w-full'>
+            {rankIcons.map((icon: any, index: number) => {
+              return (
+                <SkillNew
+                  isMemo={false}
+                  isMax={index < rank}
+                  icon={icon}
+                  elementColor={skills[0]["element"]["color"]}
+                  name={`E${index + 1}`}
+                  desc={[
+                    {
+                      name: eidInfo[index] ? eidInfo[index]["name"] : "",
+                      desc: eidInfo[index]
+                        ? eidInfo[index]["desc"]
+                        : "Eidolon description loading or not available...",
+                    },
+                  ]}
+                  // level={"" + (rank >= index + 1 ? 1 : 0) + " / 1"}
+                  level={"E" + (1 + index)}
+                  type_text={`E${index + 1}`}
+                />
+              );
+            })}
+          </div>
         </div>
-        <div
+        {/* <div
           className='w-fit bg-[#333262] hover:bg-[#3f3e77] active:shadow-[0px_0px_0px_1px_inset_#e7e7e7] transition-all rounded-lg py-3 px-8 items-center mt-3 mb-3'
           style={{ display: !isLegacy ? "none" : "flex" }}>
           <div className='flex flex-wrap gap-x-2 gap-y-2 justify-center items-center h-fit w-[340px] hover:bg-[#585799] active:bg-[#6867a7] active:shadow-[0px_0px_0px_1px_inset_#e7e7e7] rounded-lg py-3 px-4'>
@@ -256,8 +257,6 @@ export default function SkillsM({
             </div>
             {skills.slice(0, 4).map((skill: any, idx: number) => {
               const isMax = isMaxLevel(skill["level"], skill["max_level"], true, skill["id"]);
-              // // main skills
-              // console.log("curr char skills - ", skills);
               return (
                 <div className='w-fit h-fit block hover:bg-[#4e4d88] active:bg-[#252547] active:shadow-[0px_0px_0px_1px_inset_#e7e7e7] rounded-md px-2 pt-3 pb-1 '>
                   <Image
@@ -278,7 +277,6 @@ export default function SkillsM({
                     {skill["level"]}
                   </div>
                 </div>
-                // <SkillNew skill={skill} elementColor={skills[0]["element"]["color"]} isMaxLevel={isMaxLevel} key={idx} />
               );
             })}
           </div>
@@ -400,7 +398,7 @@ export default function SkillsM({
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </>
   );

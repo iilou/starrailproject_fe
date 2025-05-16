@@ -335,9 +335,7 @@ export default function RelicView({
       </div> */}
       {/* ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */}
       <div
-        className={`${
-          isTable ? "hidden" : "flex"
-        } flex-wrap justify-center items-center gap-x-[10px] gap-y-[10px] mt-[10px] w-[1070px]  relative z-[100]`}>
+        className={`grid gap-x-[10px] gap-y-[10px] mt-[10px] relative z-[100] grid-cols-[auto,auto,auto,auto] w-[1280px]`}>
         {relic_list.map((relic: any, idx: number) => {
           return (
             <RelicL
@@ -352,7 +350,7 @@ export default function RelicView({
         <div
           className={`${
             isTable ? "hidden" : "flex"
-          } flex-col justify-center items-center gap-1 mt-4  relative z-[100]`}>
+          } flex-col justify-center items-center gap-1  relative z-[100] w-[319px] translate-x-[130px]`}>
           {relic_set_list.map((relic_set: any, idx: number) => {
             return <RelicSetL relicsetJSON={relic_set} charName={char_name} key={idx} />;
           })}
