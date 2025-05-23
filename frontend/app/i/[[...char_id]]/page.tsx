@@ -142,6 +142,9 @@ export default function Index() {
         data[i]["stat_spd"] = data[i]["Stats"]["SPD"];
         data[i]["stat_aggro"] = data[i]["Stats"]["Aggro"];
       } catch (e) {
+        if (e == null) {
+          console.log("Error: " + e);
+        }
         data[i]["stat_atk"] = 0;
         data[i]["stat_hp"] = 0;
         data[i]["stat_def"] = 0;
@@ -576,8 +579,7 @@ export default function Index() {
           className='w-full flex items-center justify-center flex-wrap sticky z-[950] top-[95px]
             m1_4:top-[10vh]
           '
-          // style={{ opacity: searchQuery.length > 0 ? 1 : 0 }}
-        >
+          style={{ opacity: searchQuery.length > 0 ? 1 : 0.2 }}>
           <div
             className='w-[200px] h-[30px] flex items-center justify-center rounded-lg bg-[#817fd0d8] text-[#e9e9e9] text-sm font-bold mx-2 my-1 cursor-pointer shadow-md shadow-[#000000]
             m1_4:w-[52vw] m1_4:h-[5vw] text-[3.5vw] leading-[5vw] m1_4:mx-[0.3vw] m1_4:my-[1vw]
