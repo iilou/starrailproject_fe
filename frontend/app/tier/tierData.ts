@@ -193,7 +193,16 @@ const get_tier_data_from_char_id = (char_id: number) => {
             return row;
         }
     }
-    return null;
+    return {
+        id: char_id,
+        name: "",
+        tier: "6",
+        tier_name: "N/A",
+        rational: "",
+        assumed_eidolon: "0",
+        tag: [],
+        tag_detail: [],
+    }
 }
 
 const get_tier_details_from_tier = (tier: number) => {

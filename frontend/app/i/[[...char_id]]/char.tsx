@@ -178,7 +178,11 @@ export default function Char({
   }, [json]);
 
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
+    const handleKeyDown = (e: KeyboardEvent | null) => {
+      if (e == null) {
+        console.log("e is null");
+        return;
+      }
       if (e.key === "-" || e.key === "_" || e.key === "q") {
         setIsMax(false);
       }
@@ -188,7 +192,11 @@ export default function Char({
       console.log(e.key);
     };
 
-    const handleMouseDown = (e: MouseEvent) => {
+    const handleMouseDown = (e: MouseEvent | null) => {
+      if (e == null) {
+        console.log("e is null");
+        return;
+      }
       if (e.button === 0) {
         setIsMax((prev) => !prev);
       }
@@ -211,6 +219,21 @@ export default function Char({
 
   const [sidebarActive, setSidebarActive] = useState(false);
 
+  const filteredID = (id: string) => {
+    if (id[0] === "2") {
+      return "1" + id.substring(1);
+    }
+    return id;
+  };
+
+  const filteredSkillImageLink = (id: string, skill: string) => {
+    if (id[0] === "2") {
+      return "1" + id.substring(1) + "/" + skill + ".png";
+    } else {
+      return id + "/" + skill + ".png";
+    }
+  };
+
   return (
     <div
       className='flex static h-fit pl-[520px] m1_4:pl-0 m1_4:flex-wrap m1_4:mt-[17vh]'
@@ -227,7 +250,7 @@ export default function Char({
           m1_4:mt-[0px] m1_4:ml-[0px] m1_4:relative m1_4:top-[-20vw] m1_4:left-0 m1_4:w-[70vw] m1_4:h-[30vw] 
           '>
           <Image
-            src={`https://homdgcat.wiki/images/avatardrawcard/${id}.png`}
+            src={`https://homdgcat.wiki/images/avatardrawcard/${filteredID(id)}.png`}
             width={1360}
             height={1360}
             alt={id}
@@ -368,7 +391,10 @@ export default function Char({
                           : item["DisplayName"]}
                       </div>
                       <Image
-                        src={`https://homdgcat.wiki/images/avatarshopicon/avatar/${item["_id"]}.png`}
+                        // src={`https://homdgcat.wiki/images/avatarshopicon/avatar/${item["_id"]}.png`}
+                        src={`https://homdgcat.wiki/images/avatarshopicon/avatar/${filteredID(
+                          "" + item["_id"]
+                        )}.png`}
                         width={100}
                         height={100}
                         alt={item["Name"]}
@@ -422,7 +448,8 @@ export default function Char({
                   key={key}
                   isMemo={isMemo}
                   isMax={isMax}
-                  icon={id + "/" + processedData.skill[key].Icon + ".png"}
+                  // icon={id + "/" + processedData.skill[key].Icon + ".png"}
+                  icon={filteredSkillImageLink(id, processedData.skill[key].Icon)}
                   elementColor={charElementColor}
                   name={key}
                   desc={desc}
@@ -450,7 +477,8 @@ export default function Char({
                   key={key}
                   isMemo={false}
                   isMax={isMax}
-                  icon={id + "/" + processedData.asc[key].Icon + ".png"}
+                  // icon={id + "/" + processedData.asc[key].Icon + ".png"}
+                  icon={filteredSkillImageLink(id, processedData.asc[key].Icon)}
                   elementColor={charElementColor}
                   name={processedData.asc[key].Type}
                   desc={[{ name: processedData.asc[key].Name, desc: processedData.asc[key].Desc }]}
@@ -473,7 +501,8 @@ export default function Char({
                   key={key}
                   isMemo={false}
                   isMax={isMax}
-                  icon={id + "/" + processedData.rank[key].Icon + ".png"}
+                  // icon={id + "/" + processedData.rank[key].Icon + ".png"}
+                  icon={filteredSkillImageLink(id, processedData.rank[key].Icon)}
                   elementColor={charElementColor}
                   name={processedData.rank[key].Type}
                   desc={[
