@@ -4,9 +4,7 @@ import StatM from "./stat_m";
 
 import SkillsM from "./skills_m";
 
-// import RelicView from "./relic_view";
-import RelicL from "./relic_l";
-import RelicSetL from "./relicset_l";
+import RelicView from "./relic_view";
 
 import PHeader from "./p_header";
 import BG from "../../bg";
@@ -82,9 +80,11 @@ Anaxa	0	0.2	0	0	0.7	0	1	1	1	0	0	0	0	0	0	0	0	0	0.7	0	0`;
     };
   }, []);
 
-  // if (windowWidth < 768) {
-  //   return null;
-  // }
+  if (windowWidth < 768) {
+    return null;
+  }
+
+  // const charRef = useRef<HTMLDivElement>(null);
 
   return (
     <div className='h-fit relative w-full' id={`char_${characterJSON["id"]}`} ref={charRef}>
@@ -350,6 +350,69 @@ Anaxa	0	0.2	0	0	0.7	0	1	1	1	0	0	0	0	0	0	0	0	0	0.7	0	0`;
           opacity: scrollY > 200 || !reactive ? 1 : 0,
           transitionTimingFunction: "ease-in-out",
         }}>
+        {/* <div className='h-[10px] w-[1px] mx-auto relative -translate-y-[100px]'> */}
+        {/* {[0, 1, 2, 3, 4, 5].map((num, i) => { */}
+        {/* {[0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5].map((num, i) => {
+            // const r = Math.floor(num / 2);
+            const r = Math.floor(i / 2);
+            // const c = num % 2;
+            const c = i % 2;
+            const size = 356;
+            const gap = 500;
+            const gap_y = 0;
+            const t_x = c * size - size + gap * (c == 0 ? -1 : 1);
+            const t_y = r * size + r * gap_y + 200;
+            const op = num >= characterJSON["rank"] ? 0.3 : 1;
+            const moveSpeed = 1;
+            return (
+              <div
+                className={`absolute top-0 left-0 z-[10] animate-eid_glow filter transition-all`}
+                style={{
+                  transform:
+                    scrollY > 400 + 250 * i * 0
+                      ? `translateX(${t_x}px) translateY(${t_y}px)`
+                      : `translateX(-250px) translateY(-350px)`,
+                  width: size + "px",
+                  height: size + "px",
+
+                  // opacity: scrollY > 400 + 250 * i * 0 ? op : 0,
+                  // filter: num >= characterJSON["rank"] ? `drop-shadow(0px 0px 15px #ffffffee)` : "",
+                  filter:
+                    scrollY > 400
+                      ? num < characterJSON["rank"]
+                        ? "brightness(1) drop-shadow(0px 0px 20px #ffffff79) grayscale(0) opacity(1) blur(0px)"
+                        : "brightness(0.3) drop-shadow(0px 0px 0px #ffffff00) grayscale(0.7) opacity(0.5) blur(2px)"
+                      : num < characterJSON["rank"]
+                      ? "brightness(1) drop-shadow(0px 0px 300px #ffffff) grayscale(1) opacity(0) blur(0px)"
+                      : "brightness(0.3) drop-shadow(0px 0px 300px #ffffff) grayscale(1) opacity(0) blur(2px)",
+                  // spd = distance / time
+                  // time = distance / spd
+                  transitionDuration: `${
+                    Math.sqrt(
+                      (t_x + size / 2 - (-250 + size / 2)) ** 2 +
+                        (t_y + size / 2 - (-350 + size / 2)) ** 2
+                    ) / moveSpeed
+                  }ms`,
+                }}
+                // key={num}
+                key={i}>
+                <Image
+                  src={`https://api.hakush.in/hsr/UI/rank/_dependencies/textures/${
+                    characterJSON["id"]
+                  }/${characterJSON["id"]}_Rank_${num + 1}.webp`}
+                  width={1024}
+                  height={1024}
+                  alt={`Rank ${num}`}
+                  className={`absolute top-0 left-0 w-full h-full`}
+                />
+              </div>
+            );
+          })} */}
+        {/* </div> */}
+
+        {/* <div className='h-[30px] w-1'></div> */}
+
+        {/* <PHeader text='RELICS' /> */}
         <div className='h-[50px] w-1'></div>
 
         <div className='w-full grid grid-cols-[auto,auto]'>
@@ -364,32 +427,13 @@ Anaxa	0	0.2	0	0	0.7	0	1	1	1	0	0	0	0	0	0	0	0	0	0.7	0	0`;
             </div>
           </div>
           <div className='w-fit mx-auto'>
-            <div
-              className={`grid gap-x-[10px] gap-y-[10px] mt-[10px] relative z-[100] grid-cols-[auto,auto,auto,auto] w-[1280px]`}>
-              {characterJSON["relics"].map((relic: any, idx: number) => {
-                return (
-                  <RelicL
-                    relicJSON={relic}
-                    charName={characterJSON["name"]}
-                    element={characterJSON["element"]["name"]}
-                    elementColor={characterJSON["element"]["color"]}
-                    key={idx}
-                  />
-                );
-              })}
-              <div
-                className={`flex flex-col justify-center items-center gap-1  relative z-[100] w-[319px] translate-x-[130px]`}>
-                {characterJSON["relic_sets"].map((relic_set: any, idx: number) => {
-                  return (
-                    <RelicSetL
-                      relicsetJSON={relic_set}
-                      charName={characterJSON["name"]}
-                      key={idx}
-                    />
-                  );
-                })}
-              </div>
-            </div>
+            <RelicView
+              relic_list={characterJSON["relics"]}
+              relic_set_list={characterJSON["relic_sets"]}
+              char_name={characterJSON["name"]}
+              element={characterJSON["element"]["id"]}
+              elementColor={characterJSON["element"]["color"]}
+            />
           </div>
           <div className='w-fit mx-auto'>
             <SkillsM
