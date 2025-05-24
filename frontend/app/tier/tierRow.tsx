@@ -104,7 +104,7 @@ export default function TierRow({
                             router.push(`/i/${row["id"]}`);
                           }
                         }}>
-                        <Image
+                        <img
                           src={`https://raw.githubusercontent.com/Mar-7th/StarRailRes/refs/heads/master/icon/character/${row["id"]}.png`}
                           width={128}
                           height={128}

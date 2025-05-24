@@ -112,7 +112,7 @@ export default function WeaponDisplay({
           style={{
             backgroundImage: rarityGradient,
           }}>
-          <Image
+          <img
             src={get_icon_url_weapon("" + item["_id"])}
             width={128}
             height={128}

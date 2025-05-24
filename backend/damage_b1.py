@@ -104,22 +104,13 @@ def def_calc(self_level, enemy_level, def_ignore):
     return (self_level + 20) / ((enemy_level + 20) * (1 - def_ignore) + self_level + 20)
 
 
-
-
-
-
-
-
-
-
-
 def seele_solo(stats, sets_ids):
-    print("Seele Solo Damage Calculation")
-    print("===================================")
-    print("param: stats, sets_ids")
-    print("stats: ", stats)
-    print("sets_ids: ", sets_ids)
-    print("===================================")
+    # print("Seele Solo Damage Calculation")
+    # print("===================================")
+    # print("param: stats, sets_ids")
+    # print("stats: ", stats)
+    # print("sets_ids: ", sets_ids)
+    # print("===================================")
 
     # Damage: 3x skill 1x ult 1x basic, no extenal buff, 2 skill w/ ult buff
     # Light cone: In the Night, E0, S1
@@ -153,6 +144,7 @@ def seele_solo(stats, sets_ids):
 
     glacial = False
     scholar = False
+    glamoth = False
 
     # for set_id in sets_ids:
     for set in sets_ids:
@@ -163,14 +155,24 @@ def seele_solo(stats, sets_ids):
                     stats[stat] += value
                 else:
                     stats[stat] = value
+
         if set_id == "104|4":
             glacial = True
-        if set_id == "108|4":
-            def_ignore += 0.15
-        if set_id == "122|4":
+        elif set_id == "108|4":
+            def_ignore += 0.2
+        elif set_id == "122|4":
             skill_p += 0.2
             ult_p += 0.2
             scholar = True
+
+        if set_id == "306|2":
+            ult_p += 0.15
+        elif set_id == "309|2":
+            skill_p += 0.2
+            basic_p += 0.2
+        elif set_id == "311|2":
+            glamoth = True
+        
 
     # add relic stats
     crit_chance += stats["CriticalChanceBase"]
@@ -192,6 +194,11 @@ def seele_solo(stats, sets_ids):
     lc_buff = max(min(math.floor((spd - 100)/10), 6), 0)
     lc_buff_crit = 0.12 * lc_buff
     lc_buff_dmg = 0.06 * lc_buff
+
+    if glamoth and spd > 160:
+        quantum += 0.18
+    elif glamoth and spd > 135:
+        quantum += 0.12
 
     #skill 1
     dmg_1 = skill_ratio * (atk_b * atk_p + atk_d) * (1 + crit_chance*crit_damage) * (quantum + skill_p + lc_buff_dmg)
@@ -222,11 +229,20 @@ def seele_solo(stats, sets_ids):
 
     # skill 3
     # no resurgence buff
-    dmg_5 = skill_ratio * (atk_b * atk_p + atk_d) * (1 + crit_chance*crit_damage) * (quantum + skill_p + lc_buff_dmg)
-    dmg_5 *= def_calc(level, enemy_level, def_ignore) * 0.9 * 1 # def ignore * res * vulnerabilty
+    dmg_5 = skill_ratio * (atk_b * atk_p + atk_d) * (1 + crit_chance*crit_damage) * (quantum + skill_p + lc_buff_dmg + resurgence_buff_qua)
+    dmg_5 *= def_calc(level, enemy_level, def_ignore) * (0.9 + resurgence_buff_res) * 1 # def ignore * res * vulnerabilty
 
     # total damage
     total_dmg = dmg_1 + dmg_2 + dmg_3 + dmg_4 + dmg_5
+
+    print("===================================")
+    print("Seele Solo Damage Calculation Results")
+    print("skill 1: ", dmg_1)
+    print("ult: ", dmg_2)
+    print("skill 2: ", dmg_3)
+    print("basic: ", dmg_4)
+    print("skill 3: ", dmg_5)
+    print("total damage: ", total_dmg)
 
     return {
         "dmg_1": dmg_1,
@@ -239,7 +255,46 @@ def seele_solo(stats, sets_ids):
 
 
 
+def herta_tribbie_aven(stats, sets_ids):
+    # print("The Herta + (Anaxa + Tribbie + Aventurine) Damage Calculation")
+    # print("===================================")
+    # print("param: stats, sets_ids")
+    # print("stats: ", stats)
+    # print("sets_ids: ", sets_ids)
+    # print("===================================")
 
-# def the_herta_standard(stats, set_ids):
-#     # Supports:
-#     # 
+    # Damage: 1x regular skill, (99 inspiration + 42 stack) -> 1x ult 1x enhanced skill
+
+    # Light cone: Into the Unreachable Veil, E0, S1
+    # HP
+    # 952.56
+    # ATK
+    # 635.04
+    # DEF
+    # 463.05
+
+    # Base Stats
+    # HP
+    # 1164.24
+    # ATK
+    # 679.14
+    # DEF
+    # 485.1
+    level = 80
+    enemy_level = 95
+    atk_b = 679.14 + 635.04
+    spd_b = 99
+    crit_chance = 0.05 + 0.12
+    crit_damage = 0.5 # in reality, 1.5x multiplier, but this is easier for calculations
+
+    # Motion Value Calculation
+    # 2 target 42/99 stack, calc single target dmg on 42 stack target
+    # skill 70 + 70 + 70
+    skill_ratio = 2.1
+    # ult 200 + 99
+    ult_ratio = 2.99
+    # enhanced skill 80 + 80 + 80 + (16 * 42 + 40)
+    enhanced_skill_ratio = 9.52
+
+    # add stats from traces
+    

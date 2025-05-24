@@ -46,7 +46,7 @@ export default function SkillNew({
           // style={{ height: isNaN(parseInt(level)) ? "32px" : "54px" }}
         >
           <div className='w-[32px] h-[32px]'>
-            <Image
+            <img
               src={`https://homdgcat.wiki/images/skillicons/avatar/${icon}`}
               width={100}
               height={100}
