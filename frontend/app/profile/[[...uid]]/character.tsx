@@ -28,11 +28,13 @@ export default function Character({
   characterJSON,
   router,
   charRef,
+  scrollY = 0,
   reactive = true,
 }: {
   characterJSON: any;
   router: any;
   charRef: any;
+  scrollY: number;
   reactive?: boolean;
 }) {
   const scoreLib = `INFO	wefe	wef	gawef	HP	ATK	DEF	SPD	CRIT Rate	CRIT DMG	Effect Hit Rate	Effect RES	Break Effect	Outgoing Healing Boost	Energy Regeneration Rate	Ice DMG Boost	Quantum DMG Boost	Imaginary DMG Boost	Fire DMG Boost	Wind DMG Boost	Lightning DMG Boost	Physical DMG Boost
@@ -60,14 +62,13 @@ Anaxa	0	0.2	0	0	0.7	0	1	1	1	0	0	0	0	0	0	0	0	0	0.7	0	0`;
   const headersDisplayName = `HP,ATK,DEF,SPD,${characterJSON["element"]["name"]} DMG Boost,CRIT Rate,CRIT DMG,Effect Hit Rate,Effect RES,Break Effect,Outgoing Healing Boost,Energy Regen Rate`;
   const isHeaderPercent = `0,0,0,0,1,1,1,1,1,1,1,1`;
 
-  const [scrollY, setScrollY] = useState(0);
   const [windowWidth, setWindowWidth] = useState(10000);
   useEffect(() => {
     if (!reactive) return;
-    const handleScroll = () => {
-      setScrollY(window.scrollY);
-    };
-    window.addEventListener("scroll", handleScroll);
+    // const handleScroll = () => {
+    //   setScrollY(window.scrollY);
+    // };
+    // window.addEventListener("scroll", handleScroll);
 
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
@@ -77,7 +78,7 @@ Anaxa	0	0.2	0	0	0.7	0	1	1	1	0	0	0	0	0	0	0	0	0	0.7	0	0`;
     handleResize();
 
     return () => {
-      window.removeEventListener("scroll", handleScroll);
+      // window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("resize", handleResize);
     };
   }, []);

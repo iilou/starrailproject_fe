@@ -26,14 +26,11 @@ import { toJpeg } from "html-to-image";
 // import { image } from "html2canvas/dist/types/css/types/image";
 
 export default function Profile() {
-  // const [uid, setUid] = useState<string | null>(null); // Initial state set to null
-  const [uid, setUid] = useState<string | null>(null); // Initial state set to null
-  const [localData, setLocalData] = useState<any>(null); // Initial state set to null
-  const [char_list, setCharList] = useState<any>(null); // Initial state set to null
-  const [char_ref_list, setCharRefList] = useState<any>(null); // Initial state set to null
+  const [uid, setUid] = useState<string | null>(null);
+  const [localData, setLocalData] = useState<any>(null);
+  const [char_list, setCharList] = useState<any>(null);
   const [currentCharacter, setCurrentCharacter] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [shadow_color, setShadowColor] = useState("#00000000");
 
   const router = useRouter();
   // const { uid: urlUid } = router.query; // Extract uid from dynamic route parameter
@@ -135,7 +132,6 @@ export default function Profile() {
   useEffect(() => {
     if (localData && localData["characters"]) {
       setCharList(() => localData["characters"]);
-      setCharRefList(() => Array(localData["characters"].length).fill(null));
     }
   }, [localData]); // Update char_list and char_ref_list when localData changes
 
@@ -164,6 +160,18 @@ export default function Profile() {
       !data.player
     );
   };
+
+  const [scrollY, setScrollY] = useState(0); // State to hold scroll position
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrollY(window.scrollY);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   const [selClicked, setSelClicked] = useState(false); // State to hold selected clicked value
   const [gridChars, setGridChars] = useState<any[]>([]); // State to hold grid characters
@@ -233,12 +241,9 @@ export default function Profile() {
 
   return (
     <div
-      className='w-full h-fit relative'
+      className='w-[1920px] h-fit relative'
       style={{
         minHeight: "100vh",
-        // filter: selClicked ? "blur(5px)" : "none",
-        // overflowX: selClicked ? "hidden" : "auto",
-        // overflowY: selClicked ? "hidden" : "auto",
       }}>
       <Header current='/profile' />
       <div className='w-full absolute top-0 left-0 z-[700]'>
@@ -300,7 +305,6 @@ export default function Profile() {
                           ? "#e7e7e7"
                           : "#8a8a8ac2",
                       }}>
-                      {/* {character.name} */}
                       <div className='w-[24px] h-[24px] flex items-center justify-center'>
                         <Image
                           src={`https://raw.githubusercontent.com/Mar-7th/StarRailRes/refs/heads/master/${character.icon}`}
@@ -416,6 +420,7 @@ export default function Profile() {
                     }}>
                     <Character
                       characterJSON={character}
+                      scrollY={10000}
                       router={router}
                       reactive={false}
                       charRef={null}
@@ -439,110 +444,121 @@ export default function Profile() {
         </div>
       )}
       <div className='w-full z-[900] relative'>
-        <ProfilePreview
-          playerData={localData ? localData.player : null}
-          uid={uid || "000000000"}
-          onUidSearch={onUidSearch}
-          isLoading={isLoading}
-        />
-        <div className='w-1 h-[30px]'></div>
-        {localData && localData?.player && localData?.characters && (
-          <div className='w-full h-fit flex justify-center items-center bg-[#121212dd] z-[1000] relative shadow-[0_0_3px_2px_#000000,_0_0_10px_0px_#000000_inset]'>
-            <div className='w-fit h-fit flex items-center overflow-x-scroll overflow-y-hidden relative'>
+        <div
+          className='w-full h-fit flex justify-center items-center sticky top-[50px] z-[1200] transition-all duration-1000 flex-col '
+          style={{
+            opacity: scrollY > 300 ? 0 : 1,
+            backgroundImage: `linear-gradient(to bottom, #12121200 0%, #12121292 20%, #12121292 80%, #12121200 100%)`,
+            // userSelect: scrollY > 100 ? "none" : "auto",
+            // pointerEvents: scrollY > 100 ? "none" : "auto",
+          }}>
+          <ProfilePreview
+            playerData={localData ? localData.player : null}
+            uid={uid || "000000000"}
+            onUidSearch={onUidSearch}
+            isLoading={isLoading}
+          />
+          <div className='w-1 h-[30px]'></div>
+          <div className='w-full h-fit flex justify-center items-center bg-[#121212dd] shadow-[0_0_3px_2px_#000000,_0_0_10px_0px_#000000_inset] sticky top-[80px] z-[1200]'>
+            <div
+              className='w-fit h-fit flex items-center overflow-x-scroll overflow-y-hidden relative'
+              style={{
+                scrollSnapType: "x mandatory",
+                scrollBehavior: "smooth",
+                // scrollbarWidth: "none",
+                scrollbarColor: "#000000 #121212",
+                scrollbarWidth: "thin",
+              }}>
               <div className='w-[50px] h-2'></div>
-              {localData.characters.map((character: any) => {
-                const isCurrent = currentCharacter?.id === character.id;
-                return (
-                  <div
-                    className='flex items-center justify-center group h-[100px] w-fit px-2 gap-2'
-                    onClick={() => handleCharacterSelect(character.id)}
-                    key={character.id}>
-                    <div className='w-[100px] h-[100px] flex items-center justify-center rounded-full group relative'>
-                      <div
-                        className='hidden absolute w-[100px] h-[100px] group-hover:flex items-center justify-center z-[130] rounded-full bg-[#00000078]'
-                        onClick={(e) => {
-                          router.push(`/i/${character.id}`);
-                        }}>
-                        <OpenInNew
-                          className='text-[#c7c7c7] text-[50px]'
+              {localData &&
+                localData.characters.map((character: any) => {
+                  const isCurrent = currentCharacter?.id === character.id;
+                  return (
+                    <div
+                      className='flex items-center justify-center group h-[100px] w-fit px-2 '
+                      onClick={() => handleCharacterSelect(character.id)}
+                      key={character.id}>
+                      <div className='w-[100px] h-[100px] flex items-center justify-center rounded-full group relative'>
+                        <Image
+                          src={`https://raw.githubusercontent.com/Mar-7th/StarRailRes/refs/heads/master/${character.icon}`}
+                          width={68}
+                          height={68}
+                          alt='Character Icon'
+                          className={` relative
+                          rounded-full bg-background transition-all bg-w1 w-[78px] h-[78px] block z-[120] duration-100 group-hover:bg-[#c3c3c3] shadow-[0_0_10px_2px_#000000_inset] ${
+                            isCurrent
+                              ? "animate-border-glow border-[2px] group-hover:bg-w2 brightness-90"
+                              : "border-[#121212] border-[2px] group-hover:bg-w2 brightness-90"
+                          }`}
                           style={{
-                            filter: `drop-shadow(0 0 5px ${character.element.color})`,
+                            borderColor: isCurrent ? character.element.color : "",
+                            // ["--glow_profile_char" as any]: character.element.color,
                           }}
                         />
                       </div>
-                      <Image
-                        src={`https://raw.githubusercontent.com/Mar-7th/StarRailRes/refs/heads/master/${character.icon}`}
-                        width={68}
-                        height={68}
-                        alt='Character Icon'
-                        className={` relative
-                          rounded-full bg-background transition-all bg-w1 w-[88px] h-[88px] block z-[120] duration-100 group-hover:bg-[#c3c3c3] shadow-[0_0_10px_2px_#000000_inset] group-hover:brightness-110 ${
-                            isCurrent
-                              ? "animate-border-glow  border-[2px] group-hover:border-[2px] group-hover:bg-w2 brightness-110"
-                              : "border-[#121212] border-[15px] group-hover:border-[5px] group-hover:bg-w2 brightness-90"
-                          }`}
-                        style={{
-                          borderColor: isCurrent ? character.element.color : "",
-                          ["--glow_profile_char" as any]: character.element.color,
-                        }}
-                      />
-                    </div>
-                    <div
-                      className='w-[1px] h-[100px] group-hover:w-[230px] transition-all text-[#c7c7c7] z-[110] flex items-center'
-                      style={isCurrent ? { width: `230px`, marginRight: "26px" } : {}}>
-                      {isCurrent ? (
-                        <div className='relative group w-fit'>
-                          <div
-                            className='absolute inset-0 rounded-md border-2 animate-border-glow pointer-events-none'
-                            style={{
-                              borderColor: currentCharacter.element.color,
-                              ["--glow_profile_char" as any]: currentCharacter.element.color,
-                            }}
-                          />
-                          <div
-                            className='w-[230px] text-[#c7c7c7] font-bold text-2xl transition-all pl-4 pr-4 py-2 rounded-md bg-[#121212] group-hover:text-2xl group-hover:font-extrabold group-hover:bg-[#0f0f0f] animate-text-glow'
-                            style={{
-                              border: `2px solid ${currentCharacter.element.color}`,
-                              ["--glow_profile_char_text" as any]: currentCharacter.element.color,
-                            }}>
-                            {character.name.substring(0, 12) +
-                              (character.name.length > 12 ? "..." : "")}
+                      <div
+                        className='w-[1px] h-[100px] group-hover:w-[230px] transition-all text-[#c7c7c7] z-[110] flex items-center'
+                        style={isCurrent ? { width: `230px`, marginRight: "26px" } : {}}>
+                        {isCurrent ? (
+                          <div className='relative group w-fit'>
+                            <div
+                              className='absolute inset-0 rounded-md border-2 animate-border-glow pointer-events-none'
+                              style={{
+                                borderColor: currentCharacter.element.color,
+                                // ["--glow_profile_char" as any]: currentCharacter.element.color,
+                              }}
+                            />
+                            <div
+                              className='w-[230px] text-[#c7c7c7] font-bold text-2xl transition-all pl-4 pr-4 py-2 rounded-md bg-[#121212] group-hover:text-2xl group-hover:font-extrabold group-hover:bg-[#0f0f0f] animate-text-glow'
+                              style={{
+                                border: `2px solid ${currentCharacter.element.color}`,
+                                // ["--glow_profile_char_text" as any]: currentCharacter.element.color,
+                              }}>
+                              {character.name.substring(0, 12) +
+                                (character.name.length > 12 ? "..." : "")}
+                            </div>
                           </div>
-                        </div>
-                      ) : (
-                        <div className='w-[230px] hidden group-hover:block font-bold text-2xl transition-all pl-4 group-hover:bg-[#121212] border-[1px] border-[#121212] pr-4 py-2 rounded-md text-nowrap shadow-[0_0_0px_1px_#e7e7e755_inset]'>
-                          <span className='opacity-0 group-hover:opacity-100 transition-all duration-200 text-[#e9e9e900] group-hover:text-[#c7c7c7]'>
-                            {character.name.substring(0, 12) +
-                              (character.name.length > 12 ? "..." : "")}
-                          </span>
-                        </div>
-                      )}
+                        ) : (
+                          <div className='w-[230px] hidden group-hover:block font-bold text-2xl transition-all pl-4 group-hover:bg-[#121212] border-[1px] border-[#121212] pr-4 py-2 rounded-md text-nowrap shadow-[0_0_0px_1px_#e7e7e755_inset]'>
+                            <span className='opacity-0 group-hover:opacity-100 transition-all duration-200 text-[#e9e9e900] group-hover:text-[#c7c7c7]'>
+                              {character.name.substring(0, 12) +
+                                (character.name.length > 12 ? "..." : "")}
+                            </span>
+                          </div>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
               <div className='w-[50px] h-2'></div>
             </div>
           </div>
-        )}
-        {currentCharacter && (
-          <div>
-            <div className='w-full flex justify-center flex-col items-center'>
-              <div className='w-[1px] h-[10px]'></div>
-              <div
-                className='ml-[1300px] shadow-[0_0_0_1px_#c7c7c7] w-[174px] h-[42px] flex items-center justify-center rounded-lg text-[#ac663d] font-bold cursor-pointer'
-                onClick={() => {
-                  setSelClicked(() => true);
-                }}>
-                <div className='w-fit h-fit ml-3'>Export Grid</div>
-                <div className='w-[42px] h-[42px] flex items-center justify-center'>
-                  <OpenInNew className='scale-[0.8]' />
-                </div>
+          <div className='w-full flex justify-center flex-col items-center'>
+            <div className='w-[1px] h-[10px]'></div>
+            <div
+              className='ml-[1300px] shadow-[0_0_0_1px_#c7c7c7] w-[174px] h-[42px] flex items-center justify-center rounded-lg text-[#ac663d] font-bold cursor-pointer'
+              onClick={() => {
+                setSelClicked(() => true);
+              }}>
+              <div className='w-fit h-fit ml-3'>Export Grid</div>
+              <div className='w-[42px] h-[42px] flex items-center justify-center'>
+                <OpenInNew className='scale-[0.8]' />
               </div>
             </div>
-            <Character characterJSON={currentCharacter} router={router} charRef={currentCharRef} />
           </div>
-        )}
+        </div>
+        <div className='w-[1920px]'>
+          {currentCharacter && (
+            <>
+              <Character
+                characterJSON={currentCharacter}
+                router={router}
+                charRef={currentCharRef}
+                scrollY={scrollY}
+              />
+            </>
+          )}
+        </div>
       </div>
     </div>
   );
