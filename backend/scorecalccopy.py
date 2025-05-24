@@ -10,6 +10,58 @@ import time
 import copy
 from damage_b1 import seele_solo
 
+
+lb_types = {
+    "Seele": {
+        "types": ["solo"],
+        "calculation_function": [seele_solo],
+    },
+    "Dan Heng \u2022 Imbibitor Lunae": {
+        "types": [],
+        "calculation_function": [],
+    },
+    "The Herta": {
+        "types": [],
+        "calculation_function": [],
+    },
+    "Feixiao": {
+        "types": [],
+        "calculation_function": [],
+    },
+    "Firefly": {
+        "types": [],
+        "calculation_function": [],
+    },
+    "Aglaea": {
+        "types": [],
+        "calculation_function": [],
+    },
+    "Castorice": {
+        "types": [],
+        "calculation_function": [],
+    },
+    "Acheron": {
+        "types": [],
+        "calculation_function": [],
+    },
+    "Gallagher": {
+        "types": [],
+        "calculation_function": [],
+    },
+    "Robin": {
+        "types": [],
+        "calculation_function": [],
+    },
+    "Ruan Mei": {
+        "types": [],
+        "calculation_function": [],
+    },
+    "Anaxa": {
+        "types": [],
+        "calculation_function": [],
+    },
+}
+
 dat = """INFO	HPDelta	AttackDelta	DefenceDelta	HPAddedRatio	AttackAddedRatio	DefenceAddedRatio	SpeedDelta	CriticalChanceBase	CriticalDamageBase	StatusProbabilityBase	StatusResistanceBase	BreakDamageAddedRatioBase	HealRatioBase	SPRatioBase	IceAddedRatio	QuantumAddedRatio	ImaginaryAddedRatio	FireAddedRatio	WindAddedRatio	ThunderAddedRatio	PhysicalAddedRatio
 Seele	0	0.2	0	0	0.7	0	0.7	1	1	0	0	0	0	0	0	0.7	0	0	0	0	0
 Dan Heng \u2022 Imbibitor Lunae	0	0.2	0	0	0.7	0	0.7	1	1	0	0	0	0	0	0	0	0.7	0	0	0	0
@@ -100,6 +152,11 @@ def add_to_db(json, conn, cur):
         calc_results = calc_score(character)
         scores[name] = calc_results[0]
 
+        for i in range(len(lb_types[name]["types"])):
+            scores[name + "|" + lb_types[name]["types"][i]] = calc_results[i + 1]["total_dmg"] / 1000
+        
+        print("Character: ", name, "Score: ", scores[name])
+
     data_to_insert = [
         (json["player"]["uid"], json["player"]["nickname"], name, json["player"]["avatar"]["icon"], "", scores[name] * 1000)
         for name in scores
@@ -170,9 +227,13 @@ def calc_score(char_json):
 
     returnScore = [score]
 
-    if char_json["name"] == "Seele":
-        print("Seele Solo")
-        print(seele_solo(stats, relic_sets))
+    # if char_json["name"] == "Seele":
+    #     print("Seele Solo")
+    #     print(seele_solo(stats, relic_sets))
+    
+    lb_types_ = lb_types[char_json["name"]]
+    for i in range(len(lb_types_["types"])):
+        returnScore.append(lb_types_["calculation_function"][i](stats, relic_sets))
 
     return returnScore
     

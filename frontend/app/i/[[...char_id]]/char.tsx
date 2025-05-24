@@ -249,7 +249,7 @@ export default function Char({
           className='absolute w-[680px] h-[680px] mt-[250px]  top-[-150px] left-[-150px] z-0 
           m1_4:mt-[0px] m1_4:ml-[0px] m1_4:relative m1_4:top-[-20vw] m1_4:left-0 m1_4:w-[70vw] m1_4:h-[30vw] 
           '>
-          <Image
+          <img
             src={`https://homdgcat.wiki/images/avatardrawcard/${filteredID(id)}.png`}
             width={1360}
             height={1360}
@@ -390,8 +390,7 @@ export default function Char({
                           ? item["DisplayName"].slice(0, 7) + "..."
                           : item["DisplayName"]}
                       </div>
-                      <Image
-                        // src={`https://homdgcat.wiki/images/avatarshopicon/avatar/${item["_id"]}.png`}
+                      <img
                         src={`https://homdgcat.wiki/images/avatarshopicon/avatar/${filteredID(
                           "" + item["_id"]
                         )}.png`}

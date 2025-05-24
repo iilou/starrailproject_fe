@@ -42,7 +42,7 @@ export default function AvatarDisplay({
           style={{
             backgroundImage: rarityGradient,
           }}>
-          <Image
+          <img
             src={get_icon_url_character(item["Icon"])}
             width={100}
             height={100}
@@ -53,7 +53,7 @@ export default function AvatarDisplay({
       </div>
       <div className='w-full h-[10px] mb-2 flex relative z-[101]'>
         <div className='w-[80px] h-[80px]'>
-          <Image
+          <img
             src={get_icon_url_path(item["Path"])}
             width={100}
             height={100}
@@ -63,7 +63,7 @@ export default function AvatarDisplay({
         </div>
         <div className='w-[70px] h-1'></div>
         <div className='w-[80px] h-[80px]'>
-          <Image
+          <img
             src={get_icon_url_element(item["Element"])}
             width={100}
             height={100}

@@ -23,8 +23,7 @@ export default function RelicDisplay({ item }: { item: any }) {
           style={{
             backgroundImage: rarityGradient,
           }}>
-          {/* <Image src={get_icon_url_weapon("" + item["_id"])} width={128} height={128} alt={item["Name"]} className='scale-110 group-hover:scale-150 relative z-[100] w-[128px]' /> */}
-          <Image
+          <img
             src={get_icon_url_relic(item["Icon"])}
             width={128}
             height={128}
