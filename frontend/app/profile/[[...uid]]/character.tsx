@@ -28,11 +28,13 @@ export default function Character({
   characterJSON,
   router,
   charRef,
+  scrollY = 0,
   reactive = true,
 }: {
   characterJSON: any;
   router: any;
   charRef: any;
+  scrollY: number;
   reactive?: boolean;
 }) {
   const scoreLib = `INFO	wefe	wef	gawef	HP	ATK	DEF	SPD	CRIT Rate	CRIT DMG	Effect Hit Rate	Effect RES	Break Effect	Outgoing Healing Boost	Energy Regeneration Rate	Ice DMG Boost	Quantum DMG Boost	Imaginary DMG Boost	Fire DMG Boost	Wind DMG Boost	Lightning DMG Boost	Physical DMG Boost
@@ -53,21 +55,16 @@ Anaxa	0	0.2	0	0	0.7	0	1	1	1	0	0	0	0	0	0	0	0	0	0.7	0	0`;
     const lineSplit: string[] = line.split("\t");
     charIndex[lineSplit[0]] = lineSplit;
   });
-  // console.log(charIndex);
+
   const headers = `hp,atk,def,spd,${characterJSON["element"][
     "id"
   ].toLowerCase()}_dmg,crit_rate,crit_dmg,effect_hit,effect_res,break_dmg,heal_rate,sp_rate`;
   const headersDisplayName = `HP,ATK,DEF,SPD,${characterJSON["element"]["name"]} DMG Boost,CRIT Rate,CRIT DMG,Effect Hit Rate,Effect RES,Break Effect,Outgoing Healing Boost,Energy Regen Rate`;
   const isHeaderPercent = `0,0,0,0,1,1,1,1,1,1,1,1`;
 
-  const [scrollY, setScrollY] = useState(0);
   const [windowWidth, setWindowWidth] = useState(10000);
   useEffect(() => {
     if (!reactive) return;
-    const handleScroll = () => {
-      setScrollY(window.scrollY);
-    };
-    window.addEventListener("scroll", handleScroll);
 
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
@@ -77,7 +74,7 @@ Anaxa	0	0.2	0	0	0.7	0	1	1	1	0	0	0	0	0	0	0	0	0	0.7	0	0`;
     handleResize();
 
     return () => {
-      window.removeEventListener("scroll", handleScroll);
+      // window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("resize", handleResize);
     };
   }, []);
@@ -156,7 +153,7 @@ Anaxa	0	0.2	0	0	0.7	0	1	1	1	0	0	0	0	0	0	0	0	0	0.7	0	0`;
                 className='rounded-full'
               />
             </div>
-            <div className='flex items-center justify-center w-[36px] aspect-square rounded-lg bg-[#232323] mr-[310px]'>
+            <div className='flex items-center justify-center w-[36px] aspect-square rounded-lg bg-[#232323] mr-[70px]'>
               <img
                 src={`https://raw.githubusercontent.com/Mar-7th/StarRailRes/refs/heads/master/${characterJSON["element"]["icon"]}`}
                 width={30}
@@ -164,6 +161,12 @@ Anaxa	0	0.2	0	0	0.7	0	1	1	1	0	0	0	0	0	0	0	0	0	0.7	0	0`;
                 alt={characterJSON["element"]["name"]}
                 className='rounded-full'
               />
+            </div>
+            <div className='flex flex-col items-start justify-center mr-[70px] w-[200px] text-center'>
+              <div className='text-[12px] font-bold text-[#e9e9e9] w-full text-center'>
+                Last Updated:{" "}
+                {"last_updated" in characterJSON ? characterJSON["last_updated"] : "Unknown"}
+              </div>
             </div>
             <div className='flex gap-[3px]'>
               {/* <div className='px-4 text-[14px] font-bold bg-[#232323] rounded-lg leading-[26px]'>
@@ -303,41 +306,40 @@ Anaxa	0	0.2	0	0	0.7	0	1	1	1	0	0	0	0	0	0	0	0	0	0.7	0	0`;
 
             {headers.split(",").map((header: string, idx: number) => {
               return (
-                <>
-                  <StatM
-                    name={headersDisplayName.split(",")[idx]}
-                    value={
-                      parseFloat(
-                        characterJSON["attributes"].find(
-                          (attribute: any) => attribute["field"] === header
-                        ) === undefined
-                          ? "0"
-                          : characterJSON["attributes"].find(
-                              (attribute: any) => attribute["field"] === header
-                            )["value"]
-                      ) +
-                      parseFloat(
-                        characterJSON["additions"].find(
-                          (addition: any) => addition["field"] === header
-                        ) !== undefined
-                          ? characterJSON["additions"].find(
-                              (addition: any) => addition["field"] === header
-                            )["value"]
-                          : "0"
-                      )
-                    }
-                    percentage={isHeaderPercent.split(",")[idx] === "1"}
-                    critical={
-                      characterJSON["name"] in charIndex &&
-                      charIndex["INFO"].includes(headersDisplayName.split(",")[idx]) &&
-                      parseFloat(
-                        charIndex[characterJSON["name"]][
-                          charIndex["INFO"].indexOf(headersDisplayName.split(",")[idx])
-                        ]
-                      ) > 0.3
-                    }
-                  />
-                </>
+                <StatM
+                  name={headersDisplayName.split(",")[idx]}
+                  value={
+                    parseFloat(
+                      characterJSON["attributes"].find(
+                        (attribute: any) => attribute["field"] === header
+                      ) === undefined
+                        ? "0"
+                        : characterJSON["attributes"].find(
+                            (attribute: any) => attribute["field"] === header
+                          )["value"]
+                    ) +
+                    parseFloat(
+                      characterJSON["additions"].find(
+                        (addition: any) => addition["field"] === header
+                      ) !== undefined
+                        ? characterJSON["additions"].find(
+                            (addition: any) => addition["field"] === header
+                          )["value"]
+                        : "0"
+                    )
+                  }
+                  percentage={isHeaderPercent.split(",")[idx] === "1"}
+                  critical={
+                    characterJSON["name"] in charIndex &&
+                    charIndex["INFO"].includes(headersDisplayName.split(",")[idx]) &&
+                    parseFloat(
+                      charIndex[characterJSON["name"]][
+                        charIndex["INFO"].indexOf(headersDisplayName.split(",")[idx])
+                      ]
+                    ) > 0.3
+                  }
+                  key={idx}
+                />
               );
             })}
           </div>
@@ -350,7 +352,7 @@ Anaxa	0	0.2	0	0	0.7	0	1	1	1	0	0	0	0	0	0	0	0	0	0.7	0	0`;
           opacity: scrollY > 200 || !reactive ? 1 : 0,
           transitionTimingFunction: "ease-in-out",
         }}>
-        <div className='h-[50px] w-1'></div>
+        <div className='h-[20px] w-1'></div>
 
         <div className='w-full grid grid-cols-[auto,auto]'>
           <div className='w-full flex justify-center'>
@@ -366,7 +368,10 @@ Anaxa	0	0.2	0	0	0.7	0	1	1	1	0	0	0	0	0	0	0	0	0	0.7	0	0`;
           <div className='w-fit mx-auto'>
             <div
               className={`grid gap-x-[10px] gap-y-[10px] mt-[10px] relative z-[100] grid-cols-[auto,auto,auto,auto] w-[1280px]`}>
-              {characterJSON["relics"].map((relic: any, idx: number) => {
+              {/* {characterJSON["relics"].map((relic: any, idx: number) => { */}
+              {[0, 1, 2, 3, 4, 5].map((idx: number) => {
+                if (idx >= characterJSON["relics"].length) return <div className='w-[309px]'></div>;
+                const relic = characterJSON["relics"][idx];
                 return (
                   <RelicL
                     relicJSON={relic}
@@ -374,6 +379,7 @@ Anaxa	0	0.2	0	0	0.7	0	1	1	1	0	0	0	0	0	0	0	0	0	0.7	0	0`;
                     element={characterJSON["element"]["name"]}
                     elementColor={characterJSON["element"]["color"]}
                     key={idx}
+                    showScores={reactive}
                   />
                 );
               })}

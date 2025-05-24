@@ -1,18 +1,6 @@
 import Image from "next/image";
 
-import {
-  scoreLib,
-  scoreSetLib,
-  weightLib,
-  calculateScoreList,
-  calculateFinalScore,
-  calculateSetScore,
-  charIndex,
-  charSetIndex,
-  weightParse,
-  charIndexHeaders,
-  charSetIndexHeaders,
-} from "../../lib/score";
+import { weightLib, charIndex } from "../../lib/score";
 
 interface RelicJSON {
   icon: string;
@@ -32,11 +20,13 @@ export default function RelicL({
   charName,
   element,
   elementColor,
+  showScores,
 }: {
   relicJSON: RelicJSON;
   charName: string;
   element: string;
   elementColor: string;
+  showScores: boolean;
 }) {
   const relicDataParsedFull = weightLib.split("\n").map((line) => {
     return line.split("\t");
@@ -84,8 +74,21 @@ export default function RelicL({
 
   return (
     <div className=' w-[309px] flex justify-center items-center rounded-sm flex-col'>
-      <div className='flex mb-[2px]'>
-        <div className='w-[54px] h-[54px] flex justify-center items-center bg-[#020071c2] rounded-md relative'>
+      <div className='flex mb-[2px] relative'>
+        {showScores && relicScore > 0 && (
+          <>
+            <div className='w-[40px] h-[20px] flex justify-center items-center bg-[#272572e0] rounded-md absolute top-[-7px] left-[-20px] text-[9px] text-[#f0f04f] font-black'>
+              +{(relicMainstatScore + relicScore).toFixed(1)}
+            </div>
+            <div className='w-[40px] h-[20px] flex justify-center items-center bg-[#3a3990d2] rounded-md absolute top-[-7px] left-[30px] text-[9px] text-[#d9d9d9] font-bold'>
+              +{relicScore.toFixed(1)}
+            </div>
+            <div className='w-[40px] h-[20px] flex justify-center items-center bg-[#272572e0] rounded-md absolute top-[-7px] left-[80px] text-[9px] text-[#df7878] font-bold'>
+              +{relicMainstatScore.toFixed(1)}
+            </div>
+          </>
+        )}
+        <div className='w-[54px] h-[54px] flex justify-center items-center bg-[#020071c2] rounded-md'>
           <img
             src={`https://raw.githubusercontent.com/Mar-7th/StarRailRes/refs/heads/master/${relicJSON["icon"]}`}
             width={64}
@@ -113,7 +116,7 @@ export default function RelicL({
 
         return (
           <div
-            className='active:shadow-[5px_0px_0px_-4px_#ffffff,-5px_0px_0px_-4px_#ffffff] grid grid-cols-[40px,155px,40px,40px] w-fit text-center font-bold h-full  text-base text-w1 bg-[#3d3b8a]'
+            className='relative active:shadow-[5px_0px_0px_-4px_#ffffff,-5px_0px_0px_-4px_#ffffff] grid grid-cols-[40px,155px,40px,40px] w-fit text-center font-bold h-full  text-base text-w1 bg-[#3d3b8a]'
             // style={i % 2 === 0 ? { opacity: "80%" } : {}}
             key={i}
             style={{
@@ -123,6 +126,11 @@ export default function RelicL({
                 : "none",
               color: isCriticalStat(affix ? affix["type"] : "") ? "#E5D64A" : "#d9d9d9",
             }}>
+            {showScores && relicScore > 0 && (
+              <div className='w-[32px] h-[16px] flex justify-center items-center bg-[#020071] absolute top-[5px] left-[-24px] text-[9px] text-[#d9d9d9]'>
+                +{affix ? relicScores[index].toFixed(1) : "-"}
+              </div>
+            )}
             <div className='w-full flex justify-center items-center bg-[#020071c2]'>
               <img
                 src={`https://raw.githubusercontent.com/Mar-7th/StarRailRes/refs/heads/master/${

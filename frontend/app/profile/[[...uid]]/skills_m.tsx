@@ -138,8 +138,8 @@ export default function SkillsM({
               })}
           </div>
           <div className='flex justify-center gap-[16px] mt-[10px] w-full'>
-            <div className='justify-center items-center gap-[16px] w-fit px-12 py-1 flex rounded-[10px] opacity-90'>
-              {[2, 4, 6].map((val, index) => {
+            <div className='justify-center items-center gap-[6px] w-fit px-12 py-1 flex rounded-[10px] opacity-90'>
+              {/* {[2, 4, 6].map((val, index) => {
                 return (
                   <div
                     className='w-fit h-fit block hover:shadow-[0px_0px_0px_2px_inset_#e7e7e7] rounded-md px-1 py-1 bg-[#3d3b8a]'
@@ -220,6 +220,51 @@ export default function SkillsM({
                     </div>
                   </div>
                 );
+              })} */}
+              {[2, 4, 6].map((val, index) => {
+                return (
+                  <SkillNew
+                    isMemo={false}
+                    isMax={skill_trees[index + 4]["level"] >= skill_trees[index + 4]["max_level"]}
+                    icon={skill_trees[index + 4]["icon"]}
+                    elementColor={skills[0]["element"]["color"]}
+                    name={`A${val}`}
+                    desc={[{ name: skill_trees[index + 4]["name"], desc: "" }]}
+                    // level={`${skill_trees[index + 4]["level"]}/${
+                    //   skill_trees[index + 4]["max_level"]
+                    // }`}
+                    level={`A${val}`}
+                    type_text={`A${val}`}
+                    key={index}
+                  />
+                );
+              })}
+              {Object.values(
+                skill_trees
+                  .slice(8, Math.min(skill_trees.length, 19))
+                  .reduce((acc: any, obj: any) => {
+                    if (!acc[obj.icon]) {
+                      acc[obj.icon] = { ...obj }; // First instance
+                    } else {
+                      acc[obj.icon].level += obj.level; // Sum values
+                      acc[obj.icon].max_level += obj.max_level; // Sum maxvalues
+                    }
+                    return acc;
+                  }, {})
+              ).map((obj: any) => {
+                return (
+                  <SkillNew
+                    isMemo={false}
+                    isMax={obj.level >= obj.max_level}
+                    icon={obj.icon}
+                    elementColor={skills[0]["element"]["color"]}
+                    name={`x${obj.level}`}
+                    desc={[{ name: obj.name, desc: "" }]}
+                    level={`${obj.level}/${obj.max_level}`}
+                    type_text={`x${obj.level}`}
+                    key={obj.icon}
+                  />
+                );
               })}
             </div>
           </div>
@@ -243,6 +288,7 @@ export default function SkillsM({
                   // level={"" + (rank >= index + 1 ? 1 : 0) + " / 1"}
                   level={"E" + (1 + index)}
                   type_text={`E${index + 1}`}
+                  key={index}
                 />
               );
             })}

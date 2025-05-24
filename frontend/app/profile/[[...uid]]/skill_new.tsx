@@ -22,16 +22,16 @@ export default function SkillNew({
 }) {
   return (
     <div
-      className={`w-fit h-[94px] flex rounded-[10px] opacity-90 px-[4px] py-[5px] ${
+      className={`w-fit h-[58px] flex rounded-[10px] opacity-90 px-[3px] py-[3px] ${
         isMemo ? "bg-[#68548c]" : "bg-[#3d3b8a]"
       } shadow-[0_0_0_0_#ffffff00] hover:shadow-[0_0_0px_2px_#e7e7e7] active:shadow-[0_0_3px_2px_#c7c7c7]  duration-100`}>
       {/* <div className='w-full flex' style={{ backgroundColor: isMemo ? "#8971B2" : "" }}> */}
       <div
-        className={`rounded-[10px] px-3 h-[84px] flex flex-col justify-center items-center ${
+        className={`rounded-[10px] px-3 h-[52px] flex flex-col justify-center items-center ${
           isMemo ? "bg-[#baa2d7]" : "bg-[#5c59bf]"
         }`}>
         <div
-          className='w-[42px] h-[42px] rounded-full'
+          className='w-[24px] h-[24px] rounded-full'
           style={{
             boxShadow: isMax
               ? `0 0 20px 5px ${elementColor} inset, 0 0 5px 2px ${elementColor}`
@@ -46,9 +46,9 @@ export default function SkillNew({
           />
         </div>
         <div
-          className='font-extrabold text-center bg-[#232323fewg] rounded-md w-fit px-2 mt-[2px] text-[13px]'
+          className='font-extrabold text-center bg-[#232323fewg] rounded-md w-[48px] mt-[6px] text-[13px] leading-[10px]'
           style={{
-            color: isMax ? "#ffffff" : "#c1c1c1",
+            color: isMax ? "#ffffff" : "#a1a1a1",
             textShadow: isMax
               ? // ? `0 0 3px ${elementColor}, 0 0 5px ${elementColor}, 0 0 7px ${elementColor}, 0 0 10px ${elementColor}, 0 0 20px ${elementColor}`
                 `0 0 3px #000000aa, 0 0 10px #000000aa`

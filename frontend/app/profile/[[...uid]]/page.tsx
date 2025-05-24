@@ -10,6 +10,8 @@ import ProfilePreview from "./profile";
 import PHeader from "./p_header";
 import BG from "../../bg";
 
+import { charDbTypes, get_lb_types } from "../../lb/[[...lb_name]]/lib";
+
 import ReactDOMServer from "react-dom/server";
 
 import { filterElementColor } from "../../lib/color";
@@ -23,51 +25,23 @@ import Character from "./character";
 
 import { toPng } from "html-to-image";
 import { toJpeg } from "html-to-image";
+import { profile } from "console";
 // import { image } from "html2canvas/dist/types/css/types/image";
 
 export default function Profile() {
-  // const [uid, setUid] = useState<string | null>(null); // Initial state set to null
-  const [uid, setUid] = useState<string | null>(null); // Initial state set to null
-  const [localData, setLocalData] = useState<any>(null); // Initial state set to null
-  const [char_list, setCharList] = useState<any>(null); // Initial state set to null
-  const [char_ref_list, setCharRefList] = useState<any>(null); // Initial state set to null
+  // const [uid, setUid] = useState<string | null>(null);
+  // const [localData, setLocalData] = useState<any>(null);
+  const [char_list, setCharList] = useState<any[]>([]); // State to hold character list
+  const [profile_data, setProfileData] = useState<any>(null);
   const [currentCharacter, setCurrentCharacter] = useState<any>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [shadow_color, setShadowColor] = useState("#00000000");
+  // const [isLoading, setIsLoading] = useState(false);
 
   const router = useRouter();
   // const { uid: urlUid } = router.query; // Extract uid from dynamic route parameter
   const { uid: urlUid } = useParams(); // Extract uid from dynamic route parameter
 
-  useEffect(() => {
-    // Check if urlUid is an array and pick the first element, or use the string value directly
-    const initialUid = Array.isArray(urlUid) ? urlUid[0] : urlUid || "000000000"; // Default to "000000000" if no uid is found
-    setUid(initialUid);
-
-    const savedData = localStorage.getItem("data_" + initialUid);
-    if (savedData) {
-      const parsedData = JSON.parse(savedData);
-      const filteredData = filterElementColor(parsedData);
-      setLocalData(filteredData);
-      if (filteredData && filteredData.characters) {
-        setCurrentCharacter(filteredData.characters[0]);
-      }
-    }
-  }, [urlUid]); // Re-run effect when the `uid` param changes
-
-  const fetchData = async () => {
-    if (uid && (uid.length !== 9 || isNaN(parseInt(uid)) || parseInt(uid) === 0)) {
-      if (localData && localData["player"] && localData["player"]["uid"]) {
-        setUid(localData["player"]["uid"]);
-        // router.push(`/profile?uid=${localData["player"]["uid"]}`);
-        router.push(`/profile/${localData["player"]["uid"]}`);
-      }
-      return;
-    }
-
-    setIsLoading(true);
+  const fetchData = async (savedData: any, uid: string) => {
     try {
-      // const response = await fetch(`http://127.0.0.1:8000/srd/${uid}`);
       console.log(
         "fetching data for uid:",
         uid,
@@ -80,94 +54,145 @@ export default function Profile() {
           "Content-Type": "application/json",
         },
       });
-      console.log("fetch", response);
+      console.log("fetch raw response", response);
+
+      // check if the response is ok
       if (!response.ok) {
-        setIsLoading(false);
-        // alert("Error fetching data. Please try again later.");
+        console.log("response not ok:", response);
         return;
       }
+
       const data = await response.json();
-      console.log("fetch : ", data);
+      console.log("fetch", data);
 
       if (data.detail && (data.detail === "Invalid uid" || data.detail === "User not found")) {
-        setIsLoading(false);
         alert("Invalid UID. Please check the UID and try again.");
         return;
       }
 
-      if (checkBadLocalData(data)) {
-        setIsLoading(false);
-        return;
+      // add data to leaderboards sql
+      var worthAdding = false;
+
+      filterElementColor(data);
+
+      savedData["player"] = data.player;
+      for (let i = data.characters.length - 1; i >= 0; i--) {
+        const character = data.characters[i];
+
+        if (character["name"] in charDbTypes) {
+          worthAdding = true;
+        }
+
+        character["last_updated"] = new Date().toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+        });
+
+        // override if exists
+        if (savedData["characters"].find((char: any) => char.id === character.id)) {
+          savedData["characters"] = savedData["characters"].filter(
+            (char: any) => char.id !== character.id
+          );
+        }
+
+        savedData["characters"] = [character, ...savedData["characters"]];
       }
 
       try {
         const res = await axios.post(
           `${process.env.NEXT_PUBLIC_API_URL}/add`,
-          {
-            uid: uid,
-          },
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
+          { uid: uid },
+          { headers: { "Content-Type": "application/json" } }
         );
         console.log("add", res);
       } catch (error) {
         console.error("Error pushing data to leaderboards: ", error);
       }
 
-      filterElementColor(data);
-      localStorage.setItem("data_" + uid, JSON.stringify(data));
-      setCurrentCharacter(data.characters[0]);
-      setLocalData(data);
-      setIsLoading(false);
+      // save data to local storage
+      localStorage.setItem("data_" + uid, JSON.stringify(savedData));
+
+      // set profile and character data
+      setProfileData(() => savedData["player"]);
+      setCharList(() => savedData["characters"]);
     } catch (error) {
-      console.error(error);
-      if (localData && localData["player"] && localData["player"]["uid"]) {
-        setUid(localData["player"]["uid"]);
-        router.push(`/profile/${localData["player"]["uid"]}`);
-        // router.push(`/profile?uid=${localData["player"]["uid"]}`);
-      }
+      console.error("Error fetching data: ", error);
+      setProfileData(() => savedData["player"]);
+      setCharList(() => savedData["characters"]);
     }
   };
 
   useEffect(() => {
-    if (localData && localData["characters"]) {
-      setCharList(() => localData["characters"]);
-      setCharRefList(() => Array(localData["characters"].length).fill(null));
-    }
-  }, [localData]); // Update char_list and char_ref_list when localData changes
+    // Check if urlUid is an array and pick the first element, or use the string value directly
+    const initialUid = Array.isArray(urlUid) ? urlUid[0] : urlUid || "000000000";
 
-  useEffect(() => {
-    if (uid) {
-      fetchData();
+    let savedDataString = localStorage.getItem("data_" + urlUid);
+    let savedData = null;
+
+    if (!savedDataString) {
+      savedData = {
+        player: {
+          avatar: {
+            icon: "icon/avatar/1303.png",
+            id: "201303",
+            name: "Ruan Mei",
+          },
+          friend_count: 0,
+          level: 0,
+          is_display: true,
+          nickname: "Unknown",
+          signature:
+            "Either this UID does not refer to a valid player, or access to the API is not available and there is no cached data.",
+          uid: urlUid,
+          world_level: 0,
+        },
+        characters: [],
+      };
+    } else {
+      savedData = JSON.parse(savedDataString);
     }
-  }, [uid]); // Fetch data whenever the UID changes
+
+    fetchData(savedData, initialUid); // Fetch data using the initialUid
+  }, [urlUid]); // Fetch data when the component mounts or when urlUid changes
+
+  // useEffect(() => {
+  //   if (localData && localData["characters"]) {
+  //     setCharList(() => localData["characters"]);
+  //   }
+  // }, [localData]); // Update char_list and char_ref_list when localData changes
+
+  // useEffect(() => {
+  //   if (uid) {
+  //     fetchData();
+  //   }
+  // }, [uid]); // Fetch data whenever the UID changes
 
   const handleCharacterSelect = (character_id: string) => {
-    const selectedCharacter = localData?.characters.find(
-      (character: any) => character.id === character_id
-    );
+    const selectedCharacter = char_list.find((character: any) => character.id === character_id);
     setCurrentCharacter(selectedCharacter);
   };
 
   const onUidSearch = (uid: string) => {
-    setUid(uid);
+    if (uid && uid.length === 9) {
+      router.push(`/profile/${uid}`);
+    }
   };
 
-  const checkBadLocalData = (data: any) => {
-    return (
-      !data ||
-      data["sofijweiofjweiofjweiofjwiofj"] === "fwaefawefwefe" ||
-      data.detail === "Invalid uid" ||
-      !data.player
-    );
-  };
+  const [scrollY, setScrollY] = useState(0); // State to hold scroll position
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrollY(window.scrollY);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   const [selClicked, setSelClicked] = useState(false); // State to hold selected clicked value
   const [gridChars, setGridChars] = useState<any[]>([]); // State to hold grid characters
-  const [gridRender, setGridRender] = useState(false); // State to hold grid render value
   const gridRef = useRef<any>(null); // Ref to hold grid reference
 
   const generateImage = (ref: any, quality: number, type: string) => {
@@ -233,12 +258,9 @@ export default function Profile() {
 
   return (
     <div
-      className='w-full h-fit relative'
+      className='w-[1920px] h-fit relative'
       style={{
         minHeight: "100vh",
-        // filter: selClicked ? "blur(5px)" : "none",
-        // overflowX: selClicked ? "hidden" : "auto",
-        // overflowY: selClicked ? "hidden" : "auto",
       }}>
       <Header current='/profile' />
       <div className='w-full absolute top-0 left-0 z-[700]'>
@@ -300,7 +322,6 @@ export default function Profile() {
                           ? "#e7e7e7"
                           : "#8a8a8ac2",
                       }}>
-                      {/* {character.name} */}
                       <div className='w-[24px] h-[24px] flex items-center justify-center'>
                         <Image
                           src={`https://raw.githubusercontent.com/Mar-7th/StarRailRes/refs/heads/master/${character.icon}`}
@@ -388,7 +409,10 @@ export default function Profile() {
             <div className='text-[72px] font-extrabold text-[#EEAA5B] w-full h-[202px] text-center flex justify-center items-center gap-16'>
               {/* {localData ? localData.player.nickname : "No Name"} */}
               <img
-                src={`https://raw.githubusercontent.com/Mar-7th/StarRailRes/refs/heads/master/${localData?.player?.avatar?.icon}`}
+                // src={`https://raw.githubusercontent.com/Mar-7th/StarRailRes/refs/heads/master/${localData?.player?.avatar?.icon}`}
+                src={`https://raw.githubusercontent.com/Mar-7th/StarRailRes/refs/heads/master/${
+                  profile_data ? profile_data.avatar.icon : "icon/avatar/1303.png"
+                }`}
                 width={128}
                 height={128}
                 alt='Avatar'
@@ -396,10 +420,12 @@ export default function Profile() {
               />
               <div className='flex flex-col items-center justify-center'>
                 <div className='leading-[78px]'>
-                  {localData ? localData.player.nickname : "No Name"}
+                  {/* {localData ? localData.player.nickname : "No Name"} */}
+                  {profile_data ? profile_data.nickname : "No Name"}
                 </div>
                 <div className='text-[32px] font-bold text-[#c7c7c7] leading-[22px]'>
-                  {localData ? localData.player.uid : "No UID"}
+                  {/* {localData ? localData.player.uid : "No UID"} */}
+                  {profile_data ? profile_data.uid : "No UID"}
                 </div>
               </div>
               <div className='w-[128px] h-[128px] '></div>
@@ -416,6 +442,7 @@ export default function Profile() {
                     }}>
                     <Character
                       characterJSON={character}
+                      scrollY={10000}
                       router={router}
                       reactive={false}
                       charRef={null}
@@ -439,51 +466,56 @@ export default function Profile() {
         </div>
       )}
       <div className='w-full z-[900] relative'>
-        <ProfilePreview
-          playerData={localData ? localData.player : null}
-          uid={uid || "000000000"}
-          onUidSearch={onUidSearch}
-          isLoading={isLoading}
-        />
-        <div className='w-1 h-[30px]'></div>
-        {localData && localData?.player && localData?.characters && (
-          <div className='w-full h-fit flex justify-center items-center bg-[#121212dd] z-[1000] relative shadow-[0_0_3px_2px_#000000,_0_0_10px_0px_#000000_inset]'>
-            <div className='w-fit h-fit flex items-center overflow-x-scroll overflow-y-hidden relative'>
+        <div
+          className='w-full h-fit flex justify-center items-center sticky top-[50px] z-[1200] transition-all duration-500 flex-col '
+          style={{
+            opacity: scrollY > 200 ? 0 : 1,
+            backgroundImage: `linear-gradient(to bottom, #12121200 0%, #12121292 20%, #12121292 95%, #12121200 100%)`,
+            userSelect: scrollY > 200 ? "none" : "auto",
+            pointerEvents: scrollY > 200 ? "none" : "auto",
+          }}>
+          <ProfilePreview
+            playerData={profile_data ? profile_data : null}
+            uid={profile_data ? profile_data.uid : "000000000"}
+            onUidSearch={onUidSearch}
+            isLoading={false}
+            onRefresh={() => {
+              if (!profile_data) return;
+              fetchData({ player: profile_data, characters: char_list }, profile_data.uid);
+            }}
+          />
+          <div className='w-1 h-[30px]'></div>
+          <div className='w-full h-fit flex justify-center items-center bg-[#121212dd] shadow-[0_0_3px_2px_#000000,_0_0_10px_0px_#000000_inset] sticky top-[80px] z-[1200]'>
+            <div
+              className='w-fit h-fit flex items-center overflow-x-scroll overflow-y-hidden relative'
+              style={{
+                scrollBehavior: "smooth",
+                scrollbarColor: "#000000 #121212",
+                scrollbarWidth: "thin",
+              }}>
               <div className='w-[50px] h-2'></div>
-              {localData.characters.map((character: any) => {
+              {char_list.map((character: any) => {
                 const isCurrent = currentCharacter?.id === character.id;
                 return (
                   <div
-                    className='flex items-center justify-center group h-[100px] w-fit px-2 gap-2'
+                    className='flex items-center justify-center group h-[100px] w-fit px-2 '
                     onClick={() => handleCharacterSelect(character.id)}
                     key={character.id}>
                     <div className='w-[100px] h-[100px] flex items-center justify-center rounded-full group relative'>
-                      <div
-                        className='hidden absolute w-[100px] h-[100px] group-hover:flex items-center justify-center z-[130] rounded-full bg-[#00000078]'
-                        onClick={(e) => {
-                          router.push(`/i/${character.id}`);
-                        }}>
-                        <OpenInNew
-                          className='text-[#c7c7c7] text-[50px]'
-                          style={{
-                            filter: `drop-shadow(0 0 5px ${character.element.color})`,
-                          }}
-                        />
-                      </div>
                       <Image
                         src={`https://raw.githubusercontent.com/Mar-7th/StarRailRes/refs/heads/master/${character.icon}`}
                         width={68}
                         height={68}
                         alt='Character Icon'
                         className={` relative
-                          rounded-full bg-background transition-all bg-w1 w-[88px] h-[88px] block z-[120] duration-100 group-hover:bg-[#c3c3c3] shadow-[0_0_10px_2px_#000000_inset] group-hover:brightness-110 ${
+                          rounded-full bg-background transition-all bg-w1 w-[78px] h-[78px] block z-[120] duration-100 group-hover:bg-[#c3c3c3] shadow-[0_0_10px_2px_#000000_inset] ${
                             isCurrent
-                              ? "animate-border-glow  border-[2px] group-hover:border-[2px] group-hover:bg-w2 brightness-110"
-                              : "border-[#121212] border-[15px] group-hover:border-[5px] group-hover:bg-w2 brightness-90"
+                              ? "animate-border-glow border-[2px] group-hover:bg-w2 brightness-90"
+                              : "border-[#121212] border-[2px] group-hover:bg-w2 brightness-90"
                           }`}
                         style={{
                           borderColor: isCurrent ? character.element.color : "",
-                          ["--glow_profile_char" as any]: character.element.color,
+                          // ["--glow_profile_char" as any]: character.element.color,
                         }}
                       />
                     </div>
@@ -496,14 +528,13 @@ export default function Profile() {
                             className='absolute inset-0 rounded-md border-2 animate-border-glow pointer-events-none'
                             style={{
                               borderColor: currentCharacter.element.color,
-                              ["--glow_profile_char" as any]: currentCharacter.element.color,
+                              // ["--glow_profile_char" as any]: currentCharacter.element.color,
                             }}
                           />
                           <div
                             className='w-[230px] text-[#c7c7c7] font-bold text-2xl transition-all pl-4 pr-4 py-2 rounded-md bg-[#121212] group-hover:text-2xl group-hover:font-extrabold group-hover:bg-[#0f0f0f] animate-text-glow'
                             style={{
                               border: `2px solid ${currentCharacter.element.color}`,
-                              ["--glow_profile_char_text" as any]: currentCharacter.element.color,
                             }}>
                             {character.name.substring(0, 12) +
                               (character.name.length > 12 ? "..." : "")}
@@ -521,28 +552,38 @@ export default function Profile() {
                   </div>
                 );
               })}
-              <div className='w-[50px] h-2'></div>
             </div>
           </div>
-        )}
-        {currentCharacter && (
-          <div>
-            <div className='w-full flex justify-center flex-col items-center'>
-              <div className='w-[1px] h-[10px]'></div>
-              <div
-                className='ml-[1300px] shadow-[0_0_0_1px_#c7c7c7] w-[174px] h-[42px] flex items-center justify-center rounded-lg text-[#ac663d] font-bold cursor-pointer'
-                onClick={() => {
-                  setSelClicked(() => true);
-                }}>
-                <div className='w-fit h-fit ml-3'>Export Grid</div>
-                <div className='w-[42px] h-[42px] flex items-center justify-center'>
-                  <OpenInNew className='scale-[0.8]' />
-                </div>
+          <div className='w-full flex justify-center flex-col items-center'>
+            <div className='w-[1px] h-[10px]'></div>
+            <div
+              className='ml-[1300px] shadow-[0_0_0_1px_#c7c7c7] w-[174px] h-[42px] flex items-center justify-center rounded-lg text-[#ac663d] font-bold cursor-pointer'
+              onClick={() => {
+                setSelClicked(() => true);
+              }}>
+              <div className='w-fit h-fit ml-3'>Export Grid</div>
+              <div className='w-[42px] h-[42px] flex items-center justify-center'>
+                <OpenInNew className='scale-[0.8]' />
               </div>
             </div>
-            <Character characterJSON={currentCharacter} router={router} charRef={currentCharRef} />
           </div>
-        )}
+        </div>
+        <div
+          className='w-[1920px] relative transition-all duration-300 h-[490px]'
+          style={{
+            transform: scrollY > 200 ? "translateY(-420px)" : "translateY(0px)",
+          }}>
+          {currentCharacter && (
+            <>
+              <Character
+                characterJSON={currentCharacter}
+                router={router}
+                charRef={currentCharRef}
+                scrollY={scrollY}
+              />
+            </>
+          )}
+        </div>
       </div>
     </div>
   );

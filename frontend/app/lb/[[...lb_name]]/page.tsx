@@ -318,7 +318,7 @@ export default function Leaderboard() {
         <LocalProfileView router={router} />
       </div>
 
-      <div className='relative z-[10] h-[300px] w-full bg-[#000000] flex items-end pb-[20px]'>
+      <div className='relative z-[10] h-[300px] w-full bg-[#0000002c] flex items-end pb-[20px]'>
         <div className='absolute w-full z-[12]'>
           {
             <Image

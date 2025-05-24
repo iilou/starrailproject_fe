@@ -7,7 +7,7 @@ import os
 from pydantic import BaseModel
 import requests
 import time
-from scorecalc import add_to_db
+from scorecalccopy import add_to_db
 import random
 import json
 
@@ -220,12 +220,15 @@ def add(add: Add):
 
 
 
+
+
+
+
+
+
+
+
 queue = []
-queueIndex = 0
-
-
-
-
 
 def get_uid(queue, queueIndex, region_list, region_bounds, included):
     # if queueIndex < len(queue):

@@ -3,7 +3,19 @@ import Image from "next/image";
 
 import { useRouter } from "next/navigation";
 
-export default function ProfilePreview({ playerData, uid, onUidSearch, isLoading }: { playerData: any; uid: string; onUidSearch: (uid: string) => void; isLoading: boolean }) {
+export default function ProfilePreview({
+  playerData,
+  uid,
+  onUidSearch,
+  isLoading,
+  onRefresh,
+}: {
+  playerData: any;
+  uid: string;
+  onUidSearch: (uid: string) => void;
+  isLoading: boolean;
+  onRefresh: () => void;
+}) {
   const router = useRouter();
 
   return (
@@ -45,24 +57,45 @@ export default function ProfilePreview({ playerData, uid, onUidSearch, isLoading
         )}
       </div>
       <div className='h-[315px] w-[949px] ml-12 flex flex-col justify-end'>
-        <div className='text-7xl font-extrabold text-[#EEAA5B] ml-7'>{playerData ? playerData.nickname : "Enter Player UID"}</div>
+        <div className='text-7xl font-extrabold text-[#EEAA5B] ml-7'>
+          {playerData ? playerData.nickname : "Enter Player UID"}
+        </div>
         <div className='text-2xl font-bold text-[#8F8F8F] ml-7 flex gap-2 justify-between w-full'>
-          <div className='w-fit'>{playerData ? `Trailblazer Level ${playerData.level} - World Level ${playerData.world_level}` : "In the field to the left..."}</div>
+          <div className='w-fit'>
+            {playerData
+              ? `Trailblazer Level ${playerData.level} - World Level ${playerData.world_level}`
+              : "In the field to the left..."}
+          </div>
           {playerData && (
             <>
               <div
-                className='w-fit h-fit items-center text-[#8F8F8F] text-[20px] hover:text-[24px] gap-x-2 hover:cursor-pointer hover:text-[#EEAA5B] transition-all flex group bg-[#212121] hover:bg-[#313131] rounded-lg px-4 py-1'
-                // onClick={() => router.push(`/profile?uid=${uid}`)}
-                onClick={() => router.push(`/profile/${uid}`)}>
-                <Refresh fontSize='large' className='hover:cursor-pointer transition-all' onClick={() => router.push(`/profile/${uid}`)} />
+                className='w-fit h-fit items-center text-[#8F8F8F] text-[20px] gap-x-2 hover:cursor-pointer hover:text-[#EEAA5B] transition-all duration-150 flex group rounded-lg px-4 py-1 
+                shadow-[0_0_0_1px_#c9c9c9] hover:shadow-[0_0_0_2px_#c9c9c9] active:shadow-[0_0_0_3px_#c9c9c9]
+                '
+                onClick={() => {
+                  onRefresh();
+                }}>
+                <Refresh
+                  fontSize='large'
+                  className='hover:cursor-pointer transition-all scale-[0.8]'
+                  onClick={() => router.push(`/profile/${uid}`)}
+                />
 
-                <div>Refresh</div>
+                <div className='mr-[7px]'>Refresh</div>
               </div>
             </>
           )}
         </div>
         <div className='text-xl font-medium text-[#8F8F8F] w-full px-7 border-[1px] mt-4 py-2 border-w2 rounded-lg h-[132px]'>
-          {isLoading ? (playerData ? "Refreshing ..." : "Loading ...") : playerData ? (playerData.signature == "" ? "No Signature" : playerData.signature) : "Hi Hi"}
+          {isLoading
+            ? playerData
+              ? "Refreshing ..."
+              : "Loading ..."
+            : playerData
+            ? playerData.signature == ""
+              ? "No Signature"
+              : playerData.signature
+            : "Hi Hi"}
         </div>
       </div>
     </div>
