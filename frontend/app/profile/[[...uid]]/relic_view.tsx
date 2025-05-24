@@ -25,6 +25,7 @@ export default function RelicView({
               charName={char_name}
               element={element}
               elementColor={elementColor}
+              showScores={true}
               key={idx}
             />
           );

@@ -28,6 +28,57 @@ relic_set_stats = {
     123_2: {"AttackAddedRatio": 0.12},
     124_2: {"QuantumAddedRatio": 0.1},
     124_4: {"SpeedAddedRatio": -0.08},
+}
+
+relic_planar_stats = {
+    301_2: {"AttackAddedRatio": 0.12},
+    302_2: {"HPAddedRatio": 0.12},
+    303_2: {"StatusProbabilityBase": 0.1},
+    304_2: {"DefenceAddedRatio": 0.15},
+    305_2: {"CriticalDamageBase": 0.16},
+    306_2: {"CriticalChanceBase": 0.08},
+    307_2: {"BreakDamageAddedRatioBase": 0.16},
+    308_2: {"SPRatioBase": 0.05},
+    309_2: {"CriticalChanceBase": 0.08},
+    310_2: {"StatusResistanceBase": 0.1},
+    311_2: {"AttackAddedRatio": 0.12},
+    312_2: {"SPRatioBase": 0.05},
+    313_2: {"CriticalChanceBase": 0.04},
+    314_2: {"AttackAddedRatio": 0.12},
+    316_2: {"SpeedAddedRatio": 0.06},
+    317_2: {"SPRatioBase": 0.05},
+    318_2: {"CriticalDamageBase": 0.16},
+    319_2: {"HPAddedRatio": 0.12},
+    320_2: {"SpeedAddedRatio": 0.06},
+}
+
+relic_set_combined = {
+    101_2: {"HealRatioBase": 0.1},
+    102_2: {"AttackAddedRatio": 0.12},
+    102_4: {"SpeedAddedRatio": 0.06},
+    103_2: {"DefenceAddedRatio": 0.15},
+    104_2: {"IceAddedRatio": 0.1},
+    105_2: {"PhysicalAddedRatio": 0.1},
+    107_2: {"FireAddedRatio": 0.1},
+    108_2: {"QuantumAddedRatio": 0.1},
+    109_2: {"ThunderAddedRatio": 0.1},
+    110_2: {"WindAddedRatio": 0.1},
+    111_2: {"BreakDamageAddedRatioBase": 0.16},
+    111_4: {"BreakDamageAddedRatioBase": 0.16},
+    112_2: {"ImaginaryAddedRatio": 0.1},
+    113_2: {"HPAddedRatio": 0.12},
+    114_2: {"SpeedAddedRatio": 0.06},
+    116_2: {"AttackAddedRatio": 0.12},
+    117_4: {"CriticalChanceBase": 0.04},
+    118_2: {"BreakDamageAddedRatioBase": 0.16},
+    119_2: {"BreakDamageAddedRatioBase": 0.16},
+    120_2: {"AttackAddedRatio": 0.12},
+    120_4: {"CriticalChanceBase": 0.06},
+    121_2: {"SpeedAddedRatio": 0.06},
+    122_2: {"CriticalChanceBase": 0.08},
+    123_2: {"AttackAddedRatio": 0.12},
+    124_2: {"QuantumAddedRatio": 0.1},
+    124_4: {"SpeedAddedRatio": -0.08},
     301_2: {"AttackAddedRatio": 0.12},
     302_2: {"HPAddedRatio": 0.12},
     303_2: {"StatusProbabilityBase": 0.1},
@@ -63,7 +114,12 @@ def def_calc(self_level, enemy_level, def_ignore):
 
 
 def seele_solo(stats, sets_ids):
-    
+    print("Seele Solo Damage Calculation")
+    print("===================================")
+    print("param: stats, sets_ids")
+    print("stats: ", stats)
+    print("sets_ids: ", sets_ids)
+    print("===================================")
 
     # Damage: 3x skill 1x ult 1x basic, no extenal buff, 2 skill w/ ult buff
     # Light cone: In the Night, E0, S1
@@ -98,9 +154,11 @@ def seele_solo(stats, sets_ids):
     glacial = False
     scholar = False
 
-    for set_id in sets_ids:
-        if set_id in relic_set_stats:
-            for stat, value in relic_set_stats[set_id].items():
+    # for set_id in sets_ids:
+    for set in sets_ids:
+        set_id = set["id"] + "|" + str(set["num"])
+        if set_id in relic_set_combined:
+            for stat, value in relic_set_combined[set_id].items():
                 if stat in stats:
                     stats[stat] += value
                 else:
@@ -121,7 +179,7 @@ def seele_solo(stats, sets_ids):
     speed_d = stats["SpeedDelta"]
     spd_p += stats.get("SpeedAddedRatio", 0)
     atk_p += stats["AttackAddedRatio"]
-    atk_d += stats["AttackDelta"]
+    atk_d = stats["AttackDelta"]
 
     # start combo
     # skill -> ult -> skill -> basic -> (buff off) -> skill
@@ -166,6 +224,18 @@ def seele_solo(stats, sets_ids):
     # no resurgence buff
     dmg_5 = skill_ratio * (atk_b * atk_p + atk_d) * (1 + crit_chance*crit_damage) * (quantum + skill_p + lc_buff_dmg)
     dmg_5 *= def_calc(level, enemy_level, def_ignore) * 0.9 * 1 # def ignore * res * vulnerabilty
+
+    # total damage
+    total_dmg = dmg_1 + dmg_2 + dmg_3 + dmg_4 + dmg_5
+
+    return {
+        "dmg_1": dmg_1,
+        "dmg_2": dmg_2,
+        "dmg_3": dmg_3,
+        "dmg_4": dmg_4,
+        "dmg_5": dmg_5,
+        "total_dmg": total_dmg
+    }
 
 
 
