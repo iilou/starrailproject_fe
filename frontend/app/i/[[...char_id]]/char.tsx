@@ -14,6 +14,9 @@ import { get_lb_types } from "../../lb/[[...lb_name]]/lib";
 
 import { elementConvert, elementColor } from "./lib";
 
+// import "./properties.json";
+import { properties } from "./properties";
+
 export default function Char({
   id,
   json,
@@ -429,7 +432,7 @@ export default function Char({
 
       <div className='mt-[30px] flex flex-wrap gap-[10px] justify-center w-full h-full relative z-[10] m1_1:px-[3%]'>
         <div className='flex flex-col gap-[3px] h-fit w-[450px] m1_1:w-[500px] m1_2:w-full m1_2:basis-full'>
-          <SubHeader text='Skills' width={w1} />
+          {/* <SubHeader text='Skills' width={w1} /> */}
           {processedData &&
             Object.keys(processedData.skill).map((key) => {
               const desc = [];
@@ -467,31 +470,88 @@ export default function Char({
             })}
         </div>
         <div className='flex flex-col gap-[3px] h-fit w-[300px] m1_1:w-[250px] m1_2:w-full m1_2:basis-full'>
-          <SubHeader text='Ascension Traces' width={w2} />
-          {processedData &&
-            processedData.asc &&
-            Object.keys(processedData.asc).map((key) => {
-              return (
-                <SkillNew
-                  key={key}
-                  isMemo={false}
-                  isMax={isMax}
-                  // icon={id + "/" + processedData.asc[key].Icon + ".png"}
-                  icon={filteredSkillImageLink(id, processedData.asc[key].Icon)}
-                  elementColor={charElementColor}
-                  name={processedData.asc[key].Type}
-                  desc={[{ name: processedData.asc[key].Name, desc: processedData.asc[key].Desc }]}
-                  level={processedData.asc[key].Type.replace("Ascension ", "A")}
-                  type_text={processedData.asc[key].Type}
-                  width={w2}
-                  SPNeed={null}
-                  SPAdd={null}
-                />
-              );
-            })}
+          {/* <SubHeader text='Ascension Traces' width={w2} /> */}
+          {processedData && processedData.asc && (
+            <>
+              {Object.keys(processedData.asc).map((key) => {
+                return (
+                  <SkillNew
+                    key={key}
+                    isMemo={false}
+                    isMax={isMax}
+                    // icon={id + "/" + processedData.asc[key].Icon + ".png"}
+                    icon={filteredSkillImageLink(id, processedData.asc[key].Icon)}
+                    elementColor={charElementColor}
+                    name={processedData.asc[key].Type}
+                    desc={[
+                      { name: processedData.asc[key].Name, desc: processedData.asc[key].Desc },
+                    ]}
+                    level={processedData.asc[key].Type.replace("Ascension ", "A")}
+                    type_text={processedData.asc[key].Type}
+                    width={w2}
+                    SPNeed={null}
+                    SPAdd={null}
+                  />
+                );
+              })}
+              {processedData.stat_inc && (
+                <div
+                  className='w-full bg-[#3d3b8a] rounded-[3px] opacity-90 py-[5px] duration-100 flex flex-wrap justify-center items-center gap-x-[10px] gap-y-[5px]
+                shadow-[0_0_0_0_#ffffff00] hover:shadow-[0_0_0px_2px_#e7e7e7] active:shadow-[0_0_3px_2px_#c7c7c7]'>
+                  {Object.keys(processedData.stat_inc).map((key, idx) => {
+                    const isPercent = properties[key] && properties[key]["percent"];
+                    return (
+                      <div className='w-fit flex items-center justify-center'>
+                        <div
+                          className='w-[42px] h-[42px] flex justify-center items-center mr-[8px] bg-[#5c59bf] rounded-[5px]
+                          m1_2:w-[32px] m1_2:h-[32px] m1_2:mr-[5px] m1_2:rounded-[3px] 
+                        '>
+                          <img
+                            // src={`https://homdgcat.wiki/images/AddProp/Icon${key}.png`}
+                            src={`https://homdgcat.wiki/images/AddProp/${
+                              properties[key]["icon"].split("/")[2]
+                            }`}
+                            alt={key}
+                            width={26}
+                            height={26}
+                            className='w-[26px] h-[26px] rounded-full bg-[#1a1a1a] object-cover p-[1px]
+                              m1_2:w-[20px] m1_2:h-[20px] 
+                            '
+                          />
+                        </div>
+                        <div
+                          className='w-fit flex justify-center items-center h-[42px] gap-x-[5px] bg-[#2c2c89a2] rounded-[5px] px-[25px] py-[3px]
+                          m1_2:h-[32px] m1_2:px-[15px]
+                        '>
+                          <div
+                            className='w-fit  text-[13px] text-[#cdcdcd] font-semibold h-fit
+                            m1_2:text-[11px] 
+                          '>
+                            {properties[key]["name"]}
+                          </div>
+                          <div
+                            className='w-fit  text-[13px] text-[#f29e38] font-bold h-fit
+                            m1_2:text-[11px]
+                          '>
+                            {
+                              //   processedData.stat_inc[key] * (properties[key]["percent"] ? 100 : 0)
+                              // ).toFixed(properties[key]["percent"] ? 1 : 0) + }
+                              (processedData.stat_inc[key] * (isPercent ? 100 : 1)).toFixed(
+                                isPercent ? 1 : 0
+                              ) + (isPercent ? "%" : "")
+                            }
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </>
+          )}
         </div>
         <div className='flex flex-col gap-[3px] h-fit w-[350px] m1_1:w-[640px] m1_2:w-full'>
-          <SubHeader text='Eidolons' width={w3} />
+          {/* <SubHeader text='Eidolons' width={w3} /> */}
           {processedData &&
             processedData.rank &&
             Object.keys(processedData.rank).map((key) => {

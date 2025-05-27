@@ -48,6 +48,54 @@ WindAddedRatio	0.0388803
 ThunderAddedRatio	0.0388803		
 PhysicalAddedRatio	0.0388803		`;
 
+const property_hash: { [key: string]: number } = {
+    "HPDelta": 0,
+    "AttackDelta": 1,
+    "DefenceDelta": 2,
+    "HPAddedRatio": 3,
+    "AttackAddedRatio": 4,
+    "DefenceAddedRatio": 5,
+    "SpeedDelta": 6,
+    "CriticalChanceBase": 7,
+    "CriticalDamageBase": 8,
+    "StatusProbabilityBase": 9,
+    "StatusResistanceBase": 10,
+    "BreakDamageAddedRatioBase": 11,
+    "HealRatioBase": 12,
+    "SPRatioBase": 13,
+    "IceAddedRatio": 14,
+    "QuantumAddedRatio": 15,
+    "ImaginaryAddedRatio": 16,
+    "FireAddedRatio": 17,
+    "WindAddedRatio": 18,
+    "ThunderAddedRatio": 19,
+    "PhysicalAddedRatio": 20,
+}
+
+const reverse_property_hash: { [key: number]: string } = {
+    0: "HPDelta",
+    1: "AttackDelta",
+    2: "DefenceDelta",
+    3: "HPAddedRatio",
+    4: "AttackAddedRatio",
+    5: "DefenceAddedRatio",
+    6: "SpeedDelta",
+    7: "CriticalChanceBase",
+    8: "CriticalDamageBase",
+    9: "StatusProbabilityBase",
+    10: "StatusResistanceBase",
+    11: "BreakDamageAddedRatioBase",
+    12: "HealRatioBase",
+    13: "SPRatioBase",
+    14: "IceAddedRatio",
+    15: "QuantumAddedRatio",
+    16: "ImaginaryAddedRatio",
+    17: "FireAddedRatio",
+    18: "WindAddedRatio",
+    19: "ThunderAddedRatio",
+    20: "PhysicalAddedRatio"
+}
+
 const charIndex: { [key: string]: string[] } = {};
 scoreLib.split("\n").forEach((line: string) => {
     const lineSplit: string[] = line.split("\t");
@@ -120,5 +168,9 @@ const calculateSetScore = (charName: string, id_list: string[]): number[] => {
     });
 }
 
+const propertyData = {
+    
+}
 
-export { scoreLib, scoreSetLib, weightLib, calculateScoreList, calculateFinalScore, calculateSetScore, charIndex, charSetIndex, weightParse, charIndexHeaders, charSetIndexHeaders };
+
+export { scoreLib, scoreSetLib, weightLib, calculateScoreList, calculateFinalScore, calculateSetScore, charIndex, charSetIndex, weightParse, charIndexHeaders, charSetIndexHeaders, property_hash, reverse_property_hash };

@@ -122,6 +122,21 @@ def get_lb (lb_name: str, page: int, lim: int):
     result = cur.fetchall()
     return result
 
+@app.get("/get_lb_first/{lb_name}")
+def get_lb_first(lb_name: str):
+    # print("Getting first entry for leaderboard: ", lb_name)
+    try:
+        cur.execute(
+            "SELECT * FROM leaderboard WHERE character_name = %s ORDER BY score DESC LIMIT 1",
+            (lb_name,)
+        )
+        result = cur.fetchone()
+        print("Result: ", result, " for leaderboard: ", lb_name)
+    except Exception as e:
+        print(f"Error: {e}")
+        result = None
+    return result
+
 @app.get("/get_lb_count/{lb_name}")
 def get_lb_count (lb_name: str):
     try:
@@ -220,12 +235,15 @@ def add(add: Add):
 
 
 
+
+
+
+
+
+
+
+
 queue = []
-queueIndex = 0
-
-
-
-
 
 def get_uid(queue, queueIndex, region_list, region_bounds, included):
     # if queueIndex < len(queue):

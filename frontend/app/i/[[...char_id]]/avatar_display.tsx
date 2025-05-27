@@ -10,6 +10,7 @@ import {
 import Image from "next/image";
 
 import { get_rank_from_score, ranks } from "../../ranks";
+import OpenInNew from "@mui/icons-material/OpenInNew";
 
 export default function AvatarDisplay({
   item,
@@ -27,7 +28,9 @@ export default function AvatarDisplay({
       : "linear-gradient(180deg,#343659,#8a5fcc 53%)";
   //   const rarityGradient = item["Rarity"] === 5 ? "linear-gradient(180deg,#885550,#c9a36a 53%)" : "linear-gradient(180deg,#343659,#4172b9 53%)";
   return (
-    <div className='flex flex-col items-center justify-center mx-1 my-1 bg-[#3d3b8a] rounded-lg px-1 py-2 w-[150px] h-fit shadow-[0_0_0_0_#ffffff00] text-white text-sm group hover:cursor-pointer hover:shadow-[0_0_0_1px_#ffffff]'>
+    <div
+      className='relative flex flex-col items-center justify-center mx-1 my-1 bg-[#3d3b8a] rounded-lg px-1 py-2 w-[150px] h-fit text-white text-sm 
+    group hover:cursor-pointer shadow-[0_0_0_0_#ffffff00] hover:shadow-[0_0_0_1px_#ffffff]'>
       <div
         className='mb-1 font-bold text-[18px] relative z-[101] h-[22px] group-hover:text-[18px] group-hover:font-extrabold text-center'
         style={{
@@ -35,6 +38,19 @@ export default function AvatarDisplay({
           textShadow: `1px 0 0px #000, -1px 0 0px #000, 0 1px 0px #000, 0 -1px 0px #000`,
         }}>
         {string_with_char_limit(item["DisplayName"], 15)}
+      </div>
+      <div
+        className='absolute right-[15px] top-[40px] z-[102] w-[30px] h-[30px] flex items-center justify-center bg-[#1a1a1a98] rounded-lg
+          hover:bg-[#1a1a1a] hover:cursor-pointer transition-all duration-100 hover:shadow-[0_0_0_1px_#ffffff,_5px_5px_0px_0_#00000067] hover:scale-[1.2] 
+        '
+        onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+          e.stopPropagation();
+          // Open the character's page in a new tab but don't change the current page
+          const charId = item._id;
+          const url = `/i/${charId}`;
+          window.open(url, "_blank", "noopener,noreferrer");
+        }}>
+        <OpenInNew className='text-[#ffffff] hover:text-[#c7c7c7] scale-[0.6]' />
       </div>
       <div className='w-[100px] h-[85px] mb-0'>
         <div

@@ -5,7 +5,7 @@
     Seele: {
       name: "Seele",
       id: 1102,
-      lb_types: ["", "", ""],
+      lb_types: ["", "solo"],
     },
     "Dan Heng • Imbibitor Lunae": {
       name: "Dan Heng • Imbibitor Lunae",
@@ -15,7 +15,7 @@
     "The Herta": {
       name: "The Herta",
       id: 1401,
-      lb_types: [""],
+      lb_types: ["", "tribbie_aven"],
     },
     Feixiao: {
       name: "Feixiao",
