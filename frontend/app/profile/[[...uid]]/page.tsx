@@ -65,6 +65,10 @@ export default function Profile() {
       const data = await response.json();
       console.log("fetch", data);
 
+      if (data === null || data === undefined) {
+        return;
+      }
+
       if (data.detail && (data.detail === "Invalid uid" || data.detail === "User not found")) {
         alert("Invalid UID. Please check the UID and try again.");
         return;
@@ -125,6 +129,9 @@ export default function Profile() {
 
   useEffect(() => {
     // Check if urlUid is an array and pick the first element, or use the string value directly
+    if (urlUid === undefined || urlUid === null || urlUid === "") {
+      return;
+    }
     const initialUid = Array.isArray(urlUid) ? urlUid[0] : urlUid || "000000000";
 
     let savedDataString = localStorage.getItem("data_" + urlUid);

@@ -42,6 +42,9 @@ export default function SkillNew({
           className={`rounded-[10px] px-[6px] ml-[4px] flex flex-col justify-center items-center aspect-square w-[48px] ${
             isMemo ? "bg-[#baa2d7]" : "bg-[#5c59bf] "
           }`}
+          style={{
+            boxShadow: "1px 3px 5px 0px #00000072",
+          }}
           // style={{ height: "64px" }}
           // style={{ height: isNaN(parseInt(level)) ? "32px" : "54px" }}
         >
@@ -60,36 +63,46 @@ export default function SkillNew({
             />
           </div>
         </div>
-        <div className='rounded-[4px] h-[32px] mx-1 group text-[#f2f2f2]'>
+        <div className='rounded-[4px] h-[32px] group text-[#e1e1e1] w-full mx-[6px]'>
           {type_text !== "" && (
             <div
-              className={`px-7 font-bold text-[16px] text-left h-[32px] leading-[32px] group-hover:bg-[] rounded-md ${
-                isMemo ? "bg-[#612c89e2]" : "bg-[#2c2c89e2]"
+              className={`w-full font-normal text-[16px] h-[32px] leading-[32px] group-hover:bg-[] rounded-md text-center ${
+                isMemo ? "bg-[#612c89e2]" : "bg-[#2c2c89a2]"
               }`}
-              style={{ textShadow: "0 0 5px #000000a8" }}>
+              style={{
+                // textShadow: "0 0 5px #000000a8"
+                boxShadow: "1px 3px 5px 0px #00000072",
+              }}>
               {type_text}
             </div>
           )}
         </div>
         {/* {!isNaN(parseInt(level)) && ( */}
-        <div
-          className={`rounded-[10px] px-[6px] ml-[4px] flex flex-col justify-center items-center aspect-square w-[48px] ${
-            isMemo ? "bg-[#baa2d7]" : "bg-[#5c59bf] "
-          }`}
-          // style={{ height: "64px" }}
-          // style={{ height: isNaN(parseInt(level)) ? "32px" : "54px" }}
-        >
+        {!isNaN(parseInt(level)) ? (
           <div
-            className='font-extrabold text-center bg-[#232323fewg] rounded-md w-fit text-[16px]'
+            className={`rounded-[10px] px-[6px] flex flex-col justify-center items-center aspect-square w-[32px] ${
+              isMemo ? "bg-[#baa2d7]" : "bg-[#5c59bf] "
+            }`}
             style={{
-              color: isMax ? "#e7e7e7" : "#d2d2d2",
-              textShadow: isMax
-                ? `0 0 1px ${elementColor}, 0 0 7px ${elementColor}`
-                : "0 0 1px #00000088",
-            }}>
-            {isNaN(parseInt(level)) ? (isMax ? "✓" : "𐄂") : level}
+              boxShadow: "1px 3px 5px 0px #00000072",
+            }}
+            // style={{ height: isNaN(parseInt(level)) ? "32px" : "54px" }}
+          >
+            <div
+              className='text-[#ffffff] font-bold text-center bg-[#232323fewg] rounded-full w-[32px] h-[32px] text-[12px] bg-[#2323few23] flex items-center justify-center'
+              style={{
+                color: isMax ? "#e7e7e7" : "#a1a1a1",
+                // textShadow: isMax
+                //   ? `0 0 1px ${elementColor}, 0 0 7px ${elementColor}`
+                //   : "0 0 1px #00000088",
+                // boxShadow: isMax
+                //   ? `0 0 7px 2px ${elementColor} inset, 0 0 3px 1px ${elementColor}`
+                //   : "",
+              }}>
+              <div>{level}</div>
+            </div>
           </div>
-        </div>
+        ) : null}
         {/* )} */}
       </div>
       <div className='px-2 h-fit'>

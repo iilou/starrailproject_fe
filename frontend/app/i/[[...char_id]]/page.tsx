@@ -42,7 +42,10 @@ export default function Index() {
   const [currentSort, setCurrentSort] = useState<string>("");
 
   // const [view, setView] = useState(searchParams.get("char") || "Characters");
-  const [view, setView] = useState<string>("Characters");
+  const { char_id } = useParams() as { char_id: string | string[] };
+  const [view, setView] = useState<string>(
+    char_id ? "char_" + (Array.isArray(char_id) ? char_id[0] : char_id) : "Characters"
+  );
   const [views, setViews] = useState<string[]>(["Characters", "Weapons", "Relics"]);
 
   const [highestMajorVersion, setHighestMajorVersion] = useState<number>(0);
@@ -297,9 +300,17 @@ export default function Index() {
     });
   };
 
-  useEffect(() => {
-    (async () => {
+  async function fetchMainData() {
+    if (avatarData !== null && weaponData != null && relicData != null) {
+      console.log("Data already fetched");
+      return;
+    }
+    try {
       const res = await fetch("/api/hsrindex?file=Avatar&var=_avatar,_weapon,_relic");
+      if (!res.ok) {
+        const errData = await res.json();
+        throw new Error(errData?.error || "Unknown error");
+      }
       const data = await res.json();
 
       // setAvatarData(data._avatar);
@@ -310,8 +321,10 @@ export default function Index() {
       updateRelicData(data._relic);
 
       setData(data);
-    })();
-  }, []);
+    } catch (err: any) {
+      console.error("Error fetching main data:", err.message);
+    }
+  }
 
   const [lastTimeout, setLastTimeout] = useState<number>(0);
   const [nextKeyPressReset, setNextKeyPressReset] = useState<boolean>(false);
@@ -368,10 +381,10 @@ export default function Index() {
   }, [nextKeyPressReset]);
 
   // const { char_id } = useParams();
-  const { char_id } = useParams() as { char_id: string | string[] };
 
   async function fetchCharacter(char: string) {
     if (!char) return;
+    console.log("Fetching character data for char:", char);
     try {
       const res = await fetch(`/api/char/${char}`);
       if (!res.ok) {
@@ -382,9 +395,8 @@ export default function Index() {
       const json = await res.json();
 
       console.log("json", json);
-      setView("char_" + char);
+      // setView("char_" + char);
       setSpecificCharacterData(json);
-      setViews(["Characters", "Weapons", "Relics", "char_" + char]);
     } catch (err: any) {
       console.error("Error fetching character data:", err.message);
     } finally {
@@ -392,12 +404,33 @@ export default function Index() {
   }
 
   useEffect(() => {
-    if (!char_id) return;
+    if (!view) return;
 
-    const char = Array.isArray(char_id) ? char_id[0] : char_id;
+    if (view === "Characters" || view === "Weapons" || view === "Relics") {
+      fetchMainData();
+      setViews(["Characters", "Weapons", "Relics"]);
+      return;
+    } else {
+      console.log("Fetching character data for view:", view, view.split("char_")[1]);
+      fetchMainData();
+      fetchCharacter(view.split("char_")[1]);
+      setViews(["Characters", "Weapons", "Relics", view]);
+    }
+  }, [view]);
 
-    fetchCharacter(char);
+  useEffect(() => {
+    const char = (Array.isArray(char_id) ? char_id[0] : char_id) || "Characters";
+    setView(isNaN(parseInt(char)) ? char : "char_" + char);
   }, [char_id]);
+
+  // useEffect(() => {
+  //   if (view.startsWith("char_")) {
+  //     const char = view.split("char_")[1];
+  //     fetchCharacter(char);
+  //   } else {
+  //     setSpecificCharacterData(null);
+  //   }
+  // }, [view]);
 
   const setNewView = (view: string) => {
     if (view === "Characters" || view === "Weapons" || view === "Relics") {
@@ -416,7 +449,7 @@ export default function Index() {
   return (
     <div className='w-full h-full relative pb-[200px] m1_2:pb-[0px]' style={{ minHeight: "100vh" }}>
       <div className='absolute w-full top-0 left-0 z-0'>
-        <BG isImage={false} />
+        <BG isImage={true} />
       </div>
 
       {/* <div className='w-1 h-[10px]'></div> */}
@@ -424,22 +457,38 @@ export default function Index() {
         <Header current='/i' />
       </div>
 
-      <div className='w-[full] flex items-center justify-center flex-wrap sticky z-[950] top-[6vh] m1_2:top-[6vh]'>
+      <div
+        className='w-full flex items-center justify-center flex-wrap sticky z-[950] top-[5vh] m1_2:top-[5vh] bg-[#010101ee] h-[50px]
+        m1_2:h-[6vh] 
+      '>
         {views.map((item, idx) => {
           return (
             <div
               key={idx}
-              className={`w-[150px] h-[30px] text-center flex items-center justify-center bg-[#4d48db] text-white text-sm font-bold mx-2  cursor-pointer rounded-sm shadow-lg shadow-[#000000] leading-[30px]
+              className={`w-[150px] h-[30px] text-center flex items-center justify-center bg-[#4d48db] text-white text-sm font-bold mx-2  cursor-pointer rounded-sm 
+                 leading-[30px] hover:shadow-[0_0_0px_2px_#c7c7c7] transition-all duration-150 shadow-[0_2px_5px_0_#00000088]
                 m1_4:w-[23vw] m1_4:h-[5.7vw] m1_4:text-[2.6vw] m1_4:leading-[5.7vw] m1_4:mx-[0.3vh] 
                 ${view === item ? "bg-[#3d3b8a]" : ""}`}
+              style={
+                {
+                  // filter: "drop-shadow(0px 2px 5px #00000088)",
+                }
+              }
               onClick={() => {
                 setCurrentSort("");
                 setAvatarFilters([]);
                 if (view !== item) {
-                  setNewView(item);
+                  // setNewView(item);
+                  // router.push(`/i/${item}`);
+                  if (view.startsWith("char_")) {
+                    // router.push(`/i`);
+                    setView(item);
+                  } else {
+                    setView(item);
+                  }
                 }
               }}>
-              <div className='w-full h-full bg-[#a2a1dac2] hover:bg-[#8d8cc8c2] text-center  rounded-sm hover:font-extrabold shadow-lg hover:shadow-[#44446e]'>
+              <div className='w-full h-full bg-[#a2a1dac2] hover:bg-[#8d8cc8c2] text-center  rounded-sm hover:font-extrabold'>
                 {item}
               </div>
             </div>
@@ -448,131 +497,138 @@ export default function Index() {
       </div>
 
       {(view === "Characters" || view === "Weapons" || view === "Relics") && (
-        <div className='rounded-lg text-[#ffffff] relative z-[900] w-full flex justify-center mt-[7vh] gap-[2vw] mb-[0.5vw]'>
-          <div
-            className=' w-fit flex justify-center items-center pl-[2.5vw] pr-[2vw] py-[0.1vw] rounded-md shadow-md shadow-[#000000] gap-[1vw] hover:shadow-[0_0_1px_2px_#ffffff] cursor-pointer text-[13px]
-          m1_4:w-[32vw] m1_4:text-[2.5vw]
-          '
-            style={{
-              backgroundColor: filterVisible ? "#4d48db" : "#1a1a1a",
-              transition: "background-color 0.2s ease-in-out",
-            }}
-            onClick={() => {
-              setFilterVisible((prev) => !prev);
-            }}>
-            <div className=' font-bold'>Filters</div>
-            <div>
-              <div>{filterVisible ? <FilterAlt /> : <FilterAltOff />}</div>
-            </div>
-          </div>
-          <div
-            className=' w-fit flex justify-center items-center pl-[2.5vw] pr-[2vw] py-[0.1vw] rounded-md shadow-md shadow-[#000000] gap-[1vw] hover:shadow-[0_0_1px_2px_#ffffff] cursor-pointer text-[13px]
-          m1_4:w-[32vw] m1_4:text-[2.5vw]
-          '
-            style={{
-              backgroundColor: sortVisible ? "#4d48db" : "#1a1a1a",
-              transition: "background-color 0.2s ease-in-out",
-            }}
-            onClick={() => {
-              setSortVisible((prev) => !prev);
-            }}>
-            <div className='font-bold'>Sort</div>
-            <div>
-              <div>{sortVisible ? <FilterList /> : <Sort />}</div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      <div>
-        {filterVisible &&
-          (view === "Characters"
-            ? LF.avatarFilter(highestMajorVersion)
-            : view === "Weapons"
-            ? LF.weaponFilter
-            : view === "Relics"
-            ? LF.relicFilter
-            : []
-          ).map((item, idx) => {
-            return (
-              <div
-                key={idx}
-                className='w-full flex items-center justify-center flex-wrap relative z-[900]'>
-                {item.values.map((value, idx) => {
-                  return (
-                    <FilterOption
-                      item={value}
-                      idx={idx}
-                      includes={
-                        avatarFilters.includes(item.name + "///" + value) ||
-                        (value === "All" &&
-                          avatarFilters.filter((f) => f.split("///")[0] === item.name).length === 0)
-                      }
-                      addAvatarFilter={addFilter}
-                      removeAvatarFilter={removeFilter}
-                      name={item.name}
-                      display={
-                        "displayValues" in item && Array.isArray(item.displayValues)
-                          ? "" + item.displayValues[idx]
-                          : value
-                      }
-                      key={idx}
-                    />
-                  );
-                })}
-              </div>
-            );
-          })}
-      </div>
-
-      <div>
-        {sortVisible && (view === "Characters" || view === "Weapons" || view === "Relics") && (
-          <div className='w-full flex items-center justify-center flex-wrap relative z-[900] mt-[0.5vw]'>
+        <div className='w-[100vw] bg-[#151563a7] h-fit relative mt-[5vh] mb-[0.5vw] py-[0.5vw] block px-[2vw]'>
+          <div className='rounded-lg text-[#ffffff] relative z-[900] w-full flex justify-center gap-[2vw]'>
             <div
-              className={`w-[170px] h-[30px] flex items-center justify-center rounded-lg bg-[#121212] text-white text-sm font-bold mx-2 my-1 cursor-pointer transition-all duration-50 hover:shadow-[0_0_1px_2px_#ffffff]
-                m1_4:w-[16vw] m1_4:text-[2.1vw] m1_4:h-[5vw] m1_4:mx-[0.3vw]`}>
-              Sort By
+              className=' w-fit flex justify-center items-center pl-[2.5vw] pr-[2vw] py-[0.1vw] rounded-md shadow-md shadow-[#000000] gap-[1vw] hover:shadow-[0_0_1px_2px_#ffffff] cursor-pointer text-[13px]
+          m1_4:w-[32vw] m1_4:text-[2.5vw]
+          '
+              style={{
+                backgroundColor: filterVisible ? "#4d48db" : "#1a1a1a",
+                transition: "background-color 0.2s ease-in-out",
+              }}
+              onClick={() => {
+                setFilterVisible((prev) => !prev);
+              }}>
+              <div className=' font-bold'>Filters</div>
+              <div>
+                <div>{filterVisible ? <FilterAlt /> : <FilterAltOff />}</div>
+              </div>
             </div>
-            {
-              // ["DisplayName", "Rarity", "Ver", "Element", "Path", "_id"].map((item, idx
+            <div
+              className=' w-fit flex justify-center items-center pl-[2.5vw] pr-[2vw] py-[0.1vw] rounded-md shadow-md shadow-[#000000] gap-[1vw] hover:shadow-[0_0_1px_2px_#ffffff] cursor-pointer text-[13px]
+          m1_4:w-[32vw] m1_4:text-[2.5vw]
+          '
+              style={{
+                backgroundColor: sortVisible ? "#4d48db" : "#1a1a1a",
+                transition: "background-color 0.2s ease-in-out",
+              }}
+              onClick={() => {
+                setSortVisible((prev) => !prev);
+              }}>
+              <div className='font-bold'>Sort</div>
+              <div>
+                <div>{sortVisible ? <FilterList /> : <Sort />}</div>
+              </div>
+            </div>
+          </div>
+
+          <div className='w-full h-fit bg-[#5e5e95cc] relative rounded-lg mt-[0.5vw]'>
+            {filterVisible &&
               (view === "Characters"
-                ? LF.avatarSort
+                ? LF.avatarFilter(highestMajorVersion)
                 : view === "Weapons"
-                ? LF.weaponSort
+                ? LF.weaponFilter
                 : view === "Relics"
-                ? LF.relicSort
+                ? LF.relicFilter
                 : []
               ).map((item, idx) => {
-                const wasPreviousSort = currentSort.split("///")[0] === item.name;
                 return (
                   <div
                     key={idx}
-                    className={`w-[170px] h-[30px] flex items-center justify-center rounded-lg bg-[#121212] text-white text-sm font-bold mx-2 my-1 cursor-pointer transition-all duration-50 hover:shadow-[0_0_1px_2px_#ffffff]
-        m1_4:w-[14vw] m1_4:text-[2.1vw] m1_4:h-[5vw] m1_4:mx-[0.3vw] m1_4:my-[0.05vw]
-        ${wasPreviousSort ? "bg-[#3d3b8a]" : ""}`}
-                    onClick={() => {
-                      if (currentSort.split("///")[0] === item.name) {
-                        applySort(
-                          item.name,
-                          currentSort.split("///")[1] === "asc" ? "desc" : "asc"
-                        );
-                      } else {
-                        applySort(item.name, item.default);
-                      }
-                    }}>
-                    {item.displayName}
-                    {wasPreviousSort && (
-                      <span className='text-xs ml-1'>
-                        {currentSort.split("///")[1] === "asc" ? "↑" : "↓"}
-                      </span>
-                    )}
+                    className='w-full flex items-center justify-center flex-wrap relative z-[900]'>
+                    {item.values.map((value, idx) => {
+                      return (
+                        <FilterOption
+                          item={value}
+                          idx={idx}
+                          includes={
+                            avatarFilters.includes(item.name + "///" + value) ||
+                            (value === "All" &&
+                              avatarFilters.filter((f) => f.split("///")[0] === item.name)
+                                .length === 0)
+                          }
+                          addAvatarFilter={addFilter}
+                          removeAvatarFilter={removeFilter}
+                          name={item.name}
+                          display={
+                            "displayValues" in item && Array.isArray(item.displayValues)
+                              ? "" + item.displayValues[idx]
+                              : value
+                          }
+                          key={idx}
+                        />
+                      );
+                    })}
                   </div>
                 );
-              })
-            }
+              })}
           </div>
-        )}
-      </div>
+
+          <div className='w-full h-fit bg-[#5e5e95cc] relative rounded-lg mt-[0.5vw]'>
+            {/* <div
+              className={`mx-auto mb-[0.2vw] w-[370px] h-[30px] flex items-center justify-center rounded-lg bg-[#0d0d3fcc] text-[#c7c7c7] text-sm font-bold cursor-pointer transition-all duration-50 hover:shadow-[0_0_1px_2px_#ffffff]
+                m1_4:w-[16vw] m1_4:text-[2.1vw] m1_4:h-[5vw] m1_4:mx-[0.3vw]`}>
+              Sort By
+            </div> */}
+            {sortVisible && (view === "Characters" || view === "Weapons" || view === "Relics") && (
+              <div className='flex items-center justify-center flex-wrap relative z-[900]'>
+                {
+                  // ["DisplayName", "Rarity", "Ver", "Element", "Path", "_id"].map((item, idx
+                  (view === "Characters"
+                    ? LF.avatarSort
+                    : view === "Weapons"
+                    ? LF.weaponSort
+                    : view === "Relics"
+                    ? LF.relicSort
+                    : []
+                  ).map((item, idx) => {
+                    const wasPreviousSort = currentSort.split("///")[0] === item.name;
+                    return (
+                      <div
+                        key={idx}
+                        className={`w-[170px] h-[30px] flex items-center justify-center rounded-lg bg-[#121212] text-sm font-bold mx-2 my-1 cursor-pointer transition-all duration-50 hover:shadow-[0_0_1px_2px_#ffffff]
+                          m1_4:w-[14vw] m1_4:text-[2.1vw] m1_4:h-[5vw] m1_4:mx-[0.3vw] m1_4:my-[0.05vw]
+                          ${
+                            wasPreviousSort
+                              ? "bg-[#1c196a] text-[#ffffff] shadow-[0_0_0_1px_#c7c7c7]"
+                              : "text-[#c7c7c7]"
+                          }`}
+                        onClick={() => {
+                          if (currentSort.split("///")[0] === item.name) {
+                            applySort(
+                              item.name,
+                              currentSort.split("///")[1] === "asc" ? "desc" : "asc"
+                            );
+                          } else {
+                            applySort(item.name, item.default);
+                          }
+                        }}>
+                        {item.displayName}
+                        {wasPreviousSort && (
+                          <span className='text-xs ml-1'>
+                            {currentSort.split("///")[1] === "asc" ? "↑" : "↓"}
+                          </span>
+                        )}
+                      </div>
+                    );
+                  })
+                }
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {
         <div
