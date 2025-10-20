@@ -32,6 +32,7 @@ export default function Index() {
   const [weaponData, setWeaponData] = useState<any>(null);
   const [relicData, setRelicData] = useState<any>(null);
   const [specificCharacterData, setSpecificCharacterData] = useState<any>(null);
+  const [specificCharacterAdditionalData, setSpecificCharacterAdditionalData] = useState<any>(null);
 
   const router = useRouter();
 

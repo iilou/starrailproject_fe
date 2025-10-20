@@ -82,7 +82,7 @@ export default function Char({
     return false;
   };
 
-  useEffect(() => {
+  const importJsonData = (json: any) => {
     const newProcessData: any = {
       skill: {},
     };
@@ -175,9 +175,13 @@ export default function Char({
         };
       }
     }
+    return newProcessData;
+  };
 
-    setProcessedData(newProcessData);
-    console.log(newProcessData);
+  useEffect(() => {
+    const char_data = importJsonData(json);
+    setProcessedData(char_data);
+    console.log("Data for character", id, "processed:", char_data);
   }, [json]);
 
   useEffect(() => {

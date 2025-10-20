@@ -423,7 +423,10 @@ export default function Leaderboard() {
 
                 console.log("relic_full_array", relic_full_array);
 
-                set_lb_100p_benchmark((prev) => data[0][columns.score]);
+                // set_lb_100p_benchmark((prev) => data[0][columns.score]);
+                if (pageForce === -1 ? page === 1 : pageForce === 1) {
+                  set_lb_100p_benchmark(() => data[0][columns.score]);
+                }
                 // }
                 setData(data);
                 setSelRows(Array.from({ length: data.length }, () => false));
