@@ -17,6 +17,7 @@ lb_types = {
     "Seele": {
         "types": ["solo"],
         "calculation_function": [seele_solo],
+        "spd_categories": [[]],
     },
     "Dan Heng \u2022 Imbibitor Lunae": {
         "types": [],
@@ -25,6 +26,7 @@ lb_types = {
     "The Herta": {
         "types": ["tribbie_aven"],
         "calculation_function": [herta_tribbie_aven],
+        "spd_categories": [[125]],
     },
     "Feixiao": {
         "types": [],
@@ -171,6 +173,7 @@ def add_to_db(json, conn, cur):
 
     scores = {}
     builds = {}
+    deletions = {}
     for character in char_json:
         name = character["name"]
         if name not in dat_obj:
@@ -184,8 +187,14 @@ def add_to_db(json, conn, cur):
         builds[name] = char_build
 
         for i in range(len(lb_types[name]["types"])):
-            scores[name + "|" + lb_types[name]["types"][i]] = calc_results[i + 1]["total_dmg"] / 1000
+            scores[name + "|" + lb_types[name]["types"][i]] = calc_results[i + 1][0] / 1000
             builds[name + "|" + lb_types[name]["types"][i]] = char_build
+            for j in range(len(lb_types[name]["spd_categories"][i])):
+                if calc_results[i + 1][1] >= lb_types[name]["spd_categories"][i][j]:
+                    scores[name + "|" + lb_types[name]["types"][i] + "|" + str(lb_types[name]["spd_categories"][i][j])] = calc_results[i + 1][1] / 1000
+                    builds[name + "|" + lb_types[name]["types"][i] + "|" + str(lb_types[name]["spd_categories"][i][j])] = char_build
+                else:
+                    deletions[name + "|" + lb_types[name]["types"][i] + "|" + str(lb_types[name]["spd_categories"][i][j])] = True
         
         # print("Character: ", name, "Score: ", scores[name])
 
@@ -193,20 +202,26 @@ def add_to_db(json, conn, cur):
         (json["player"]["uid"], json["player"]["nickname"], name, json["player"]["avatar"]["icon"], builds[name], scores[name] * 1000)
         for name in scores
     ]
+    data_to_delete = [
+        (json["player"]["uid"], name)
+        for name in deletions
+    ]
+
+    query = """INSERT INTO leaderboard (uid, name, character_name, string1, string2, score)
+            VALUES (%s, %s, %s, %s, %s, %s)
+            ON CONFLICT (uid, character_name) DO UPDATE SET
+                name = EXCLUDED.name,
+                score = EXCLUDED.score,
+                string1 = EXCLUDED.string1,
+                string2 = EXCLUDED.string2;"""
+    delete_query = """DELETE FROM leaderboard WHERE uid = %s AND character_name = %s;"""
 
     print("Data to insert: ", data_to_insert)
+    print("Data to delete: ", data_to_delete)
 
     try:
-        cur.executemany(
-            sql.SQL("""INSERT INTO leaderboard (uid, name, character_name, string1, string2, score)
-                    VALUES (%s, %s, %s, %s, %s, %s)
-                    ON CONFLICT (uid, character_name) DO UPDATE SET
-                        name = EXCLUDED.name,
-                        score = EXCLUDED.score,
-                        string1 = EXCLUDED.string1,
-                        string2 = EXCLUDED.string2;"""),
-            data_to_insert
-        )
+        # cur.executemany(sql.SQL(query), data_to_insert)
+        # cur.executemany(sql.SQL(delete_query), data_to_delete)
         conn.commit()
         # if data_file != None:
         #     for name in scores:
@@ -292,7 +307,13 @@ def calc_score(char_json):
 
     lb_types_ = lb_types[char_json["name"]]
     for i in range(len(lb_types_["types"])):
-        returnScore.append(lb_types_["calculation_function"][i](stats, relic_sets))
+        # returnScore.append(lb_types_["calculation_function"][i](stats, relic_sets))
+        calc_result = lb_types_["calculation_function"][i](stats, relic_sets)
+        returnScore.append(calc_result)
+        # for j in range(len(lb_types_["spd_categories"][i])):
+        #     # if calc_result[1] >= lb_types_["spd_categories"][i][j]:
+        #         returnScore.append(calc_result[1])
+
 
     return [returnScore, char_build]
     

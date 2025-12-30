@@ -17,7 +17,6 @@ DB_URL = os.getenv("DB_URL")
 # Example DB_URL: "postgresql://username:password@hostname:port/database_name"
 # Sample DB_URL: "postgresql://user:password@localhost:5432/mydatabase"
 conn = psycopg2.connect(DB_URL)
-cur = conn.cursor()
 
 app = FastAPI()
 
@@ -112,12 +111,14 @@ def sr_info_alt(uid: str):
 
 @app.get("/rankings/{limit}")
 def get_rankings(limit: int):
+    cur = conn.cursor()
     cur.execute("SELECT * FROM rankings ORDER BY rank LIMIT %s", (limit,))
     result = cur.fetchall()
     return result
 
 @app.get("/get_lb/{lb_name}/{page}/{lim}")
 def get_lb (lb_name: str, page: int, lim: int):
+    cur = conn.cursor()
     cur.execute("SELECT * FROM leaderboard WHERE character_name = %s ORDER BY score DESC LIMIT %s OFFSET %s", (lb_name, lim, (page-1)*lim))
     result = cur.fetchall()
     return result
@@ -126,6 +127,7 @@ def get_lb (lb_name: str, page: int, lim: int):
 def get_lb_first(lb_name: str):
     # print("Getting first entry for leaderboard: ", lb_name)
     try:
+        cur = conn.cursor()
         cur.execute(
             "SELECT * FROM leaderboard WHERE character_name = %s ORDER BY score DESC LIMIT 1",
             (lb_name,)
@@ -140,6 +142,7 @@ def get_lb_first(lb_name: str):
 @app.get("/get_lb_count/{lb_name}")
 def get_lb_count (lb_name: str):
     try:
+        cur = conn.cursor()
         cur.execute("SELECT COUNT(*) FROM leaderboard WHERE character_name = %s", (lb_name,))
         result = cur.fetchall()
     
@@ -167,6 +170,7 @@ def add_score(score: Score):
                 name = EXCLUDED.username, 
                 score = EXCLUDED.score;
             """)
+        cur = conn.cursor()
         # Execute query with data from the request body
         cur.execute(insert_query, (score.player_id, score.username, score.score))
         conn.commit()
@@ -221,6 +225,7 @@ def add(add: Add):
 
     if response.status_code == 200:
         print("Adding UID: ", uid)
+        cur = conn.cursor()
         add_to_db(response.json(), conn, cur)
 
     else:

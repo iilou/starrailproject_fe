@@ -246,15 +246,11 @@ def seele_solo(stats, sets_ids):
     # print("basic: ", dmg_4)
     # print("skill 3: ", dmg_5)
     # print("total damage: ", total_dmg)
+    spd_p -= 0.25  # reset speed buff for other calculations
+    spd = spd_b * spd_p + speed_d
 
-    return {
-        "dmg_1": dmg_1,
-        "dmg_2": dmg_2,
-        "dmg_3": dmg_3,
-        "dmg_4": dmg_4,
-        "dmg_5": dmg_5,
-        "total_dmg": total_dmg
-    }
+
+    return [total_dmg, spd]
 
 
 
@@ -340,13 +336,21 @@ def herta_tribbie_aven(stats, sets_ids):
             ult_p += 0.15
         elif set_id == "309_2":
             # print("rutalent")
+            # crit_chance += 0.08
+            # atk_p -= 0.12
             skill_p += 0.2
         elif set_id == "311_2":
             glamoth = True
         elif set_id == "314_2":
             crit_chance += 0.12
+            # crit_chance -= 0.08
+            # atk_p += 0.12
         elif set_id == "313_2":
             crit_damage += 0.12
+
+    # stats["IceAddedRatio"] += 0.9
+    # stats["IceAddedRatio"] += 0.388
+    # stats["AttackAddedRatio"] -= 0.432
         
     # add stats
     crit_chance += stats["CriticalChanceBase"]
@@ -415,9 +419,4 @@ def herta_tribbie_aven(stats, sets_ids):
     # print("enhanced skill: ", enhanced_skill)
     # print("total damage: ", total_dmg)
     # print("===================================")
-    return {
-        "skill_1": skill_1,
-        "ult": ult,
-        "enhanced_skill": enhanced_skill,
-        "total_dmg": total_dmg
-    }
+    return [total_dmg, spd]

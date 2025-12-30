@@ -64,6 +64,12 @@ export default function RelicL({
     return foundLine ? affix["value"] / Number(foundLine[1]) : -1;
   });
 
+  const countSum = relicJSON["sub_affix"].reduce((sum: number, affix: any) => {
+    return (sum += affix["count"]);
+  }, 0);
+  const upgrades = Math.floor(relicJSON["level"] / 3);
+  const startingLines = countSum - upgrades;
+
   const isCriticalStat = (type: string) => {
     return (
       charName in charIndex &&
@@ -85,6 +91,9 @@ export default function RelicL({
             </div>
             <div className='w-[40px] h-[20px] flex justify-center items-center bg-[#272572e0] rounded-md absolute top-[-7px] left-[80px] text-[9px] text-[#df7878] font-bold'>
               +{relicMainstatScore.toFixed(1)}
+            </div>
+            <div className='w-[40px] h-[20px] flex justify-center items-center bg-[#3a3990d2] rounded-md absolute top-[-7px] left-[130px] text-[9px] text-[#6db86e] font-bold'>
+              {startingLines} L
             </div>
           </>
         )}
