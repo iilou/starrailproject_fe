@@ -15,7 +15,7 @@
     "@mui/material": "^7.0.1",
     "axios": "^1.7.9",
     "html-to-image": "^1.11.13",
-    "next": "15.1.6",
+    "next": "15.1.11",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-intersection-observer": "^9.16.0"
