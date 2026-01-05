@@ -157,7 +157,7 @@ def get_lb_first(lb_name: str):
                     "SELECT * FROM leaderboard WHERE character_name = %s ORDER BY score DESC LIMIT 1",
                     (lb_name,)
                 )
-                result = cur.fetchone()
+                result = cur.fetchall()
                 return result
         except Exception as e:
             print(f"Error with get_lb_first: {e}")
@@ -172,7 +172,7 @@ def get_lb_count (lb_name: str):
                     "SELECT COUNT(*) FROM leaderboard WHERE character_name = %s",
                     (lb_name,)
                 )
-                result = cur.fetchone()
+                result = cur.fetchall()
                 return result
         except Exception as e:
             print(f"Error with get_lb_count: {e}")
