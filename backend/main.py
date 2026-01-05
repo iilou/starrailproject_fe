@@ -26,6 +26,7 @@ app.add_middleware(
                    , "https://starrailproject-fe.vercel.app"
                    , "https://stylla.moe"
                    , "https://star.stylla.moe"
+                   , "https://www.stylla.moe"
                    ],  # Frontend URL
     allow_credentials=True,
     allow_methods=["*"],  # Allow all methods
