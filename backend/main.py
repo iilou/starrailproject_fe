@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-import psycopg2
+from psycopg2 import pool
 from psycopg2 import sql
 from dotenv import load_dotenv
 import os
@@ -10,13 +10,15 @@ import time
 from scorecalc import add_to_db
 import random
 import json
+from contextlib import contextmanager
 
 load_dotenv()
 DB_URL = os.getenv("DB_URL")
 
 # Example DB_URL: "postgresql://username:password@hostname:port/database_name"
 # Sample DB_URL: "postgresql://user:password@localhost:5432/mydatabase"
-conn = psycopg2.connect(DB_URL)
+# conn = psycopg2.connect(DB_URL)
+db_pool = pool.SimpleConnectionPool(1, 10, DB_URL)
 
 app = FastAPI()
 
@@ -41,6 +43,14 @@ uid_example = "600505603"
 lang_example = "en"
 
 alt_route = "https://enka.network/api/uid/{UID}"
+
+@contextmanager
+def get_db_conn():
+    conn = db_pool.getconn()
+    try:
+        yield conn
+    finally:
+        db_pool.putconn(conn)
 
 @app.get("/srd/{uid}")
 def sr_info_parsed(uid: str):
@@ -112,46 +122,61 @@ def sr_info_alt(uid: str):
 
 @app.get("/rankings/{limit}")
 def get_rankings(limit: int):
-    cur = conn.cursor()
-    cur.execute("SELECT * FROM rankings ORDER BY rank LIMIT %s", (limit,))
-    result = cur.fetchall()
-    return result
+    with get_db_conn() as conn:
+        try:
+            with conn.cursor() as cur:
+                cur.execute("SELECT * FROM rankings ORDER BY rank LIMIT %s", (limit,))
+                result = cur.fetchall()
+                return result
+        except Exception as e:
+            print(f"Error with get_rankings: {e}")
+    return None
 
 @app.get("/get_lb/{lb_name}/{page}/{lim}")
 def get_lb (lb_name: str, page: int, lim: int):
-    cur = conn.cursor()
-    cur.execute("SELECT * FROM leaderboard WHERE character_name = %s ORDER BY score DESC LIMIT %s OFFSET %s", (lb_name, lim, (page-1)*lim))
-    result = cur.fetchall()
-    return result
+    with get_db_conn() as conn:
+        try:
+            with conn.cursor() as cur:
+                cur.execute(
+                    "SELECT * FROM leaderboard WHERE character_name = %s ORDER BY score DESC LIMIT %s OFFSET %s",
+                    (lb_name, lim, (page-1)*lim)
+                )
+                result = cur.fetchall()
+                return result
+        except Exception as e:
+            print(f"Error with get_lb: {e}")
+    return None
 
 @app.get("/get_lb_first/{lb_name}")
 def get_lb_first(lb_name: str):
-    # print("Getting first entry for leaderboard: ", lb_name)
-    try:
-        cur = conn.cursor()
-        cur.execute(
-            "SELECT * FROM leaderboard WHERE character_name = %s ORDER BY score DESC LIMIT 1",
-            (lb_name,)
-        )
-        result = cur.fetchone()
-        print("Result: ", result, " for leaderboard: ", lb_name)
-    except Exception as e:
-        print(f"Error: {e}")
-        result = None
-    return result
+    with get_db_conn() as conn:
+        try:
+            conn = db_pool.getconn()
+            with conn.cursor() as cur:
+                cur.execute(
+                    "SELECT * FROM leaderboard WHERE character_name = %s ORDER BY score DESC LIMIT 1",
+                    (lb_name,)
+                )
+                result = cur.fetchone()
+                return result
+        except Exception as e:
+            print(f"Error with get_lb_first: {e}")
+    return None
 
 @app.get("/get_lb_count/{lb_name}")
 def get_lb_count (lb_name: str):
-    try:
-        cur = conn.cursor()
-        cur.execute("SELECT COUNT(*) FROM leaderboard WHERE character_name = %s", (lb_name,))
-        result = cur.fetchall()
-    
-    except Exception as e:
-        print(f"Error: {e}")
-        result = None
-
-    return result
+    with get_db_conn() as conn:
+        try:
+            with conn.cursor() as cur:
+                cur.execute(
+                    "SELECT COUNT(*) FROM leaderboard WHERE character_name = %s",
+                    (lb_name,)
+                )
+                result = cur.fetchone()
+                return result
+        except Exception as e:
+            print(f"Error with get_lb_count: {e}")
+    return None
 
 
 class Score(BaseModel):
@@ -162,26 +187,26 @@ class Score(BaseModel):
 @app.post("/add-score", status_code=201)
 def add_score(score: Score):
     print("Adding score: ", score)
-    try:
-        # SQL query to insert data
-        insert_query = sql.SQL("""
-            INSERT INTO scores (player_id, name, score)
-            VALUES (%s, %s, %s)
-            ON CONFLICT (player_id) 
-            DO UPDATE SET 
-                name = EXCLUDED.username, 
-                score = EXCLUDED.score;
-            """)
-        cur = conn.cursor()
-        # Execute query with data from the request body
-        cur.execute(insert_query, (score.player_id, score.username, score.score))
-        conn.commit()
+    with get_db_conn() as conn:
+        try:
+            # SQL query to insert data
+            insert_query = sql.SQL("""
+                INSERT INTO scores (player_id, name, score)
+                VALUES (%s, %s, %s)
+                ON CONFLICT (player_id) 
+                DO UPDATE SET 
+                    name = EXCLUDED.name, 
+                    score = EXCLUDED.score;
+                """)
+            cur = conn.cursor()
+            # Execute query with data from the request body
+            cur.execute(insert_query, (score.player_id, score.username, score.score))
+            conn.commit()
 
-        return {"message": "Score added successfully"}
-    except Exception as e:
-        # Rollback in case of error
-        conn.rollback()
-        raise HTTPException(status_code=500, detail=str(e))
+            return {"message": "Score added successfully"}
+        except Exception as e:
+            print(f"Error adding score: {e}")
+            raise HTTPException(status_code=500, detail="Internal Server Error")
     
 # @app.post("/add-lb", status_code=201)
 # def 
@@ -204,34 +229,35 @@ class Add(BaseModel):
 
 @app.post("/add")
 def add(add: Add):
-    uid = add.uid
-    delay = 0.05
-    response = None
-    while response is None:
-        try:
-            url = route_url.format(UID=uid, LANG=lang_example)
-            response = requests.get(url)
+    with get_db_conn() as conn:
+        uid = add.uid
+        delay = 0.05
+        response = None
+        while response is None:
+            try:
+                url = route_url.format(UID=uid, LANG=lang_example)
+                response = requests.get(url)
 
-            if response.status_code == 429:
-                print("Rate Limit Exceeded, delaying request for ", delay, " seconds")
-                time.sleep(delay)
-                delay *= 2
-                response = None
-                continue
+                if response.status_code == 429:
+                    print("Rate Limit Exceeded, delaying request for ", delay, " seconds")
+                    time.sleep(delay)
+                    delay *= 2
+                    response = None
+                    continue
 
-            if response.status_code == 404:
-                print("404 Error: ", uid)
+                if response.status_code == 404:
+                    print("404 Error: ", uid)
 
-        except Exception as e:
-            print("Error with UID: ", uid, " Error: ", e)
+            except Exception as e:
+                print("Error with UID: ", uid, " Error: ", e)
 
-    if response.status_code == 200:
-        print("Adding UID: ", uid)
-        cur = conn.cursor()
-        add_to_db(response.json(), conn, cur)
+        if response.status_code == 200:
+            print("Adding UID: ", uid)
+            cur = conn.cursor()
+            add_to_db(response.json(), conn, cur)
 
-    else:
-        print("Error with UID: ", uid, " Status Code: ", response.status_code)
+        else:
+            print("Error with UID: ", uid, " Status Code: ", response.status_code)
 
 
 
