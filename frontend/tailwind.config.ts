@@ -15,9 +15,11 @@ export default {
         'm1_4': {'max': '800px'},   
       },
       fontFamily: {
-        inter: ["var(--font-inter)", "sans-serif"],
-        mono: ["var(--font-inter)", "monospace"],
-        sans: ["var(--font-inter)", "sans-serif"],
+        // inter: ["var(--font-inter)", "sans-serif"],
+        mono: ["var(--font-geist-mono)", "monospace"],
+        sans: ["var(--font-geist-sans)", "sans-serif"],
+        // mono: ["var(--font-google-sans)", "monospace"],
+        // sans: ["var(--font-google-sans)", "sans-serif"],
       },
       keyframes: {
         'border-glow': {

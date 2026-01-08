@@ -1,20 +1,25 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { Inter } from "next/font/google";
+
+import { Noto_Sans } from "next/font/google";
+
 import "./globals.css";
 
-const geistSans = Geist({
+const GeistSans = Geist({
   variable: "--font-geist-sans",
+  display: "swap",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
+const GeistMono = Geist_Mono({
   variable: "--font-geist-mono",
+  display: "swap",
   subsets: ["latin"],
 });
 
-const inter = Inter({
-  variable: "--font-inter",
+const NotoSans = Noto_Sans({
+  variable: "--font-noto-sans",
+  display: "swap",
   subsets: ["latin"],
 });
 
@@ -35,7 +40,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang='en'>
-      <body className={`${inter.variable} antialiased `}>
+      <body
+        className={`${NotoSans.variable} ${GeistSans.variable} ${GeistMono.variable} antialiased `}>
         <div className='rounded-lg bg-[#0d0d0d]'>{children}</div>
       </body>
     </html>

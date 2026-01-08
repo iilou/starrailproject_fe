@@ -58,14 +58,8 @@ export default function LocalProfileView({ router }: { router: any }) {
               <span className='m1_4:hidden'> -</span>
               {" " + uid}
             </button>
-            {/* <button
-              className='w-[0px] h-fit text-[#c7c7c7] opacity-0 group-hover:opacity-100 font-medium transition-all rounded-full text-[14px] hover:font-bold hover:text-[20px] hover:-translate-y-[1px] hover:-translate-x-[17px] -translate-y-[2px] -translate-x-[15px] duration-75 hover:text-[#ffffff]'
-              onClick={() => deleteUid(uid)}>
-
-              x
-            </button> */}
             <div
-              className='aspect-square h-full hover:bg-[#000000] flex justify-center items-center rounded-sm hover:shadow-[0_0_0px_2px_#ffffff] '
+              className='aspect-square h-[80%] hover:bg-[#000000] flex justify-center items-center rounded-sm hover:shadow-[0_0_0px_1px_#ffffff] '
               onClick={() => deleteUid(uid)}>
               <Close />
             </div>

@@ -75,184 +75,184 @@ export default function Leaderboard() {
     Anaxa: 1405,
   };
 
-  const getRankFromScoreWithSet = (lb_name: string, char_name: string) => {
-    console.log("getRankFromScoreWithSet", lb_name, char_name);
-    if (lb_name !== char_name) {
-      // try {
-      //   fetch(`${process.env.NEXT_PUBLIC_API_URL}/get_lb_first/${lb_name}`)
-      //     .then((res) => res.json())
-      //     .then((data) => {
-      //       console.log("fetch lb first data - ", data);
-      //       if (data && data.length > 0) {
-      //         const firstScore = parseInt(data[columns.score]);
-      //         console.log("firstScore", firstScore);
-      //         set_lb_100p_benchmark(() => firstScore);
-      //       }
-      //     });
-      // } catch (error) {
-      //   console.error("Error fetching first score:", error);
-      //   set_lb_100p_benchmark(() => 80000); // Default value if fetch fails
-      // }
-      console.log("lb_name does not match char_name, returning 0", lb_name, char_name);
-      return;
-    }
+  // const getRankFromScoreWithSet = (lb_name: string, char_name: string) => {
+  //   console.log("getRankFromScoreWithSet", lb_name, char_name);
+  //   if (lb_name !== char_name) {
+  //     // try {
+  //     //   fetch(`${process.env.NEXT_PUBLIC_API_URL}/get_lb_first/${lb_name}`)
+  //     //     .then((res) => res.json())
+  //     //     .then((data) => {
+  //     //       console.log("fetch lb first data - ", data);
+  //     //       if (data && data.length > 0) {
+  //     //         const firstScore = parseInt(data[columns.score]);
+  //     //         console.log("firstScore", firstScore);
+  //     //         set_lb_100p_benchmark(() => firstScore);
+  //     //       }
+  //     //     });
+  //     // } catch (error) {
+  //     //   console.error("Error fetching first score:", error);
+  //     //   set_lb_100p_benchmark(() => 80000); // Default value if fetch fails
+  //     // }
+  //     console.log("lb_name does not match char_name, returning 0", lb_name, char_name);
+  //     return;
+  //   }
 
-    if (!(lb_name in charSetIndex)) {
-      console.log("Character not found in charSetIndex", lb_name);
-      return 0;
-    }
+  //   if (!(lb_name in charSetIndex)) {
+  //     console.log("Character not found in charSetIndex", lb_name);
+  //     return 0;
+  //   }
 
-    var bestRelicSetScore = 0;
-    const headers = charSetIndex["INFO"];
+  //   var bestRelicSetScore = 0;
+  //   const headers = charSetIndex["INFO"];
 
-    // 2pc + 2pc
-    var highestSet = "";
-    var highestSetScore = 0;
-    for (let i = 1; i < headers.length; i++) {
-      const setName = headers[i];
-      const setNum = parseInt(setName.split(" ")[0]);
-      if (setNum > 299) {
-        continue;
-      }
-      // console.log(charSetIndex, lb_name, i);
-      const setScore = parseFloat(charSetIndex[lb_name][i]);
-      if (setScore > highestSetScore) {
-        highestSetScore = setScore;
-        highestSet = setName;
-      }
-    }
-    for (let i = 1; i < headers.length; i++) {
-      const setName = headers[i];
-      const setNum = parseInt(setName.split(" ")[0]);
-      if (setNum > 299) {
-        continue;
-      }
-      if (setName === highestSet) {
-        continue;
-      }
-      const setScore = parseFloat(charSetIndex[lb_name][i]);
-      if (setScore > bestRelicSetScore) {
-        bestRelicSetScore = setScore;
-      }
-    }
-    bestRelicSetScore += highestSetScore;
+  //   // 2pc + 2pc
+  //   var highestSet = "";
+  //   var highestSetScore = 0;
+  //   for (let i = 1; i < headers.length; i++) {
+  //     const setName = headers[i];
+  //     const setNum = parseInt(setName.split(" ")[0]);
+  //     if (setNum > 299) {
+  //       continue;
+  //     }
+  //     // console.log(charSetIndex, lb_name, i);
+  //     const setScore = parseFloat(charSetIndex[lb_name][i]);
+  //     if (setScore > highestSetScore) {
+  //       highestSetScore = setScore;
+  //       highestSet = setName;
+  //     }
+  //   }
+  //   for (let i = 1; i < headers.length; i++) {
+  //     const setName = headers[i];
+  //     const setNum = parseInt(setName.split(" ")[0]);
+  //     if (setNum > 299) {
+  //       continue;
+  //     }
+  //     if (setName === highestSet) {
+  //       continue;
+  //     }
+  //     const setScore = parseFloat(charSetIndex[lb_name][i]);
+  //     if (setScore > bestRelicSetScore) {
+  //       bestRelicSetScore = setScore;
+  //     }
+  //   }
+  //   bestRelicSetScore += highestSetScore;
 
-    // 4pc
-    for (let i = 1; i < headers.length; i++) {
-      const setNum = parseInt(headers[i].split(" ")[0]);
-      if (setNum > 299) {
-        continue;
-      }
-      const pc2Index = headers.indexOf(setNum + "|2");
-      const pc4Index = headers.indexOf(setNum + "|4");
-      const totalSetScore =
-        parseFloat(charSetIndex[lb_name][pc2Index]) + parseFloat(charSetIndex[lb_name][pc4Index]);
-      if (totalSetScore > bestRelicSetScore) {
-        bestRelicSetScore = totalSetScore;
-      }
-    }
+  //   // 4pc
+  //   for (let i = 1; i < headers.length; i++) {
+  //     const setNum = parseInt(headers[i].split(" ")[0]);
+  //     if (setNum > 299) {
+  //       continue;
+  //     }
+  //     const pc2Index = headers.indexOf(setNum + "|2");
+  //     const pc4Index = headers.indexOf(setNum + "|4");
+  //     const totalSetScore =
+  //       parseFloat(charSetIndex[lb_name][pc2Index]) + parseFloat(charSetIndex[lb_name][pc4Index]);
+  //     if (totalSetScore > bestRelicSetScore) {
+  //       bestRelicSetScore = totalSetScore;
+  //     }
+  //   }
 
-    //planars
-    var highestPlanarSetScore = 0;
-    for (let i = 1; i < headers.length; i++) {
-      const setNum = parseInt(headers[i].split(" ")[0]);
-      if (setNum < 201) {
-        continue;
-      }
+  //   //planars
+  //   var highestPlanarSetScore = 0;
+  //   for (let i = 1; i < headers.length; i++) {
+  //     const setNum = parseInt(headers[i].split(" ")[0]);
+  //     if (setNum < 201) {
+  //       continue;
+  //     }
 
-      const setScore = parseFloat(charSetIndex[lb_name][i]);
-      if (setScore > highestPlanarSetScore) {
-        highestPlanarSetScore = setScore;
-      }
-    }
+  //     const setScore = parseFloat(charSetIndex[lb_name][i]);
+  //     if (setScore > highestPlanarSetScore) {
+  //       highestPlanarSetScore = setScore;
+  //     }
+  //   }
 
-    // substats + mainstats
-    const subAffixOptions = Object.keys(sub_relic_affix_hash);
-    const dps = parseFloat(charIndex[lb_name][property_hash["CriticalChanceBase"] + 1]) > 0.7;
-    const subAffixOptionsSorted = subAffixOptions.sort((a: string, b: string) => {
-      return (
-        // Speed is breakpointed on maindps, and its weight is set to 0.7 to match atk rope most of the time,
-        (dps && b === "SpeedDelta" ? 0 : 1) * parseFloat(charIndex[lb_name][property_hash[b] + 1]) -
-        (dps && a === "SpeedDelta" ? 0 : 1) * parseFloat(charIndex[lb_name][property_hash[a] + 1])
-      );
-    });
-    const subAffixTop5Sum = subAffixOptionsSorted.slice(0, 5).reduce((sum, affix) => {
-      return sum + parseFloat(charIndex[lb_name][property_hash[affix] + 1]);
-    }, 0);
-    // console.log("subAffixTop4Sum", subAffixTop4Sum);
-    // console.log("subAffixOptionsSorted", subAffixOptionsSorted);
-    // console.log("subAffixOptions", subAffixOptions);
-    // console.log("subAffixSorted", subAffixOptionsSorted);
-    var baselineRelics = 0;
-    for (let i = 0; i < 6; i++) {
-      const mainAffixOptions = main_relic_affix[i + 1]["affixes"];
+  //   // substats + mainstats
+  //   const subAffixOptions = Object.keys(sub_relic_affix_hash);
+  //   const dps = parseFloat(charIndex[lb_name][property_hash["CriticalChanceBase"] + 1]) > 0.7;
+  //   const subAffixOptionsSorted = subAffixOptions.sort((a: string, b: string) => {
+  //     return (
+  //       // Speed is breakpointed on maindps, and its weight is set to 0.7 to match atk rope most of the time,
+  //       (dps && b === "SpeedDelta" ? 0 : 1) * parseFloat(charIndex[lb_name][property_hash[b] + 1]) -
+  //       (dps && a === "SpeedDelta" ? 0 : 1) * parseFloat(charIndex[lb_name][property_hash[a] + 1])
+  //     );
+  //   });
+  //   const subAffixTop5Sum = subAffixOptionsSorted.slice(0, 5).reduce((sum, affix) => {
+  //     return sum + parseFloat(charIndex[lb_name][property_hash[affix] + 1]);
+  //   }, 0);
+  //   // console.log("subAffixTop4Sum", subAffixTop4Sum);
+  //   // console.log("subAffixOptionsSorted", subAffixOptionsSorted);
+  //   // console.log("subAffixOptions", subAffixOptions);
+  //   // console.log("subAffixSorted", subAffixOptionsSorted);
+  //   var baselineRelics = 0;
+  //   for (let i = 0; i < 6; i++) {
+  //     const mainAffixOptions = main_relic_affix[i + 1]["affixes"];
 
-      var main_affix_option = mainAffixOptions[0];
-      for (let i = 1; i < mainAffixOptions.length; i++) {
-        if (
-          // charIndex[lb_name][mainAffixOptions[i].property] >
-          //   charIndex[lb_name][main_affix_option.property] ||
-          // (charIndex[lb_name][mainAffixOptions[i].property] ===
-          //   charIndex[lb_name][main_affix_option.property] &&
-          //   main_affix_option in sub_relic_affix_hash &&
-          //   !(mainAffixOptions[i].property in sub_relic_affix_hash))
-          parseFloat(charIndex[lb_name][property_hash[mainAffixOptions[i].property] + 1]) >
-            parseFloat(charIndex[lb_name][property_hash[main_affix_option.property] + 1]) ||
-          (parseFloat(charIndex[lb_name][property_hash[mainAffixOptions[i].property] + 1]) ===
-            parseFloat(charIndex[lb_name][property_hash[main_affix_option.property] + 1]) &&
-            main_affix_option in sub_relic_affix_hash &&
-            !(mainAffixOptions[i].property in sub_relic_affix_hash))
-        ) {
-          // only if sub affix contains old option but not new option, then replace
-          main_affix_option = mainAffixOptions[i];
-        }
-      }
+  //     var main_affix_option = mainAffixOptions[0];
+  //     for (let i = 1; i < mainAffixOptions.length; i++) {
+  //       if (
+  //         // charIndex[lb_name][mainAffixOptions[i].property] >
+  //         //   charIndex[lb_name][main_affix_option.property] ||
+  //         // (charIndex[lb_name][mainAffixOptions[i].property] ===
+  //         //   charIndex[lb_name][main_affix_option.property] &&
+  //         //   main_affix_option in sub_relic_affix_hash &&
+  //         //   !(mainAffixOptions[i].property in sub_relic_affix_hash))
+  //         parseFloat(charIndex[lb_name][property_hash[mainAffixOptions[i].property] + 1]) >
+  //           parseFloat(charIndex[lb_name][property_hash[main_affix_option.property] + 1]) ||
+  //         (parseFloat(charIndex[lb_name][property_hash[mainAffixOptions[i].property] + 1]) ===
+  //           parseFloat(charIndex[lb_name][property_hash[main_affix_option.property] + 1]) &&
+  //           main_affix_option in sub_relic_affix_hash &&
+  //           !(mainAffixOptions[i].property in sub_relic_affix_hash))
+  //       ) {
+  //         // only if sub affix contains old option but not new option, then replace
+  //         main_affix_option = mainAffixOptions[i];
+  //       }
+  //     }
 
-      var substatsum = 0;
-      const steps = [4.25, 1.7, 0.5, 0.2];
-      var ind = 0;
-      for (let i = 0; ind < 4; i++) {
-        if (main_affix_option.property === subAffixOptionsSorted[i]) {
-          continue;
-        }
-        substatsum +=
-          parseFloat(charIndex[lb_name][property_hash[subAffixOptionsSorted[i]] + 1]) * steps[ind];
-        ind++;
-        console.log(
-          "mainstat",
-          main_affix_option.property +
-            " x " +
-            charIndex[lb_name][property_hash[main_affix_option.property] + 1],
-          "substat",
-          subAffixOptionsSorted[i],
-          "value",
-          charIndex[lb_name][property_hash[subAffixOptionsSorted[i]] + 1],
-          "count",
-          steps[ind - 1]
-        );
-      }
-      baselineRelics +=
-        parseFloat(charIndex[lb_name][property_hash[main_affix_option.property] + 1]) * 10 +
-        substatsum;
+  //     var substatsum = 0;
+  //     const steps = [4.25, 1.7, 0.5, 0.2];
+  //     var ind = 0;
+  //     for (let i = 0; ind < 4; i++) {
+  //       if (main_affix_option.property === subAffixOptionsSorted[i]) {
+  //         continue;
+  //       }
+  //       substatsum +=
+  //         parseFloat(charIndex[lb_name][property_hash[subAffixOptionsSorted[i]] + 1]) * steps[ind];
+  //       ind++;
+  //       console.log(
+  //         "mainstat",
+  //         main_affix_option.property +
+  //           " x " +
+  //           charIndex[lb_name][property_hash[main_affix_option.property] + 1],
+  //         "substat",
+  //         subAffixOptionsSorted[i],
+  //         "value",
+  //         charIndex[lb_name][property_hash[subAffixOptionsSorted[i]] + 1],
+  //         "count",
+  //         steps[ind - 1]
+  //       );
+  //     }
+  //     baselineRelics +=
+  //       parseFloat(charIndex[lb_name][property_hash[main_affix_option.property] + 1]) * 10 +
+  //       substatsum;
 
-      // console.log("mainstat", main_affix_option, "substatsum", substatsum);
-    }
+  //     // console.log("mainstat", main_affix_option, "substatsum", substatsum);
+  //   }
 
-    // console.log(
-    //   "baselineRelics",
-    //   baselineRelics,
-    //   "bestRelicSetScore",
-    //   bestRelicSetScore,
-    //   "highestPlanarSetScore",
-    //   highestPlanarSetScore
-    // );
+  //   // console.log(
+  //   //   "baselineRelics",
+  //   //   baselineRelics,
+  //   //   "bestRelicSetScore",
+  //   //   bestRelicSetScore,
+  //   //   "highestPlanarSetScore",
+  //   //   highestPlanarSetScore
+  //   // );
 
-    // return bestRelicSetScore + highestPlanarSetScore;
-    // return get_rank_from_score( score / 1000 + bestRelicSetScore + highestPlanarSetScore, max);
-    set_lb_100p_benchmark(
-      (prev) => (bestRelicSetScore + highestPlanarSetScore + baselineRelics) * 1000
-    );
-  };
+  //   // return bestRelicSetScore + highestPlanarSetScore;
+  //   // return get_rank_from_score( score / 1000 + bestRelicSetScore + highestPlanarSetScore, max);
+  //   set_lb_100p_benchmark(
+  //     (prev) => (bestRelicSetScore + highestPlanarSetScore + baselineRelics) * 1000
+  //   );
+  // };
 
   // const lb_name = searchParams.get("char") || "The Herta";
 
@@ -861,19 +861,19 @@ export default function Leaderboard() {
             );
           })}
         </div>
-
-        <div className='flex justify-center text-lg font-extrabold gap-8  rounded-b-xl text-w1 items-center pt-2'>
+        {/*| Total: {db_size} */}
+        <div className='flex justify-center text-sm font-extrabold gap-2 rounded-md text-w1 items-center py-2 bg-[#020071c2] w-[992px] m1_4:w-[90vw] m-auto mt-2'>
           <div
             onClick={() => on_page_change(page > 1 ? page - 1 : 1)}
-            className='cursor-pointer bg-[#720002c2] py-2 px-7 rounded-xl hover:bg-[#a20002c2] w-[130px] text-center transition-all active:shadow-[0px_0px_0px_1px_rgb(240,240,240)]'>
+            className='cursor-pointer bg-[#353385d2] py-2 px-7 rounded-sm hover:bg-[#353385a2] text-center transition-all active:shadow-[0px_0px_0px_1px_rgb(240,240,240)]'>
             Previous
           </div>
-          <div className='w-[400px] text-center'>
-            Page: {page} of {Math.ceil(db_size / pageSize)} | Total: {db_size}
+          <div className='w-24 text-center'>
+            {page} of {Math.ceil(db_size / pageSize)}
           </div>
           <div
             onClick={() => on_page_change(page * pageSize < db_size ? page + 1 : page)}
-            className='cursor-pointer bg-[#720002c2] py-2 px-7 rounded-xl hover:bg-[#a20002c2] w-[130px] text-center transition-all active:shadow-[0px_0px_0px_1px_rgb(240,240,240)]'>
+            className='cursor-pointer bg-[#353385d2] py-2 px-7 rounded-sm hover:bg-[#353385a2] text-center transition-all active:shadow-[0px_0px_0px_1px_rgb(240,240,240)]'>
             <span className='select-none'>Next</span>
           </div>
         </div>
