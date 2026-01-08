@@ -442,8 +442,8 @@ export default function Index() {
     }
   };
 
-  const [filterVisible, setFilterVisible] = useState(true);
-  const [sortVisible, setSortVisible] = useState(true);
+  const [filterVisible, setFilterVisible] = useState(false);
+  const [sortVisible, setSortVisible] = useState(false);
 
   const [isWeaponPassiveHidden, setIsWeaponPassiveHidden] = useState(false);
 
@@ -459,7 +459,7 @@ export default function Index() {
       </div>
 
       <div
-        className='w-full flex items-center justify-center flex-wrap sticky z-[950] top-[5vh] m1_2:top-[5vh] bg-[#010101ee] h-[50px]
+        className='w-full flex items-center justify-center flex-wrap sticky z-[950] top-12 bg-[#504e84] pt-3 pb-2
         m1_2:h-[6vh] 
       '>
         {views.map((item, idx) => {
@@ -498,14 +498,14 @@ export default function Index() {
       </div>
 
       {(view === "Characters" || view === "Weapons" || view === "Relics") && (
-        <div className='w-[100vw] bg-[#151563a7] h-fit relative mt-[5vh] mb-[0.5vw] py-[0.5vw] block px-[2vw]'>
-          <div className='rounded-lg text-[#ffffff] relative z-[900] w-full flex justify-center gap-[2vw]'>
+        <div className='w-[100vw] bg-[#151563a7] h-fit relative mt-12 mb-[0.5vw] py-4 px-3 gap-4 flex flex-col items-center justify-center'>
+          <div className='rounded-lg text-[#ffffff] relative z-[900] w-full flex justify-center gap-2'>
             <div
-              className=' w-fit flex justify-center items-center pl-[2.5vw] pr-[2vw] py-[0.1vw] rounded-md shadow-md shadow-[#000000] gap-[1vw] hover:shadow-[0_0_1px_2px_#ffffff] cursor-pointer text-[13px]
+              className=' w-fit flex justify-center items-center pl-[2.5vw] pr-[2vw] py-[0.1vw] rounded-md shadow-md shadow-[#000000] gap-2 hover:shadow-[0_0_1px_2px_#ffffff] cursor-pointer text-[13px]
           m1_4:w-[32vw] m1_4:text-[2.5vw]
           '
               style={{
-                backgroundColor: filterVisible ? "#4d48db" : "#1a1a1a",
+                backgroundColor: filterVisible ? "#4d48ab" : "#1c196a",
                 transition: "background-color 0.2s ease-in-out",
               }}
               onClick={() => {
@@ -517,11 +517,11 @@ export default function Index() {
               </div>
             </div>
             <div
-              className=' w-fit flex justify-center items-center pl-[2.5vw] pr-[2vw] py-[0.1vw] rounded-md shadow-md shadow-[#000000] gap-[1vw] hover:shadow-[0_0_1px_2px_#ffffff] cursor-pointer text-[13px]
+              className=' w-fit flex justify-center items-center pl-[2.5vw] pr-[2vw] py-[0.1vw] rounded-md shadow-md shadow-[#000000] gap-2 hover:shadow-[0_0_1px_2px_#ffffff] cursor-pointer text-[13px]
           m1_4:w-[32vw] m1_4:text-[2.5vw]
           '
               style={{
-                backgroundColor: sortVisible ? "#4d48db" : "#1a1a1a",
+                backgroundColor: sortVisible ? "#4d48ab" : "#1c196a",
                 transition: "background-color 0.2s ease-in-out",
               }}
               onClick={() => {
@@ -534,9 +534,9 @@ export default function Index() {
             </div>
           </div>
 
-          <div className='w-full h-fit bg-[#5e5e95cc] relative rounded-lg mt-[0.5vw]'>
-            {filterVisible &&
-              (view === "Characters"
+          {filterVisible && (
+            <div className='w-full h-fit bg-[#5e5e95cc] relative rounded-lg flex items-center flex-col'>
+              {(view === "Characters"
                 ? LF.avatarFilter(highestMajorVersion)
                 : view === "Weapons"
                 ? LF.weaponFilter
@@ -547,7 +547,9 @@ export default function Index() {
                 return (
                   <div
                     key={idx}
-                    className='w-full flex items-center justify-center flex-wrap relative z-[900]'>
+                    className={`w-full flex items-center justify-center flex-wrap relative z-[900] py-2 mx-2 ${
+                      idx > 0 ? "border-t border-[#c7c7c7aa]" : ""
+                    }`}>
                     {item.values.map((value, idx) => {
                       return (
                         <FilterOption
@@ -574,60 +576,53 @@ export default function Index() {
                   </div>
                 );
               })}
-          </div>
+            </div>
+          )}
 
-          <div className='w-full h-fit bg-[#5e5e95cc] relative rounded-lg mt-[0.5vw]'>
-            {/* <div
-              className={`mx-auto mb-[0.2vw] w-[370px] h-[30px] flex items-center justify-center rounded-lg bg-[#0d0d3fcc] text-[#c7c7c7] text-sm font-bold cursor-pointer transition-all duration-50 hover:shadow-[0_0_1px_2px_#ffffff]
-                m1_4:w-[16vw] m1_4:text-[2.1vw] m1_4:h-[5vw] m1_4:mx-[0.3vw]`}>
-              Sort By
-            </div> */}
-            {sortVisible && (view === "Characters" || view === "Weapons" || view === "Relics") && (
-              <div className='flex items-center justify-center flex-wrap relative z-[900]'>
-                {
-                  // ["DisplayName", "Rarity", "Ver", "Element", "Path", "_id"].map((item, idx
-                  (view === "Characters"
-                    ? LF.avatarSort
-                    : view === "Weapons"
-                    ? LF.weaponSort
-                    : view === "Relics"
-                    ? LF.relicSort
-                    : []
-                  ).map((item, idx) => {
-                    const wasPreviousSort = currentSort.split("///")[0] === item.name;
-                    return (
-                      <div
-                        key={idx}
-                        className={`w-[170px] h-[30px] flex items-center justify-center rounded-lg bg-[#121212] text-sm font-bold mx-2 my-1 cursor-pointer transition-all duration-50 hover:shadow-[0_0_1px_2px_#ffffff]
+          {sortVisible && (view === "Characters" || view === "Weapons" || view === "Relics") && (
+            <div className='w-full h-fit bg-[#5e5e95cc] relative rounded-lg'>
+              <div className='flex items-center justify-center flex-wrap relative z-[900] py-2 px-3'>
+                {(view === "Characters"
+                  ? LF.avatarSort
+                  : view === "Weapons"
+                  ? LF.weaponSort
+                  : view === "Relics"
+                  ? LF.relicSort
+                  : []
+                ).map((item, idx) => {
+                  const wasPreviousSort = currentSort.split("///")[0] === item.name;
+                  return (
+                    <div
+                      key={idx}
+                      className={`w-[170px] h-[30px] flex items-center justify-center rounded-lg bg-[#121212] text-sm font-bold mx-2 my-1 cursor-pointer transition-all duration-50 hover:shadow-[0_0_1px_2px_#ffffff]
                           m1_4:w-[14vw] m1_4:text-[2.1vw] m1_4:h-[5vw] m1_4:mx-[0.3vw] m1_4:my-[0.05vw]
                           ${
                             wasPreviousSort
                               ? "bg-[#1c196a] text-[#ffffff] shadow-[0_0_0_1px_#c7c7c7]"
                               : "text-[#c7c7c7]"
                           }`}
-                        onClick={() => {
-                          if (currentSort.split("///")[0] === item.name) {
-                            applySort(
-                              item.name,
-                              currentSort.split("///")[1] === "asc" ? "desc" : "asc"
-                            );
-                          } else {
-                            applySort(item.name, item.default);
-                          }
-                        }}>
-                        {item.displayName}
-                        {wasPreviousSort && (
-                          <span className='text-xs ml-1'>
-                            {currentSort.split("///")[1] === "asc" ? "↑" : "↓"}
-                          </span>
-                        )}
-                      </div>
-                    );
-                  })
-                }
+                      onClick={() => {
+                        if (currentSort.split("///")[0] === item.name) {
+                          applySort(
+                            item.name,
+                            currentSort.split("///")[1] === "asc" ? "desc" : "asc"
+                          );
+                        } else {
+                          applySort(item.name, item.default);
+                        }
+                      }}>
+                      {item.displayName}
+                      {wasPreviousSort && (
+                        <span className='text-xs ml-1'>
+                          {currentSort.split("///")[1] === "asc" ? "↑" : "↓"}
+                        </span>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       )}
 

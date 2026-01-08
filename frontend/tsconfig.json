@@ -14,10 +14,10 @@
     "esModuleInterop": true,
     "module": "esnext",
     "moduleResolution": "node",
-    // "ignoreDeprecations": "6.0",
+    "ignoreDeprecations": "6.0",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve", // Updated to react-jsx
+    "jsx": "react-jsx", // Updated to react-jsx
     "incremental": true,
     "plugins": [
       {
@@ -34,7 +34,8 @@
     "app/next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts"
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts"
   ],
   "exclude": [
     "node_modules"
