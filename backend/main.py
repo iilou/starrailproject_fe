@@ -1,7 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from psycopg2 import pool
-from psycopg2 import sql
+import psycopg2
 from dotenv import load_dotenv
 import os
 from pydantic import BaseModel
@@ -10,7 +9,7 @@ import time
 from scorecalc import add_to_db
 import random
 import json
-from contextlib import contextmanager
+from psycopg2 import sql
 
 load_dotenv()
 DB_URL = os.getenv("DB_URL")
@@ -18,7 +17,7 @@ DB_URL = os.getenv("DB_URL")
 # Example DB_URL: "postgresql://username:password@hostname:port/database_name"
 # Sample DB_URL: "postgresql://user:password@localhost:5432/mydatabase"
 # conn = psycopg2.connect(DB_URL)
-db_pool = pool.SimpleConnectionPool(1, 10, DB_URL)
+# db_pool = pool.SimpleConnectionPool(1, 10, DB_URL)
 
 app = FastAPI()
 
@@ -44,17 +43,27 @@ lang_example = "en"
 
 alt_route = "https://enka.network/api/uid/{UID}"
 
-@contextmanager
-def get_db_conn():
-    conn = db_pool.getconn()
+# @contextmanager
+# def get_db_conn():
+#     conn = db_pool.getconn()
+#     try:
+#         yield conn
+#     finally:
+#         db_pool.putconn(conn)
+
+def get_conn():
+    conn = psycopg2.connect(
+        DB_URL,
+        ssl_mode='require',
+        connect_timeout=10
+    )
     try:
         yield conn
     finally:
-        db_pool.putconn(conn)
-
+        conn.close()
+        
 @app.get("/srd/{uid}")
 def sr_info_parsed(uid: str):
-    
     url = route_url.format(UID=uid, LANG=lang_example)
     response = requests.get(url)
     try:
@@ -122,7 +131,7 @@ def sr_info_alt(uid: str):
 
 @app.get("/rankings/{limit}")
 def get_rankings(limit: int):
-    with get_db_conn() as conn:
+    with get_conn() as conn:
         try:
             with conn.cursor() as cur:
                 cur.execute("SELECT * FROM rankings ORDER BY rank LIMIT %s", (limit,))
@@ -134,7 +143,7 @@ def get_rankings(limit: int):
 
 @app.get("/get_lb/{lb_name}/{page}/{lim}")
 def get_lb (lb_name: str, page: int, lim: int):
-    with get_db_conn() as conn:
+    with get_conn() as conn:
         try:
             with conn.cursor() as cur:
                 cur.execute(
@@ -149,23 +158,19 @@ def get_lb (lb_name: str, page: int, lim: int):
 
 @app.get("/get_lb_first/{lb_name}")
 def get_lb_first(lb_name: str):
-    with get_db_conn() as conn:
-        try:
-            conn = db_pool.getconn()
-            with conn.cursor() as cur:
-                cur.execute(
-                    "SELECT * FROM leaderboard WHERE character_name = %s ORDER BY score DESC LIMIT 1",
-                    (lb_name,)
-                )
-                result = cur.fetchall()
-                return result
-        except Exception as e:
-            print(f"Error with get_lb_first: {e}")
+    with get_conn() as conn:
+        with conn.cursor() as cur:
+            cur.execute(
+                "SELECT * FROM leaderboard WHERE character_name = %s ORDER BY score DESC LIMIT 1",
+                (lb_name,)
+            )
+            result = cur.fetchall()
+            return result
     return None
 
 @app.get("/get_lb_count/{lb_name}")
 def get_lb_count (lb_name: str):
-    with get_db_conn() as conn:
+    with get_conn() as conn:
         try:
             with conn.cursor() as cur:
                 cur.execute(
@@ -187,7 +192,7 @@ class Score(BaseModel):
 @app.post("/add-score", status_code=201)
 def add_score(score: Score):
     print("Adding score: ", score)
-    with get_db_conn() as conn:
+    with get_conn() as conn:
         try:
             # SQL query to insert data
             insert_query = sql.SQL("""
@@ -229,7 +234,7 @@ class Add(BaseModel):
 
 @app.post("/add")
 def add(add: Add):
-    with get_db_conn() as conn:
+    with get_conn() as conn:
         uid = add.uid
         delay = 0.05
         response = None
