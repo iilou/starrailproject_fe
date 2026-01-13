@@ -56,7 +56,7 @@ alt_route = "https://enka.network/api/uid/{UID}"
 def get_conn():
     conn = psycopg2.connect(
         DB_URL,
-        ssl_mode='require',
+        sslmode='require',
         connect_timeout=10
     )
     try:
