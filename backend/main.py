@@ -10,6 +10,7 @@ from scorecalc import add_to_db
 import random
 import json
 from psycopg2 import sql
+from contextlib import contextmanager
 
 load_dotenv()
 DB_URL = os.getenv("DB_URL")
@@ -51,6 +52,7 @@ alt_route = "https://enka.network/api/uid/{UID}"
 #     finally:
 #         db_pool.putconn(conn)
 
+@contextmanager
 def get_conn():
     conn = psycopg2.connect(
         DB_URL,
