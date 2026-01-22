@@ -398,7 +398,7 @@ export default function Leaderboard() {
     setIsLbLoading(true);
 
     // FOR DEBUG: wait 10 seconds
-    await new Promise((resolve) => setTimeout(resolve, 40000));
+    // await new Promise((resolve) => setTimeout(resolve, 40000));
 
     try {
       fetch(
