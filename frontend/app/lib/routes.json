@@ -3,24 +3,28 @@
         "href": "/i",
         "text": "Index",
         "color": "text-w1",
-        "description": "View the descriptions and details of all characters, weapons, and relics."
+        "description": "View the descriptions and details of all characters, weapons, and relics.",
+        "img_n": 3
     },
     "tier": {
         "href": "/tier",
         "text": "Tier List",
         "color": "text-t2",
-        "description": "Tier list of all characters, based on their performance in the game."
+        "description": "Tier list of all characters, based on their performance in the game.",
+        "img_n": 2
     },
     "lb": {
         "href": "/lb",
-        "text": "Leaderboard",
+        "text": "Leaderboards",
         "color": "text-t1",
-        "description": "View the rankings of specific characters, based on relic quality, damage, and more."
+        "description": "View the rankings of specific characters, based on relic quality, damage, and more.",
+        "img_n": 2
     },
     "profile": {
         "href": "/profile",
-        "text": "Load Profile",
+        "text": "Profile Viewer",
         "color": "text-t3",
-        "description": "View the details of a specific user's profile, including their characters, relics, and more."
+        "description": "View the details of a specific user's profile, including their characters, relics, and more.",
+        "img_n": 5
     }
 }
