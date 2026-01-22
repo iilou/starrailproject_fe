@@ -14,6 +14,7 @@ import BG from "./bg";
 import { filterElementColor } from "./lib/color";
 
 import routes from "./lib/routes.json";
+import ImageAnim from "./ImageAnim";
 
 export default function Home() {
   const router = useRouter();
@@ -64,8 +65,36 @@ export default function Home() {
         </div>
       </div>
 
-      <div className='mx-8 m1_4:mx-1 bg-neutral-700/70 rounded-md mt-40 relative'>
-        <div className='text-xl font-bold text-center mt-6 mb-4'>Features</div>
+      <div className='mx-auto w-[80vw] m1_4:w-[95vw] rounded-md mt-40 relative'>
+        <div className='text-xl font-bold text-center pt-6 pb-2 bg-[#020071c2]'>Features</div>
+        <div className='px-10 grid grid-cols-2 m1_4:grid-cols-1 gap-4 pt-8 pb-8 bg-[#3d3a8c77] '>
+          {Object.keys(routes).map((key) => {
+            const route = (routes as any)[key];
+            return (
+              <div
+                key={route.href}
+                className={`px-20 py-8 rounded-lg font-medium bg-neutral-700/20 relative hover:bg-[#1E1C65] m1_4:px-[1vw]
+            `}>
+                <div className='flex flex-col items-center justify-start'>
+                  <div
+                    className='text-lg font-black leading-[1rem]'
+                    onClick={() => router.push(route.href)}>
+                    {route.text.toUpperCase()}
+                  </div>
+                  <div className='text-sm font-normal text-[#787878]'>{route.href}</div>
+                  <div className='w-full px-3 pt-2 pb-7'>
+                    <ImageAnim base={`/c${route.href}`} n={route.img_n} />
+                  </div>
+                  <div
+                    className='text-sm text-center text-[#787878] mt-2 leading-[1rem] font-normal 
+                  '>
+                    {route.description}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
       {/* <div className='mx-auto w-fit relative mt-40 bg-[#1A1947] hover:bg-[#23234b] rounded-sm'>
         <div className='w-fit px-20 py-2 rounded-sm text-xl font-bold text-center text-c2'>

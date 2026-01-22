@@ -26,6 +26,7 @@ import Character from "./character";
 import { toPng } from "html-to-image";
 import { toJpeg } from "html-to-image";
 import { profile } from "console";
+import { set } from "zod";
 // import { image } from "html2canvas/dist/types/css/types/image";
 
 export default function Profile() {
@@ -40,13 +41,15 @@ export default function Profile() {
   // const { uid: urlUid } = router.query; // Extract uid from dynamic route parameter
   const { uid: urlUid } = useParams(); // Extract uid from dynamic route parameter
 
+  const [isLoading, setIsLoading] = useState(false);
   const fetchData = async (savedData: any, uid: string) => {
+    setIsLoading(true);
     try {
       console.log(
         "fetching data for uid:",
         uid,
         "url:",
-        `${process.env.NEXT_PUBLIC_API_URL}/srd/${uid}`
+        `${process.env.NEXT_PUBLIC_API_URL}/srd/${uid}`,
       );
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/srd/${uid}`, {
         method: "GET",
@@ -96,7 +99,7 @@ export default function Profile() {
         // override if exists
         if (savedData["characters"].find((char: any) => char.id === character.id)) {
           savedData["characters"] = savedData["characters"].filter(
-            (char: any) => char.id !== character.id
+            (char: any) => char.id !== character.id,
           );
         }
 
@@ -107,7 +110,7 @@ export default function Profile() {
         const res = await axios.post(
           `${process.env.NEXT_PUBLIC_API_URL}/add`,
           { uid: uid },
-          { headers: { "Content-Type": "application/json" } }
+          { headers: { "Content-Type": "application/json" } },
         );
         console.log("add", res);
       } catch (error) {
@@ -124,6 +127,8 @@ export default function Profile() {
       console.error("Error fetching data: ", error);
       setProfileData(() => savedData["player"]);
       setCharList(() => savedData["characters"]);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -283,15 +288,15 @@ export default function Profile() {
             filter: "blur(0px)",
             backdropFilter: "blur(7px)",
           }}>
-          <div className='w-[720px] h-[60px] text-[#ffffff] text-[24px] bg-[#3d3b7a] rounded-lg font-black shadow-lg shadow-[#000000] '>
+          <div className='w-[720px] h-[60px] text-[#ffffff] text-[24px] bg-[#3d3b7a] rounded-sm font-black shadow-lg shadow-[#000000] '>
             <div className='w-full h-full flex items-center justify-center bg-[#0200d272] rounded-lg pt-[4px]'>
               Export Grid
             </div>
           </div>
-          <div className='w-[310px] h-[60px] flex flex-col items-center justify-center text-[#ffffff] text-[21px] font-bold bg-[#232323] rounded-lg leading-[24px]'>
-            <div>Select 2 - 4 characters</div>
-            <div className='text-[#c7c7c7] text-[12px] font-bold leading-[10px]'>
-              Generating may take a long time | 5-30 seconds
+          <div className='px-7 py-2 flex flex-col items-center justify-center text-[#ffffff] text-[21px] font-bold bg-[#232323] rounded-sm leading-[24px]'>
+            <div className='font-extrabold'>select [2, 4] characters</div>
+            <div className='text-[#787878] text-[12px] font-bold leading-[12px] text-center'>
+              processing is done client side and may take time (~5s-30s)
             </div>
           </div>
           <div className='w-[420px] h-fit bg-[#72719e] rounded-lg hover:shadow-[0_0_0_2px_#ffffff_inset] flex flex-col items-center justify-center gap-[3px] py-1'>
@@ -308,7 +313,7 @@ export default function Profile() {
                     onClick={() => {
                       if (gridChars.find((char) => char.id === character.id)) {
                         setGridChars((prev: any) =>
-                          prev.filter((char: any) => char.id !== character.id)
+                          prev.filter((char: any) => char.id !== character.id),
                         );
                       } else {
                         if (gridChars.length < 4) {
@@ -358,22 +363,16 @@ export default function Profile() {
               { quality: 0.5, dim: "1920x1080", est: "0.8MB", type: "jpeg 95%" },
               { quality: 1, dim: "3840x2160", est: "2.2MB", type: "jpeg 95%" },
               { quality: 2, dim: "7680x4320", est: "6.0MB", type: "jpeg 95%" },
-              { quality: 3, dim: "11520x6480", est: "10.4MB", type: "jpeg 95%" },
-              { quality: 4, dim: "15360x8640", est: "15.4MB", type: "jpeg 95%" },
               { quality: 0.5, dim: "1920x1080", est: "?", type: "png" },
               { quality: 1, dim: "3840x2160", est: "?", type: "png" },
               { quality: 2, dim: "7680x4320", est: "?", type: "png" },
-              { quality: 3, dim: "11520x6480", est: "?", type: "png" },
-              { quality: 4, dim: "15360x8640", est: "?", type: "png" },
               { quality: 0.5, dim: "1920x1080", est: "?", type: "jpeg 99%" },
               { quality: 1, dim: "3840x2160", est: "?", type: "jpeg 99%" },
               { quality: 2, dim: "7680x4320", est: "?", type: "jpeg 99%" },
-              { quality: 3, dim: "11520x6480", est: "?", type: "jpeg 99%" },
-              { quality: 4, dim: "15360x8640", est: "?", type: "jpeg 99%" },
             ].map((item, index) => {
               return (
                 <div
-                  className='w-[160px] h-[68px] flex flex-col items-center justify-center text-[#e2e2e2]  bg-[#121212] rounded-lg hover:shadow-[0_0_0_2px_#ffffff_inset] active:shadow-[0_0_5px_1px_#ffffff_inset] cursor-pointer'
+                  className='px-7 py-2 flex flex-col items-center justify-center text-[#e2e2e2]  bg-[#121212] rounded-lg hover:shadow-[0_0_0_2px_#ffffff_inset] active:shadow-[0_0_5px_1px_#ffffff_inset] cursor-pointer'
                   onClick={() => {
                     generateImage(gridRef, item.quality, item.type);
                   }}
@@ -383,10 +382,14 @@ export default function Profile() {
                   }}
                   key={index}>
                   {/* Generate {item.quality}x */}
-                  <div className='text-[16px] font-bold'>Generate {item.quality}x</div>
-                  <div className='text-[9px] font-bold text-[#a1a1a1]'>.{item.type}</div>
-                  <div className='text-[9px] font-bold text-[#a1a1a1]'>{item.dim}</div>
-                  <div className='text-[9px] font-bold text-[#a1a1a1]'>Est Size {item.est}</div>
+                  <div className='text-[16px] font-extrabold leading-[20px]'>
+                    {item.quality}x scale
+                  </div>
+                  <div className='flex gap-2'>
+                    <div className='text-[9px] font-bold text-[#a1a1a1]'>.{item.type}</div>
+                    <div className='text-[9px] font-bold text-[#a1a1a1]'>{item.dim}</div>
+                  </div>
+                  <div className='text-[12px] font-normal text-[#a1a1a1]'>~ {item.est}</div>
                 </div>
               );
             })}
@@ -476,10 +479,10 @@ export default function Profile() {
         <div
           className='w-full h-fit flex justify-center items-center sticky top-[50px] z-[1200] transition-all duration-500 flex-col '
           style={{
-            opacity: scrollY > 200 ? 0 : 1,
-            backgroundImage: `linear-gradient(to bottom, #12121200 0%, #12121292 20%, #12121292 95%, #12121200 100%)`,
-            userSelect: scrollY > 200 ? "none" : "auto",
-            pointerEvents: scrollY > 200 ? "none" : "auto",
+            opacity: scrollY > 200 && char_list.length > 1 ? 0 : 1,
+            backgroundImage: `linear-gradient(to bottom, #15151500 0%, #151515a2 20%, #151515a2 95%, #15151500 100%)`,
+            userSelect: scrollY > 200 && char_list.length > 1 ? "none" : "auto",
+            pointerEvents: scrollY > 200 && char_list.length > 1 ? "none" : "auto",
           }}>
           <ProfilePreview
             playerData={profile_data ? profile_data : null}
@@ -492,88 +495,93 @@ export default function Profile() {
             }}
           />
           <div className='w-1 h-[30px]'></div>
-          <div className='w-full h-fit flex justify-center items-center bg-[#121212dd] shadow-[0_0_3px_2px_#000000,_0_0_10px_0px_#000000_inset] sticky top-[80px] z-[1200]'>
-            <div
-              className='w-fit h-fit flex items-center overflow-x-scroll overflow-y-hidden relative'
-              style={{
-                scrollBehavior: "smooth",
-                scrollbarColor: "#000000 #121212",
-                scrollbarWidth: "thin",
-              }}>
-              <div className='w-[50px] h-2'></div>
-              {char_list.map((character: any) => {
-                const isCurrent = currentCharacter?.id === character.id;
-                return (
-                  <div
-                    className='flex items-center justify-center group h-[100px] w-fit px-2 '
-                    onClick={() => handleCharacterSelect(character.id)}
-                    key={character.id}>
-                    <div className='w-[100px] h-[100px] flex items-center justify-center rounded-full group relative'>
-                      <Image
-                        src={`https://raw.githubusercontent.com/Mar-7th/StarRailRes/refs/heads/master/${character.icon}`}
-                        width={68}
-                        height={68}
-                        alt='Character Icon'
-                        className={` relative
+
+          {char_list.length > 1 && (
+            <>
+              <div className='w-full h-fit flex justify-center items-center bg-[#121212dd] shadow-[0_0_3px_2px_#000000,_0_0_10px_0px_#000000_inset] sticky top-[80px] z-[1200]'>
+                <div
+                  className='w-fit h-fit flex items-center overflow-x-scroll overflow-y-hidden relative'
+                  style={{
+                    scrollBehavior: "smooth",
+                    scrollbarColor: "#000000 #121212",
+                    scrollbarWidth: "thin",
+                  }}>
+                  <div className='w-[50px] h-2'></div>
+                  {char_list.map((character: any) => {
+                    const isCurrent = currentCharacter?.id === character.id;
+                    return (
+                      <div
+                        className='flex items-center justify-center group h-[100px] w-fit px-2 '
+                        onClick={() => handleCharacterSelect(character.id)}
+                        key={character.id}>
+                        <div className='w-[100px] h-[100px] flex items-center justify-center rounded-full group relative'>
+                          <Image
+                            src={`https://raw.githubusercontent.com/Mar-7th/StarRailRes/refs/heads/master/${character.icon}`}
+                            width={68}
+                            height={68}
+                            alt='Character Icon'
+                            className={` relative
                           rounded-full bg-background transition-all bg-w1 w-[78px] h-[78px] block z-[120] duration-100 group-hover:bg-[#c3c3c3] shadow-[0_0_10px_2px_#000000_inset] ${
                             isCurrent
                               ? "animate-border-glow border-[2px] group-hover:bg-w2 brightness-90"
                               : "border-[#121212] border-[2px] group-hover:bg-w2 brightness-90"
                           }`}
-                        style={{
-                          borderColor: isCurrent ? character.element.color : "",
-                          // ["--glow_profile_char" as any]: character.element.color,
-                        }}
-                      />
-                    </div>
-                    <div
-                      className='w-[1px] h-[100px] group-hover:w-[230px] transition-all text-[#c7c7c7] z-[110] flex items-center'
-                      style={isCurrent ? { width: `230px`, marginRight: "26px" } : {}}>
-                      {isCurrent ? (
-                        <div className='relative group w-fit'>
-                          <div
-                            className='absolute inset-0 rounded-md border-2 animate-border-glow pointer-events-none'
                             style={{
-                              borderColor: currentCharacter.element.color,
-                              // ["--glow_profile_char" as any]: currentCharacter.element.color,
+                              borderColor: isCurrent ? character.element.color : "",
+                              // ["--glow_profile_char" as any]: character.element.color,
                             }}
                           />
-                          <div
-                            className='w-[230px] text-[#c7c7c7] font-bold text-2xl transition-all pl-4 pr-4 py-2 rounded-md bg-[#121212] group-hover:text-2xl group-hover:font-extrabold group-hover:bg-[#0f0f0f] animate-text-glow'
-                            style={{
-                              border: `2px solid ${currentCharacter.element.color}`,
-                            }}>
-                            {character.name.substring(0, 12) +
-                              (character.name.length > 12 ? "..." : "")}
-                          </div>
                         </div>
-                      ) : (
-                        <div className='w-[230px] hidden group-hover:block font-bold text-2xl transition-all pl-4 group-hover:bg-[#121212] border-[1px] border-[#121212] pr-4 py-2 rounded-md text-nowrap shadow-[0_0_0px_1px_#e7e7e755_inset]'>
-                          <span className='opacity-0 group-hover:opacity-100 transition-all duration-200 text-[#e9e9e900] group-hover:text-[#c7c7c7]'>
-                            {character.name.substring(0, 12) +
-                              (character.name.length > 12 ? "..." : "")}
-                          </span>
+                        <div
+                          className='w-[1px] h-[100px] group-hover:w-[230px] transition-all text-[#c7c7c7] z-[110] flex items-center'
+                          style={isCurrent ? { width: `230px`, marginRight: "26px" } : {}}>
+                          {isCurrent ? (
+                            <div className='relative group w-fit'>
+                              <div
+                                className='absolute inset-0 rounded-md border-2 animate-border-glow pointer-events-none'
+                                style={{
+                                  borderColor: currentCharacter.element.color,
+                                  // ["--glow_profile_char" as any]: currentCharacter.element.color,
+                                }}
+                              />
+                              <div
+                                className='w-[230px] text-[#c7c7c7] font-bold text-2xl transition-all pl-4 pr-4 py-2 rounded-md bg-[#121212] group-hover:text-2xl group-hover:font-extrabold group-hover:bg-[#0f0f0f] animate-text-glow'
+                                style={{
+                                  border: `2px solid ${currentCharacter.element.color}`,
+                                }}>
+                                {character.name.substring(0, 12) +
+                                  (character.name.length > 12 ? "..." : "")}
+                              </div>
+                            </div>
+                          ) : (
+                            <div className='w-[230px] hidden group-hover:block font-bold text-2xl transition-all pl-4 group-hover:bg-[#121212] border-[1px] border-[#121212] pr-4 py-2 rounded-md text-nowrap shadow-[0_0_0px_1px_#e7e7e755_inset]'>
+                              <span className='opacity-0 group-hover:opacity-100 transition-all duration-200 text-[#e9e9e900] group-hover:text-[#c7c7c7]'>
+                                {character.name.substring(0, 12) +
+                                  (character.name.length > 12 ? "..." : "")}
+                              </span>
+                            </div>
+                          )}
                         </div>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-          <div className='w-full flex justify-center flex-col items-center'>
-            <div className='w-[1px] h-[10px]'></div>
-            <div
-              className='ml-[1300px] shadow-[0_0_0_1px_#c7c7c7] w-[174px] h-[42px] flex items-center justify-center rounded-lg text-[#ac663d] font-bold cursor-pointer'
-              onClick={() => {
-                setSelClicked(() => true);
-              }}>
-              <div className='w-fit h-fit ml-3'>Export Grid</div>
-              <div className='w-[42px] h-[42px] flex items-center justify-center'>
-                <OpenInNew className='scale-[0.8]' />
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
-          </div>
+              <div className='w-full flex justify-center flex-col items-center'>
+                <div className='w-[1px] h-[10px]'></div>
+                <div
+                  className='ml-[1300px] shadow-[0_0_0_1px_#c7c7c7] w-[174px] h-[42px] flex items-center justify-center rounded-lg text-[#ac663d] font-bold cursor-pointer'
+                  onClick={() => {
+                    setSelClicked(() => true);
+                  }}>
+                  <div className='w-fit h-fit ml-3'>Export Grid</div>
+                  <div className='w-[42px] h-[42px] flex items-center justify-center'>
+                    <OpenInNew className='scale-[0.8]' />
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
         </div>
         <div
           className='w-[1920px] relative transition-all duration-300 h-[490px]'

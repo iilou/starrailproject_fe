@@ -176,19 +176,27 @@ def add_to_db(json, conn, cur):
         # calc_results = calc_score(character)
         scores[name] = calc_results[0]
         builds[name] = char_build
+        
+        # print("----------------",calc_results, name, "----------------")
 
         for i in range(len(lb_types[name]["types"])):
-            scores[name + "|" + lb_types[name]["types"][i]] = calc_results[i + 1]["total_dmg"] / 1000
+            scores[name + "|" + lb_types[name]["types"][i]] = calc_results[i + 1][0] / 1000
             builds[name + "|" + lb_types[name]["types"][i]] = char_build
         
         # print("Character: ", name, "Score: ", scores[name])
+
+    # print")
 
     data_to_insert = [
         (json["player"]["uid"], json["player"]["nickname"], name, json["player"]["avatar"]["icon"], builds[name], scores[name] * 1000)
         for name in scores
     ]
 
-    print("Data to insert: ", data_to_insert)
+    print("\n\n--------------------- data to insert: ---------------------")
+    for row in data_to_insert:
+        print(row[2], " - data:", row)
+    print("----------------------------------------------------------\n\n")
+    
 
     try:
         cur.executemany(
