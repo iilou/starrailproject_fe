@@ -31,6 +31,10 @@ import { main_relic_affix, sub_relic_affix, sub_relic_affix_hash } from "./relic
 import { properties } from "../../i/[[...char_id]]/properties";
 
 import OpenInNew from "@mui/icons-material/OpenInNew";
+import { set } from "zod";
+
+import { Quantum } from "ldrs/react";
+import "ldrs/react/Quantum.css";
 
 export default function Leaderboard() {
   // const searchParams = useSearchParams();
@@ -264,7 +268,7 @@ export default function Leaderboard() {
       ? (Array.isArray(lb_name_param)
           ? decodeURIComponent(lb_name_param[0])
           : decodeURIComponent(lb_name_param)) || "The Herta"
-      : "The Herta"
+      : "The Herta",
   );
   // const lb_100p_benchmark = getRankFromScoreWithSet(lb_name);
   const [lb_100p_benchmark, set_lb_100p_benchmark] = useState<number>(80000); // Default value, will be updated later
@@ -325,13 +329,12 @@ export default function Leaderboard() {
           relicObj[j]["type"] = int_array[0] % 10;
           relicObj[j]["level"] = Math.floor(int_array[1] % 100);
           relicObj[j]["rarity"] = Math.floor(int_array[1] / 100);
-          relicObj[j][
-            "icon"
-          ] = `https://raw.githubusercontent.com/Mar-7th/StarRailRes/refs/heads/master/icon/relic/${
-            relicObj[j]["id"] >= 300
-              ? relicObj[j]["id"] + "_" + (relicObj[j]["type"] - 5)
-              : relicObj[j]["id"] + "_" + (relicObj[j]["type"] - 1)
-          }.png`;
+          relicObj[j]["icon"] =
+            `https://raw.githubusercontent.com/Mar-7th/StarRailRes/refs/heads/master/icon/relic/${
+              relicObj[j]["id"] >= 300
+                ? relicObj[j]["id"] + "_" + (relicObj[j]["type"] - 5)
+                : relicObj[j]["id"] + "_" + (relicObj[j]["type"] - 1)
+            }.png`;
 
           relicObj[j]["main_affix"] = {};
           relicObj[j]["main_affix"]["hash"] = Math.floor(int_array[2] / 1000);
@@ -367,7 +370,7 @@ export default function Leaderboard() {
             relicObj[j]["sub_affixes"].push(sub_affix);
             sub_affix["DisplayValue"] =
               (sub_affix["value"] * (properties[sub_affix["type"]]["percent"] ? 100 : 1)).toFixed(
-                1
+                1,
               ) + (properties[sub_affix["type"]]["percent"] ? "%" : "");
             sub_affix["icon"] = properties[sub_affix["type"]]["icon"];
             sub_affix["name"] = properties[sub_affix["type"]]["name"];
@@ -382,6 +385,8 @@ export default function Leaderboard() {
     return arr;
   };
 
+  const [isLbLoading, setIsLbLoading] = useState(false);
+
   const get_lb = async (pageForce: number = -1, lb_override: string = "") => {
     if (lb_name === "" && lb_override === "") {
       console.log("Invalid leaderboard name", lb_name);
@@ -390,11 +395,16 @@ export default function Leaderboard() {
 
     console.log("lookup", lb_name, lb_override, pageForce, pageSize);
 
+    setIsLbLoading(true);
+
+    // FOR DEBUG: wait 10 seconds
+    // await new Promise((resolve) => setTimeout(resolve, 10000));
+
     try {
       fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/get_lb_count/${
           lb_override === "" ? lb_name : lb_override
-        }`
+        }`,
       )
         .then((res) => res.json())
         .then((data) => {
@@ -411,7 +421,7 @@ export default function Leaderboard() {
                 headers: {
                   "Content-Type": "application/json",
                 },
-              }
+              },
             )
               .then((res) => res.json())
               .then((data) => {
@@ -435,25 +445,20 @@ export default function Leaderboard() {
               });
           } catch (error) {
             console.error(error);
+          } finally {
+            setIsLbLoading(false);
           }
         });
     } catch (error) {
       console.error(error);
+    } finally {
+      setIsLbLoading(false);
     }
   };
 
   const [char_name, set_char_name] = useState<string>("");
   useEffect(() => {
     get_lb(1);
-    // if (lb_name !== lb_name.split("|")[0]) {
-    //   get_lb_first(lb_name.split("|")[0], () => {
-    //     get_lb(1);
-    //   });
-    // } else {
-    //   get_lb(1);
-    // }
-    // set_lb_100p_benchmark(getRankFromScoreWithSet(lb_name));
-    // getRankFromScoreWithSet(lb_name, lb_name.split("|")[0]);
     set_char_name(lb_name.split("|")[0]);
     console.log("lb_name", lb_name);
   }, [lb_name]);
@@ -594,6 +599,14 @@ export default function Leaderboard() {
                 className='cursor-pointer bg-[#323232c2] py-2 px-14 hover:bg-[#525252c2] transition-fast text-base
                   m1_4:text-[11px] m1_4:py-[1px] m1_4:px-[32px]
                 '
+                style={
+                  lb_name === `${char_name}${lb_type === "" ? "" : "|" + lb_type}`
+                    ? {
+                        backgroundColor: "#525252c2",
+                        color: "#a2a2a2",
+                      }
+                    : {}
+                }
                 onClick={() => {
                   // get_lb(1, `${lb_name + (lb_type === "" ? "" : "|" + lb_type)}`);
                   set_lb_name(`${char_name}${lb_type === "" ? "" : "|" + lb_type}`); // Update lb_name to include the type
@@ -633,117 +646,131 @@ export default function Leaderboard() {
           scrollbar-thumb-rounded-full scrollbar-track-rounded-full z-[99] relative w-fit bg-[#3d3a8c77] rounded-md mx-auto
           '>
           <div className='w-[1px] h-[15px]'></div>
-          {data.map((row, idx) => {
-            // RENDER ROWS
-            const hoverRow = hoverCell.row === idx;
+          {isLbLoading && (
+            <div className='w-[992px] m1_4:w-[90vw] h-16 flex justify-center items-center gap-4'>
+              <Quantum size='50' speed='1.75' color='#ffffff' />
+              <div>
+                <div className='text-[#d7d7d7] font-bold h-5'>
+                  Fetching leaderboard data for {char_name} ...
+                </div>
+                <div className='text-[#a1a1a1] text-xs'>
+                  Pls be kind my server sometimes has loadup time.
+                </div>
+              </div>
+            </div>
+          )}
+          {!isLbLoading &&
+            data.map((row, idx) => {
+              // RENDER ROWS
+              const hoverRow = hoverCell.row === idx;
 
-            const rank: number = idx + 1 + (page - 1) * pageSize;
-            const rankColor = rank > 3 ? "#d7d7d7" : ["#E3FF36", "#B7B7B7", "#978045"][rank - 1];
+              const rank: number = idx + 1 + (page - 1) * pageSize;
+              const rankColor = rank > 3 ? "#d7d7d7" : ["#E3FF36", "#B7B7B7", "#978045"][rank - 1];
 
-            const score = parseInt(row[columns.score]);
-            // const percent = ((score / 1000 / (70 + lb_100p_benchmark)) * 100).toFixed(2);
-            const percent = ((100 * score) / lb_100p_benchmark).toFixed(2);
-            const letter_rank_obj = get_rank_from_score(score, lb_100p_benchmark);
+              const score = parseInt(row[columns.score]);
+              // const percent = ((score / 1000 / (70 + lb_100p_benchmark)) * 100).toFixed(2);
+              const percent = ((100 * score) / lb_100p_benchmark).toFixed(2);
+              const letter_rank_obj = get_rank_from_score(score, lb_100p_benchmark);
 
-            const elements = [
-              // Rank
-              <div
-                className='flex justify-center items-center w-full border-r-[1px] border-[#d7d7d733]
+              const elements = [
+                // Rank
+                <div
+                  className='flex justify-center items-center w-full border-r-[1px] border-[#d7d7d733]
                 m1_4:text-[11px]
               '>
+                  <span
+                    className={`${rank > 3 && "hover:underline"} cursor-pointer`}
+                    style={{
+                      color: rankColor,
+                      fontWeight: rank > 3 ? "300" : "900",
+                    }}>
+                    {rank > 3 ? rank : rank + ["st", "nd", "rd"][rank - 1]}
+                  </span>
+                </div>,
+                // UID
                 <span
-                  className={`${rank > 3 && "hover:underline"} cursor-pointer`}
-                  style={{
-                    color: rankColor,
-                    fontWeight: rank > 3 ? "300" : "900",
-                  }}>
-                  {rank > 3 ? rank : rank + ["st", "nd", "rd"][rank - 1]}
-                </span>
-              </div>,
-              // UID
-              <span
-                className='text-[#a1a1a1] font-light hover:underline cursor-pointer
+                  className='text-[#a1a1a1] font-light hover:underline cursor-pointer
                 m1_4:text-[9px] 
               '>
-                {row[columns.uid]}
-              </span>,
-              // Name and pfp
-              <div
-                className='flex gap-[10px] justify-center items-center w-full border-x-[1px] border-[#d7d7d773] group
+                  {row[columns.uid]}
+                </span>,
+                // Name and pfp
+                <div
+                  className='flex gap-[10px] justify-center items-center w-full border-x-[1px] border-[#d7d7d773] group
                   m1_4:gap-[0.2vw] 
               '>
-                <img
-                  src={`https://raw.githubusercontent.com/Mar-7th/StarRailRes/refs/heads/master/${
-                    row[columns.string1] == "" ? "icon/avatar/1001.png" : row[columns.string1]
-                  }`}
-                  width={100}
-                  height={100}
-                  alt={row[columns.name]}
-                  className='rounded-full bg-[#232323] w-[32px] h-[32px] m1_4:w-[4.4vw] m1_4:h-[4.4vw]
+                  <img
+                    src={`https://raw.githubusercontent.com/Mar-7th/StarRailRes/refs/heads/master/${
+                      row[columns.string1] == "" ? "icon/avatar/1001.png" : row[columns.string1]
+                    }`}
+                    width={100}
+                    height={100}
+                    alt={row[columns.name]}
+                    className='rounded-full bg-[#232323] w-[32px] h-[32px] m1_4:w-[4.4vw] m1_4:h-[4.4vw]
                     group-hover:shadow-[0px_0px_0px_1px_rgb(150,150,150)] group-active:shadow-[0px_0px_0px_1px_rgb(240,240,240)]
                   '
-                  rel='preload'
-                />
-                <span
-                  className='group-hover:underline cursor-default
+                    rel='preload'
+                  />
+                  <span
+                    className='group-hover:underline cursor-default
                   m1_4:text-[10px]
                 '>
-                  {row[columns.name]}
-                </span>
-                <div
-                  className='m1_4:w-[4.4vw] m1_4:h-[4.4vw] flex justify-center items-center rounded-md cursor-pointer group relative bg-[#23232347] w-[32px] h-[32px]
+                    {row[columns.name]}
+                  </span>
+                  <div
+                    className='m1_4:w-[4.4vw] m1_4:h-[4.4vw] flex justify-center items-center rounded-md cursor-pointer group relative bg-[#23232347] w-[32px] h-[32px]
                   group-hover:shadow-[0px_0px_0px_1px_rgb(150,150,150)] active:shadow-[0px_0px_0px_1px_rgb(240,240,240)]
                   text-[#a1a1a1] hover:text-[#e7e7e7]
                 '
-                  onClick={() => {
-                    router.push(`/profile/${row[columns.uid]}`);
-                  }}>
-                  <OpenInNew className='scale-[0.5] m1_4:scale-[0.5]' />
-                </div>
-              </div>,
-              // Score
-              <div className='flex justify-center items-center w-full'>
-                <span
-                  className='text-[#d7d7d7] text-[14px] font-bold hover:underline cursor-pointer
+                    onClick={() => {
+                      router.push(`/profile/${row[columns.uid]}`);
+                    }}>
+                    <OpenInNew className='scale-[0.5] m1_4:scale-[0.5]' />
+                  </div>
+                </div>,
+                // Score
+                <div className='flex justify-center items-center w-full'>
+                  <span
+                    className='text-[#d7d7d7] text-[14px] font-bold hover:underline cursor-pointer
                   m1_4:text-[10px]
                 '>
-                  {lb_name.includes("|")
-                    ? parseInt(row[columns.score])
-                    : (parseInt(row[columns.score]) / 1000).toFixed(2)}
-                </span>
-              </div>,
-              // Tier
-              <div className='flex w-full justify-center items-center border-l-[1px] border-[#d7d7d753]'>
-                <div
-                  className='text-center font-black text-[22px] flex justify-center items-center w-[40px]
+                    {lb_name.includes("|")
+                      ? parseInt(row[columns.score])
+                      : (parseInt(row[columns.score]) / 1000).toFixed(2)}
+                  </span>
+                </div>,
+                // Tier
+                <div className='flex w-full justify-center items-center border-l-[1px] border-[#d7d7d753]'>
+                  <div
+                    className='text-center font-black text-[22px] flex justify-center items-center w-[40px]
                   m1_4:text-[14px] m1_4:w-[6vw] 
                 '>
-                  <span
-                    className='hover:underline cursor-pointer'
-                    style={{
-                      color: letter_rank_obj.color,
-                    }}>
-                    {letter_rank_obj.name}
-                  </span>
-                </div>
-                <div className='flex h-full items-center justify-center'>
-                  <span
-                    className='text-[14px] text-[#c7c7c7ac] font-bold h-fit w-[80px] hover:underline cursor-pointer
+                    <span
+                      className='hover:underline cursor-pointer'
+                      style={{
+                        color: letter_rank_obj.color,
+                      }}>
+                      {letter_rank_obj.name}
+                    </span>
+                  </div>
+                  <div className='flex h-full items-center justify-center'>
+                    <span
+                      className='text-[14px] text-[#c7c7c7ac] font-bold h-fit w-[80px] hover:underline cursor-pointer
                     m1_4:text-[10px] m1_4:w-[12vw]
                   '>
-                    ({percent}%)
-                  </span>
-                </div>
-              </div>,
-            ];
+                      ({percent}%)
+                    </span>
+                  </div>
+                </div>,
+              ];
 
-            // if (idx == 0) console.log(hoverCell, hoverRow);
+              // if (idx == 0) console.log(hoverCell, hoverRow);
 
-            return (
-              <>
-                <div
-                  key={idx}
-                  className={`w-fit gap-x-3 px-[10px] grid grid-cols-[103px,150px,371px,150px,150px]
+              return (
+                <>
+                  <div
+                    key={idx}
+                    className={`w-fit gap-x-3 px-[10px] grid grid-cols-[103px,150px,371px,150px,150px]
                    m1_4:gap-x-[0.2vw] m1_4:px-[0.2vw]  m1_4:grid-cols-[12vw,12vw,32vw,12vw,22vw]    
                   ${
                     hoverRow ? "bg-[#6861a9c9] underline" : ""
@@ -752,114 +779,114 @@ export default function Leaderboard() {
                   ${idx === 0 ? "border-t-0" : "border-t-[1px]"}
                   ${idx === data.length - 1 ? "border-b-0" : ""} 
                 `}
-                  onClick={(e) => {
-                    if (e.button === 0) {
-                      setSelRows((prev) => {
-                        const newSelRows = [...prev];
-                        newSelRows[idx] = !newSelRows[idx];
-                        return newSelRows;
-                      });
-                    }
-                  }}>
-                  {elements.map((element, i) => {
-                    const cell_hover = hoverRow && hoverCell.col === i;
-                    return (
-                      <div
-                        key={i}
-                        className={`my-auto text-center hover:bg-[#1E1C65] transition-fast rounded-md h-[40px] flex justify-center items-center relative
+                    onClick={(e) => {
+                      if (e.button === 0) {
+                        setSelRows((prev) => {
+                          const newSelRows = [...prev];
+                          newSelRows[idx] = !newSelRows[idx];
+                          return newSelRows;
+                        });
+                      }
+                    }}>
+                    {elements.map((element, i) => {
+                      const cell_hover = hoverRow && hoverCell.col === i;
+                      return (
+                        <div
+                          key={i}
+                          className={`my-auto text-center hover:bg-[#1E1C65] transition-fast rounded-md h-[40px] flex justify-center items-center relative
                       ${
                         cell_hover ? "bg-[#ffffff20] shadow-[0px_0px_0px_1px_rgb(150,150,150)]" : ""
                       }
                       active:shadow-[0px_0px_0px_1px_rgb(240,240,240)] m1_4:h-[5.2vw]
                     `}
-                        onClick={(e) => {
-                          if (e.button === 0) {
-                            setHoverCell({
-                              row: idx,
-                              col: i,
-                            });
-                          }
-                        }}>
-                        {element}
-                      </div>
-                    );
-                  })}
-                </div>
-                <div
-                  key={`relics-${idx}`}
-                  className='relative w-full h-[200px] justify-center items-center bg-[#0000006c] rounded-b-md'
-                  style={{
-                    display: sel_rows[idx] ? "flex" : "none",
-                  }}>
-                  {relicData[idx] && relicData[idx].relics && (
-                    <div
-                      className='flex justify-center items-center w-[900px] h-full relative flex-wrap
+                          onClick={(e) => {
+                            if (e.button === 0) {
+                              setHoverCell({
+                                row: idx,
+                                col: i,
+                              });
+                            }
+                          }}>
+                          {element}
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <div
+                    key={`relics-${idx}`}
+                    className='relative w-full h-[200px] justify-center items-center bg-[#0000006c] rounded-b-md'
+                    style={{
+                      display: sel_rows[idx] ? "flex" : "none",
+                    }}>
+                    {relicData[idx] && relicData[idx].relics && (
+                      <div
+                        className='flex justify-center items-center w-[900px] h-full relative flex-wrap
                       m1_4:w-[90vw]
                     '>
-                      {Object.keys(relicData[idx].relics).map((relicIdx) => {
-                        const relic = relicData[idx].relics[relicIdx];
-                        return (
-                          <div
-                            className='w-[210px] h-fit relative flex flex-col justify-center items-center
+                        {Object.keys(relicData[idx].relics).map((relicIdx) => {
+                          const relic = relicData[idx].relics[relicIdx];
+                          return (
+                            <div
+                              className='w-[210px] h-fit relative flex flex-col justify-center items-center
                             m1_4:w-[22vw]
                             '
-                            key={relicIdx}>
-                            <div className='w-full flex justify-center items-center gap-x-[6px] h-[13px]'>
-                              <img
-                                src={relic.icon}
-                                alt={`Relic ${relicIdx}`}
-                                className='w-[20px] aspect-square rounded-md'
-                              />
-                              <div
-                                className='w-[120px] text-[13px] font-bold
-                              m1_4:text-[8px] m1_4:w-[14vw]'>
-                                {relic["main_affix"]["name"].length > 17
-                                  ? relic["main_affix"]["name"].slice(0, 14) + "..."
-                                  : relic["main_affix"]["name"]}
-                              </div>
-                              <div
-                                className='w-fit text-[13px] font-bold
-                              m1_4:text-[8px]'>
-                                {relic["main_affix"]["DisplayValue"]}
-                              </div>
-                            </div>
-                            <div className='w-full flex flex-col justify-center items-center gap-y-[2px] mt-[6px] '>
-                              {relic.sub_affixes.map((sub_affix: any, subIdx: number) => (
+                              key={relicIdx}>
+                              <div className='w-full flex justify-center items-center gap-x-[6px] h-[13px]'>
+                                <img
+                                  src={relic.icon}
+                                  alt={`Relic ${relicIdx}`}
+                                  className='w-[20px] aspect-square rounded-md'
+                                />
                                 <div
-                                  className='w-full flex justify-center items-center text-[10px] font-light h-[15px] text-[#c7c7c7]
+                                  className='w-[120px] text-[13px] font-bold
+                              m1_4:text-[8px] m1_4:w-[14vw]'>
+                                  {relic["main_affix"]["name"].length > 17
+                                    ? relic["main_affix"]["name"].slice(0, 14) + "..."
+                                    : relic["main_affix"]["name"]}
+                                </div>
+                                <div
+                                  className='w-fit text-[13px] font-bold
+                              m1_4:text-[8px]'>
+                                  {relic["main_affix"]["DisplayValue"]}
+                                </div>
+                              </div>
+                              <div className='w-full flex flex-col justify-center items-center gap-y-[2px] mt-[6px] '>
+                                {relic.sub_affixes.map((sub_affix: any, subIdx: number) => (
+                                  <div
+                                    className='w-full flex justify-center items-center text-[10px] font-light h-[15px] text-[#c7c7c7]
                                     m1_4:text-[8px] 
                                   '
-                                  key={subIdx}>
-                                  <div className='flex items-center gap-x-[4px] w-fit'>
-                                    <img
-                                      src={`https://raw.githubusercontent.com/Mar-7th/StarRailRes/refs/heads/master/${sub_affix.icon}`}
-                                      alt={`Sub Affix ${subIdx}`}
-                                      className='w-[20px] aspect-square rounded-md invert-[0.2]'
-                                    />
-                                    <div
-                                      className='w-[70px]
+                                    key={subIdx}>
+                                    <div className='flex items-center gap-x-[4px] w-fit'>
+                                      <img
+                                        src={`https://raw.githubusercontent.com/Mar-7th/StarRailRes/refs/heads/master/${sub_affix.icon}`}
+                                        alt={`Sub Affix ${subIdx}`}
+                                        className='w-[20px] aspect-square rounded-md invert-[0.2]'
+                                      />
+                                      <div
+                                        className='w-[70px]
                                       m1_4:w-[14vw]
                                     '>
-                                      {sub_affix.name}
+                                        {sub_affix.name}
+                                      </div>
+                                    </div>
+                                    <div
+                                      className='w-[50px] text-right
+                                  m1_4:w-[5vw]'>
+                                      {sub_affix.DisplayValue}
                                     </div>
                                   </div>
-                                  <div
-                                    className='w-[50px] text-right
-                                  m1_4:w-[5vw]'>
-                                    {sub_affix.DisplayValue}
-                                  </div>
-                                </div>
-                              ))}
+                                ))}
+                              </div>
                             </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  )}
-                </div>
-              </>
-            );
-          })}
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                </>
+              );
+            })}
         </div>
         {/*| Total: {db_size} */}
         <div className='flex justify-center text-sm font-extrabold gap-2 rounded-md text-w1 items-center py-2 bg-[#020071c2] w-[992px] m1_4:w-[90vw] m-auto mt-2'>
